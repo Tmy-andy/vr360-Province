@@ -28,7 +28,7 @@ html, body { height: 100%; font-family: 'Be Vietnam Pro', sans-serif; overflow: 
 /* ===== 2. MAP =====
    Map full màn hình; panel phải là overlay floating nên KHÔNG cần co map.
    ============== */
-#map { position: fixed; inset: 0; }
+#map { position: fixed; inset: 0; z-index: 0; }
 
 /* ===== 3. TOPBAR (floating pill style trên bản đồ) =====
    - Nền topbar TRONG SUỐT, chỉ các nút/pill nổi lên trên map.
@@ -1197,6 +1197,159 @@ body.focus-mode #news-panel {
 #tour-tip.arrow-down  .tt-arrow { bottom: -6px; left: var(--arrow-x, 24px); box-shadow: 2px 2px 4px rgba(0,0,0,.04); }
 #tour-tip.arrow-left  .tt-arrow { left: -6px;   top: var(--arrow-y, 20px);  box-shadow: -2px 2px 4px rgba(0,0,0,.04); }
 #tour-tip.arrow-right .tt-arrow { right: -6px;  top: var(--arrow-y, 20px);  box-shadow: 2px -2px 4px rgba(0,0,0,.04); }
+
+/* ===== 23. MOBILE RESPONSIVE (2D) =====
+   - Trên mobile (≤ 768px): gom #top-right + #left-bar vào MỘT cột thả xuống từ
+     nút #mobile-more-btn (3 chấm) ở góc phải trên.
+   - Topbar còn lại chỉ giữ menu-btn + search + filter pill (filter ẩn nếu hẹp).
+   - Khi đóng: cột ẩn (scale + fade); khi mở: trượt xuống có stagger nhẹ.
+   ============================================== */
+
+#mobile-more-btn {
+  display: none;
+  position: fixed; top: 12px; right: 12px;
+  width: var(--pill-h); height: var(--pill-h);
+  border-radius: 12px;
+  border: none; background: var(--icon-blue); color: #fff;
+  cursor: pointer;
+  align-items: center; justify-content: center;
+  box-shadow: var(--pill-shadow);
+  z-index: 1100;
+  transition: background .14s, transform .25s cubic-bezier(.4,0,.2,1);
+}
+#mobile-more-btn:hover { background: var(--icon-blue-dark); }
+body.mobile-menu-open #mobile-more-btn {
+  background: var(--icon-blue-dark);
+  transform: rotate(90deg);
+}
+
+@media (max-width: 768px) {
+  /* Hiện nút more, ẩn các cụm gốc cho đến khi mở menu */
+  #mobile-more-btn { display: flex; }
+
+  /* === KHOÁ HIT-AREA của các panel khi đóng ===
+     Trên mobile --panel-w gần full viewport → dù translate off-screen,
+     khung position:fixed vẫn có thể chiếm hit-area. Force pointer-events:none. */
+  #right-panel-bg:not(.open),
+  #right-panel:not(.open),
+  #news-panel:not(.open) { pointer-events: none !important; }
+
+  /* TOPBAR cao hơn map + leaflet container; isolation tạo stacking context
+     riêng để Leaflet touch handler không "với" lên topbar.
+     Đồng thời ép pointer-events:auto cho mọi phần tử trong topbar phòng khi
+     bị một rule chung nào đó cản. */
+  #topbar {
+    z-index: 1200 !important;
+    isolation: isolate;
+    pointer-events: auto !important;
+  }
+  #topbar * { touch-action: manipulation; pointer-events: auto; }
+  #search-bar input { -webkit-appearance: none; appearance: none; }
+
+  /* === ĐỒNG BỘ TẤT CẢ NÚT TRONG CỘT MOBILE ===
+     - Cùng kích thước var(--pill-h)
+     - Cùng dạng tròn, cùng màu xanh đặc, icon trắng
+     - lang-btn (pill) ép về tròn; ẩn tooltip Layers tránh phá hàng */
+  #top-right .ticon,
+  #left-bar .lbtn {
+    width: var(--pill-h) !important;
+    height: var(--pill-h) !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+    background: var(--icon-blue) !important;
+    color: #fff !important;
+    box-shadow: var(--pill-shadow) !important;
+  }
+  /* Lang-btn: ẩn label "VI/EN" trên mobile, chỉ giữ icon globe cho gọn */
+  #top-right #lang-btn #lang-label { display: none; }
+  #top-right #lang-btn { gap: 0; }
+  /* Tooltip "Layers" dưới nút Layers ẩn trên mobile */
+  #top-right #layers-btn::after { display: none; }
+  /* Hover/active đồng bộ */
+  #top-right .ticon:hover,
+  #left-bar .lbtn:hover {
+    background: var(--icon-blue-dark) !important;
+    color: #fff !important;
+  }
+  #left-bar .lbtn.active { background: var(--icon-blue-dark) !important; color: #fff !important; }
+
+  /* Topbar: chỉ còn menu + search + filter, dồn về trái, chừa chỗ cho more-btn */
+  #topbar { right: calc(12px + var(--pill-h) + 8px); gap: 8px; }
+  #search-wrap { max-width: none; }
+  /* Trên mobile rất hẹp: ẩn filter Xã/Phường để đỡ chật */
+  #xa-dd { display: none; }
+
+  /* TOP-RIGHT: chuyển thành cột floating dưới nút more */
+  #top-right {
+    position: fixed;
+    top: calc(12px + var(--pill-h) + 8px);
+    right: 12px;
+    margin-left: 0;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 1090;
+    transform-origin: top right;
+    opacity: 0; pointer-events: none;
+    transform: translateY(-10px) scale(.85);
+    transition: opacity .25s ease, transform .3s cubic-bezier(.4,0,.2,1);
+  }
+
+  /* LEFT-BAR: dời xuống dưới cụm top-right (cùng cột bên phải) */
+  #left-bar {
+    /* 6 ticons * (44+8) = 312, + topbar offset (12 + 44 + 8) = 64 → top ~ 376 */
+    top: calc(12px + (var(--pill-h) + 8px) * 7);
+    right: 12px; left: auto;
+    transform: none;
+    flex-direction: column; gap: 8px;
+    z-index: 1090;
+    transform-origin: top right;
+    opacity: 0; pointer-events: none;
+    transition: opacity .25s ease, transform .3s cubic-bezier(.4,0,.2,1);
+  }
+  /* Khi đóng menu: dùng cùng transform với top-right cho đồng bộ */
+  body:not(.mobile-menu-open) #left-bar {
+    transform: translateY(-10px) scale(.85);
+  }
+
+  /* Mở menu: hiện cả hai cột */
+  body.mobile-menu-open #top-right,
+  body.mobile-menu-open #left-bar {
+    opacity: 1; pointer-events: auto;
+    transform: translateY(0) scale(1);
+  }
+
+  /* Stagger nhẹ cho từng nút – tăng delay theo thứ tự */
+  body.mobile-menu-open #top-right .ticon,
+  body.mobile-menu-open #left-bar .lbtn {
+    animation: mob-pop .32s cubic-bezier(.4, 1.4, .55, 1) backwards;
+  }
+  body.mobile-menu-open #top-right .ticon:nth-child(1) { animation-delay: .02s; }
+  body.mobile-menu-open #top-right .ticon:nth-child(2) { animation-delay: .05s; }
+  body.mobile-menu-open #top-right .ticon:nth-child(3) { animation-delay: .08s; }
+  body.mobile-menu-open #top-right .ticon:nth-child(4) { animation-delay: .11s; }
+  body.mobile-menu-open #top-right .ticon:nth-child(5) { animation-delay: .14s; }
+  body.mobile-menu-open #top-right .ticon:nth-child(6) { animation-delay: .17s; }
+  body.mobile-menu-open #left-bar .lbtn:nth-child(1) { animation-delay: .20s; }
+  body.mobile-menu-open #left-bar .lbtn:nth-child(2) { animation-delay: .23s; }
+  body.mobile-menu-open #left-bar .lbtn:nth-child(3) { animation-delay: .26s; }
+
+  @keyframes mob-pop {
+    from { opacity: 0; transform: translateY(-12px) scale(.7); }
+    to   { opacity: 1; transform: translateY(0)    scale(1); }
+  }
+
+  /* Panel phải full màn hình trên mobile cho dễ xem */
+  :root { --panel-w: calc(100vw - 24px); }
+  /* News panel sát mép trái */
+  #news-panel { left: 12px; right: 12px; width: auto; }
+}
+
+@media (max-width: 480px) {
+  /* Màn rất nhỏ: thu nhỏ pill, cắt giảm thêm */
+  :root { --pill-h: 40px; }
+  #search-bar input { font-size: 13px; }
+}
 
 /* ===== 19. VIEW TRANSITION RIPPLE ===== */
 #view-transition {

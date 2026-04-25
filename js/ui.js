@@ -475,6 +475,14 @@ window.UI = (() => {
     tourItems = items;
     tourActive = true;
     tourIdx = fromIndex;
+    // Mobile: mở cột nút phải ra để spotlight chỉ đúng vị trí (đợi animation xong)
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    if (isMobile && items === HELP_ITEMS_2D) {
+      document.body.classList.add('mobile-menu-open');
+      $('tour-overlay').classList.add('open');
+      setTimeout(showTourStep, 350);
+      return;
+    }
     $('tour-overlay').classList.add('open');
     showTourStep();
   }
@@ -482,6 +490,8 @@ window.UI = (() => {
   function endTour() {
     tourActive = false;
     $('tour-overlay').classList.remove('open');
+    // Đóng menu mobile sau khi tour kết thúc
+    document.body.classList.remove('mobile-menu-open');
   }
 
   function showTourStep() {
@@ -628,6 +638,21 @@ window.UI = (() => {
     /* 2D panel */
     $('panel-toggle').addEventListener('click', () => panelOpen ? closePanel() : openPanel());
     $('menu-btn').addEventListener('click', () => document.body.classList.toggle('focus-mode'));
+
+    /* Mobile: nút "more" gom top-right + left-bar */
+    $('mobile-more-btn').addEventListener('click', e => {
+      e.stopPropagation();
+      document.body.classList.toggle('mobile-menu-open');
+    });
+    /* Click ra ngoài → đóng menu mobile (trừ khi đang chạy tour) */
+    document.addEventListener('click', e => {
+      if (!document.body.classList.contains('mobile-menu-open')) return;
+      if (tourActive) return;
+      if (e.target.closest('#mobile-more-btn')) return;
+      if (e.target.closest('#top-right')) return;
+      if (e.target.closest('#left-bar')) return;
+      document.body.classList.remove('mobile-menu-open');
+    });
 
     /* Help: click "?" → start spotlight tour ngay từ bước 1 */
     $('help-btn').addEventListener('click', e => { e.stopPropagation(); startTour(HELP_ITEMS_2D); });
