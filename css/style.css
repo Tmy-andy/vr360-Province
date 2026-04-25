@@ -233,18 +233,23 @@ html, body { height: 100%; font-family: 'Be Vietnam Pro', sans-serif; overflow: 
 .layer-label { font-size: 12px; font-weight: 600; color: #333; }
 .layer-sub { font-size: 10px; color: #999; }
 
-/* ===== 5. LEFT BAR ===== */
+/* ===== 5. LEFT BAR – đồng bộ với .ticon / #menu-btn (pill-h, pill-shadow) ===== */
 #left-bar {
-  position: fixed; left: 10px; top: 50%; transform: translateY(-50%);
-  display: flex; flex-direction: column; gap: 6px; z-index: 900;
+  position: fixed; left: 12px; top: 50%; transform: translateY(-50%);
+  display: flex; flex-direction: column; gap: 8px; z-index: 900;
 }
 .lbtn {
-  width: 36px; height: 36px; border-radius: 50%; border: none;
-  background: #fff; box-shadow: var(--shadow); color: var(--green);
-  cursor: pointer; display: flex; align-items: center; justify-content: center;
-  font-size: 12px; font-weight: 700; transition: background .14s, color .14s;
+  width: var(--pill-h); height: var(--pill-h); border-radius: 50%;
+  border: none; background: #fff; box-shadow: var(--pill-shadow);
+  color: var(--icon-blue);
+  cursor: pointer; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: inherit; font-size: 15px; font-weight: 700;
+  transition: background .14s, color .14s, transform .12s;
 }
-.lbtn:hover { background: var(--green); color: #fff; }
+.lbtn svg { width: 18px; height: 18px; }
+.lbtn:hover { background: var(--icon-blue); color: #fff; transform: translateY(-1px); }
+.lbtn.active { background: var(--icon-blue); color: #fff; }
 
 /* ===== 6. BOTTOM BAR (pill floating với nút active phồng tròn) =====
    - Bar hình pill bo tròn, nổi cách đáy 16px, có shadow.
@@ -340,8 +345,8 @@ html, body { height: 100%; font-family: 'Be Vietnam Pro', sans-serif; overflow: 
   position: fixed; top: 55%;
   right: var(--panel-gap);
   /* Khi panel ĐANG MỞ: dịch trái để dán vào mép trái panel */
-  transform: translate(calc(-1 * var(--panel-w) + 20px), -50%);
-  width: 40px; height: 40px; background: #fff; border-radius: 50%; border: none;
+  transform: translate(calc(-1 * var(--panel-w) + 25px), -50%);
+  width: 50px; height: 50px; background: #fff; border-radius: 50%; border: none;
   z-index: 960; display: flex; align-items: center; justify-content: center;
   transition:
     transform .35s cubic-bezier(.4,0,.2,1),
@@ -616,3 +621,590 @@ body.focus-mode #menu-btn .icon-eye { display: block; }
 @keyframes sp { to { transform: rotate(360deg); } }
 #loading .ltitle { font-size: 20px; font-weight: 800; color: var(--green); }
 #loading p { font-size: 13px; color: #aaa; }
+
+/* ===== 15. VR VIEWER ===== */
+#vr-viewer {
+  position: fixed; inset: 0;
+  z-index: 2000;
+  background: #000;
+  opacity: 0; pointer-events: none;
+  transition: opacity .35s ease;
+}
+body.mode-3d #vr-viewer { opacity: 1; pointer-events: auto; }
+#vr-pannellum {
+  position: absolute; inset: 0;
+  transition: opacity .3s ease;
+}
+.pnlm-container { background: #000 !important; }
+
+/* ===== 16. 3D MODE – ẩn 2D UI ===== */
+body.mode-3d #topbar,
+body.mode-3d #left-bar,
+body.mode-3d #right-panel,
+body.mode-3d #right-panel-bg,
+body.mode-3d #panel-toggle,
+body.mode-3d #bottom-bar,
+body.mode-3d #layer-popup,
+body.mode-3d .leaflet-control-zoom {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity .2s ease !important;
+}
+
+/* ===== 17. VR OVERLAY UI ===== */
+#vr-ui {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  display: flex; flex-direction: column;
+  transition: opacity .3s ease;
+}
+#vr-ui.ui-hidden { opacity: 0; pointer-events: none; }
+/* Chỉ bật pointer-events cho children khi đang ở 3D mode – tránh chặn 2D UI */
+body.mode-3d #vr-ui > * { pointer-events: auto; }
+
+/* --- VR TOP HEADER --- */
+#vr-hd {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 20px;
+  background: linear-gradient(to bottom, rgba(0,0,0,.65) 0%, transparent 100%);
+  flex-shrink: 0;
+}
+
+/* Logo */
+#vr-logo {
+  display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+}
+.vr-logo-title {
+  font-size: 15px; font-weight: 800; color: #fff; letter-spacing: .04em; line-height: 1.2;
+}
+.vr-logo-sub {
+  font-size: 9px; font-weight: 600; color: rgba(255,255,255,.55); letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+/* Location selector – custom dropdown giống .filter-pill + .xa-popup 2D */
+#vr-loc-dd {
+  position: relative;
+  flex-shrink: 0;
+}
+#vr-loc-trigger {
+  height: var(--pill-h);
+  padding: 0 14px 0 18px;
+  border-radius: var(--pill-radius);
+  border: none;
+  background: #fff;
+  box-shadow: var(--pill-shadow);
+  font-family: inherit; font-size: 13.5px; font-weight: 600; color: #333;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 8px;
+  white-space: nowrap;
+  min-width: 180px; max-width: 280px;
+  transition: background .14s;
+}
+#vr-loc-trigger:hover { background: #f5f7fa; }
+#vr-loc-current { flex: 1; overflow: hidden; text-overflow: ellipsis; text-align: left; }
+.vr-loc-caret { color: var(--icon-blue); flex-shrink: 0; transition: transform .2s; }
+#vr-loc-dd.open .vr-loc-caret { transform: rotate(180deg); }
+
+#vr-loc-popup {
+  position: absolute; top: calc(100% + 6px); left: 0;
+  min-width: 100%;
+  background: #fff; border-radius: 14px;
+  box-shadow: 0 8px 28px rgba(0,0,0,.22);
+  overflow: hidden;
+  z-index: 2300;
+  opacity: 0; pointer-events: none;
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path .3s cubic-bezier(.4,0,.2,1), opacity .22s ease;
+}
+#vr-loc-dd.open #vr-loc-popup {
+  opacity: 1; pointer-events: auto;
+  clip-path: inset(0);
+}
+#vr-loc-list { max-height: 300px; overflow-y: auto; padding: 4px 0; }
+#vr-loc-list::-webkit-scrollbar { width: 4px; }
+#vr-loc-list::-webkit-scrollbar-thumb { background: #d0d5db; border-radius: 4px; }
+.vr-loc-opt {
+  padding: 10px 18px; cursor: pointer;
+  font-size: 13.5px; color: #333; font-weight: 500;
+  transition: background .12s;
+}
+.vr-loc-opt:hover { background: #f4faff; color: var(--icon-blue); }
+.vr-loc-opt.selected { background: var(--icon-blue); color: #fff; font-weight: 700; }
+
+/* --- VR HEADER RIGHT – đồng bộ hoàn toàn với .ticon 2D --- */
+#vr-hd-right {
+  margin-left: auto;
+  display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+}
+
+/* Icon button tròn – giống hệt .ticon 2D: đặc xanh, no border */
+.vr-icon-btn {
+  width: var(--pill-h); height: var(--pill-h);
+  border-radius: 50%;
+  border: none;
+  background: var(--icon-blue);
+  color: #fff;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-family: inherit; font-size: 13px; font-weight: 700;
+  flex-shrink: 0;
+  transition: background .14s, transform .12s;
+  box-shadow: var(--pill-shadow);
+}
+.vr-icon-btn svg { width: 18px; height: 18px; }
+.vr-icon-btn:hover { background: var(--icon-blue-dark); transform: translateY(-1px); }
+
+/* Pill button – giống #lang-btn 2D về shape */
+.vr-pill-btn {
+  width: auto;
+  min-width: var(--pill-h);
+  padding: 0 14px;
+  border-radius: var(--pill-radius);
+  gap: 6px;
+  font-size: 13px;
+}
+
+/* Back-to-2D: trắng + text xanh – đối nghịch với các nút xanh, nổi bật hơn (giống #menu-btn 2D) */
+.vr-back-btn {
+  background: #fff;
+  color: var(--icon-blue);
+}
+.vr-back-btn svg { stroke: var(--icon-blue); }
+.vr-back-btn:hover { background: #e8f7fd; color: var(--icon-blue-dark); }
+
+/* --- INFO PANEL – bottom-left, nền trắng glass + text xanh, đồng bộ với 2D --- */
+#vr-info {
+  position: absolute;
+  bottom: 22px; left: 20px;
+  width: 340px;
+  background: rgba(255,255,255,.88);
+  border: 1px solid rgba(255,255,255,.6);
+  border-radius: 16px;
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  padding: 14px 16px;
+  color: var(--icon-blue);
+  box-shadow: 0 8px 28px rgba(0,0,0,.18);
+  transition: opacity .25s ease, transform .25s ease;
+}
+#vr-info.hidden { opacity: 0; pointer-events: none; transform: translateY(8px); }
+
+/* Thu gọn: animate mượt mà – max-height + opacity + margin */
+#vr-info { transition: opacity .25s ease, transform .25s ease, padding .35s cubic-bezier(.4,0,.2,1); }
+#vr-info.collapsed { padding: 12px 16px; }
+
+/* Wrapper desc + meta để chung 1 transition */
+#vr-place-desc, #vr-place-meta {
+  overflow: hidden;
+  max-height: 300px;
+  transition:
+    max-height .4s cubic-bezier(.4,0,.2,1),
+    opacity .25s ease .08s,
+    margin .35s cubic-bezier(.4,0,.2,1);
+}
+#vr-info.collapsed #vr-place-desc,
+#vr-info.collapsed #vr-place-meta {
+  max-height: 0;
+  opacity: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  transition:
+    max-height .35s cubic-bezier(.4,0,.2,1),
+    opacity .18s ease,
+    margin .35s cubic-bezier(.4,0,.2,1);
+}
+#vr-place-name { transition: font-size .3s ease, margin-bottom .3s ease; }
+#vr-info.collapsed #vr-place-name { margin-bottom: 0; font-size: 16px; }
+#vr-info #vr-info-x svg { transition: transform .35s cubic-bezier(.4,0,.2,1); }
+#vr-info.collapsed #vr-info-x svg { transform: rotate(-180deg); }
+
+#vr-info-hd {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 10px;
+}
+#vr-info.collapsed #vr-info-hd { margin-bottom: 8px; }
+.vr-info-tag {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 9.5px; font-weight: 700; letter-spacing: .08em;
+  color: var(--icon-blue); text-transform: uppercase;
+}
+.vr-info-tag svg { flex-shrink: 0; }
+#vr-info-x {
+  background: rgba(43,182,230,.12); border: none; color: var(--icon-blue);
+  width: 24px; height: 24px; border-radius: 50%; cursor: pointer;
+  font-size: 11px; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: background .14s;
+}
+#vr-info-x:hover { background: var(--icon-blue); color: #fff; }
+
+#vr-place-name {
+  font-size: 25px; font-weight: 800; color: var(--icon-blue-dark); line-height: 1.22;
+  margin-bottom: 8px; text-wrap: pretty;
+}
+#vr-place-desc {
+  font-size: 16px; color: #4a6470; line-height: 1.7;
+  margin-bottom: 10px;
+  display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+#vr-place-meta { display: flex; flex-direction: column; gap: 5px; }
+.vr-meta-row {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 12.5px; color: #2d5260; font-weight: 500;
+}
+.vr-meta-row svg { flex-shrink: 0; color: var(--icon-blue); width: 15px; height: 15px;}
+
+/* --- BOTTOM CENTER – absolute, căn giữa viewport --- */
+#vr-bottom {
+  position: absolute;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  width: 640px; max-width: calc(100vw - 420px);
+  /* 340px info panel trái + 20px gap + 22px minimap margin + ~210px minimap */
+}
+
+/* Related destinations */
+#vr-related { width: 100%; }
+#vr-rel-hd {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 8px; padding: 0 2px;
+}
+#vr-rel-hd span {
+  font-size: 10px; font-weight: 700; letter-spacing: .1em;
+  color: rgba(255,255,255,.65); text-transform: uppercase;
+}
+.vr-rel-arrows { display: flex; gap: 4px; }
+.vr-rel-arrows button {
+  width: 28px; height: 28px; border-radius: 50%;
+  border: none;
+  background: var(--icon-blue); color: #fff; font-size: 16px; line-height: 1;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--pill-shadow); transition: background .14s;
+}
+.vr-rel-arrows button:hover { background: var(--icon-blue-dark); }
+
+#vr-rel-list {
+  display: flex; gap: 8px;
+  overflow-x: auto; scroll-snap-type: x mandatory;
+  scrollbar-width: none; -ms-overflow-style: none;
+}
+#vr-rel-list::-webkit-scrollbar { display: none; }
+.vr-rel-card {
+  flex-shrink: 0; width: 148px;
+  border-radius: 10px; overflow: hidden;
+  cursor: pointer; position: relative;
+  scroll-snap-align: start;
+  border: 2px solid transparent;
+  transition: border-color .18s, transform .18s;
+}
+.vr-rel-card:hover { border-color: var(--icon-blue); transform: translateY(-3px); }
+.vr-rel-card img { width: 100%; height: 88px; object-fit: cover; display: block; }
+.vr-rel-name {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: linear-gradient(transparent, rgba(0,0,0,.8));
+  color: #fff; font-size: 9px; font-weight: 700; letter-spacing: .04em;
+  padding: 18px 7px 6px; line-height: 1.3;
+}
+
+/* Controls toolbar – glass pill, icons cùng style 2D */
+#vr-ctrl {
+  display: flex; gap: 4px; align-items: center;
+  background: rgb(255, 255, 255);
+  border: 1.5px solid rgba(255,255,255,.1);
+  border-radius: var(--pill-radius);
+  backdrop-filter: blur(20px);
+  padding: 8px 12px;
+  box-shadow: var(--pill-shadow);
+  color: var(--icon-blue);
+}
+.vr-ctrl-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  background: none; border: none; color: rgb(255, 255, 255);
+  font-family: inherit; font-size: 9px; font-weight: 600; letter-spacing: .02em;
+  cursor: pointer; padding: 6px 10px; border-radius: 18px;
+  transition: background .14s, color .14s, transform .12s;
+  white-space: nowrap; min-width: 56px;
+  color: var(--icon-blue);
+}
+.vr-ctrl-btn:hover {
+  background: var(--icon-blue);
+  color: #fff;
+  transform: translateY(-1px);
+}
+.vr-ctrl-btn:hover svg { stroke: #fff; }
+.vr-ctrl-btn.active { color: white; background-color: var(--icon-blue-dark); }
+.vr-ctrl-btn.active svg { stroke: white; }
+.vr-ctrl-btn svg { stroke: currentColor; }
+
+/* Reveal UI button – chỉ hiện khi UI bị ẩn */
+#vr-reveal-btn {
+  position: absolute;
+  top: 14px; right: 14px;
+  width: var(--pill-h); height: var(--pill-h);
+  border-radius: 50%;
+  border: none;
+  background: var(--icon-blue);
+  color: #fff; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 2200;
+  opacity: 0; pointer-events: none;
+  transition: opacity .25s ease, background .14s, transform .12s;
+  box-shadow: var(--pill-shadow);
+}
+#vr-reveal-btn.visible { opacity: 1; pointer-events: auto; }
+#vr-reveal-btn:hover { background: var(--icon-blue-dark); transform: translateY(-1px); }
+
+/* ===== 18. MINIMAP – Circular compass ===== */
+#minimap {
+  position: fixed;
+  bottom: 20px; right: 22px;
+  z-index: 2100;
+  cursor: pointer;
+  opacity: 0; pointer-events: none;
+  transition: opacity .4s ease, transform .25s cubic-bezier(.4,0,.2,1);
+}
+body.mode-3d #minimap { opacity: 1; pointer-events: auto; }
+#minimap.ui-hidden { opacity: 0 !important; pointer-events: none !important; }
+#minimap:hover { transform: scale(1.06); }
+#minimap:active { transform: scale(0.96); }
+
+#mm-title {
+  font-size: 9.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: rgba(255,255,255,.55); text-align: center;
+  margin-bottom: 5px;
+}
+#mm-circle {
+  position: relative;
+  width: 180px; height: 180px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2.5px solid rgba(255,255,255,.3);
+  box-shadow: 0 6px 28px rgba(0,0,0,.6), inset 0 0 0 1px rgba(255,255,255,.08);
+}
+#mm-circle:hover { border-color: rgba(43,182,230,.7); }
+#minimap-map {
+  position: absolute; inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #1a2a1a;
+}
+
+#mm-svg {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  /* No z-index needed – SVG is a sibling after #minimap-map in DOM,
+     and #minimap-map is a plain div (no stacking context), so SVG paints on top naturally */
+}
+
+/* ===== 20. NEWS PANEL (left, opened by left-bar Sự kiện button) =====
+   - Panel trượt từ trái, layout 2 tab (Tin tức / Sự kiện) + danh sách card.
+   - Card: thumbnail trái + title (xanh) + excerpt phải.
+   - Click card → mở link bài viết trong tab mới.
+   ====================================================================== */
+#news-panel {
+  position: fixed;
+  top: calc(var(--topbar) + 20px);
+  left: 68px;
+  bottom: var(--panel-gap);
+  width: var(--panel-w);
+  background: #fff;
+  border-radius: var(--panel-radius);
+  box-shadow: 0 8px 28px rgba(0,0,0,.18);
+  z-index: 940;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  transform: translateX(calc(-100% - 70px));
+  opacity: 0; pointer-events: none;
+  transition: transform .35s cubic-bezier(.4,0,.2,1), opacity .25s ease;
+}
+#news-panel.open {
+  transform: translateX(0);
+  opacity: 1; pointer-events: auto;
+}
+
+/* Header: back arrow + title + date */
+#np-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px 10px;
+  flex-shrink: 0;
+}
+#np-back {
+  width: 30px; height: 30px; border-radius: 50%;
+  border: none; background: #f4f6f8; color: #333;
+  cursor: pointer; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .14s, color .14s;
+}
+#np-back:hover { background: var(--icon-blue); color: #fff; }
+#np-title { font-size: 17px; font-weight: 800; color: #1a1a1a; flex: 1; }
+#np-date { font-size: 12.5px; color: #888; font-weight: 500; }
+
+/* Tabs */
+#np-tabs {
+  display: flex;
+  border-bottom: 1px solid #eef0f2;
+  padding: 0 14px;
+  flex-shrink: 0;
+}
+.np-tab {
+  flex: 1;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 10px 0 12px;
+  border: none; background: none;
+  font-family: inherit; font-size: 13px; font-weight: 600;
+  color: #999; cursor: pointer;
+  position: relative;
+  transition: color .14s;
+}
+.np-tab svg { transition: stroke .14s; }
+.np-tab:hover { color: var(--icon-blue); }
+.np-tab.active { color: var(--icon-blue); }
+.np-tab.active::after {
+  content: '';
+  position: absolute; left: 14%; right: 14%; bottom: -1px;
+  height: 2.5px; border-radius: 2px;
+  background: var(--icon-blue);
+}
+
+/* List */
+#np-list {
+  flex: 1; overflow-y: auto;
+  padding: 12px 14px 16px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+#np-list::-webkit-scrollbar { width: 4px; }
+#np-list::-webkit-scrollbar-thumb { background: #d0d5db; border-radius: 4px; }
+
+.ncard {
+  display: flex; gap: 12px;
+  background: #fff;
+  border: 1px solid #eef0f2;
+  border-radius: 12px;
+  padding: 10px;
+  cursor: pointer;
+  transition: box-shadow .14s, border-color .14s, transform .14s;
+}
+.ncard:hover {
+  box-shadow: 0 6px 16px rgba(43,182,230,.18);
+  border-color: var(--icon-blue);
+  transform: translateY(-1px);
+}
+.nthumb {
+  width: 96px; height: 96px; border-radius: 10px; overflow: hidden;
+  flex-shrink: 0; background: #e8ecef;
+}
+.nthumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.nbody { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.ntitle {
+  font-size: 13px; font-weight: 700; color: var(--icon-blue);
+  line-height: 1.35; text-wrap: pretty;
+  display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2;
+  -webkit-box-orient: vertical; overflow: hidden;
+}
+.nexcerpt {
+  font-size: 12px; color: #555; line-height: 1.5;
+  display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3;
+  -webkit-box-orient: vertical; overflow: hidden;
+}
+
+/* Hide news panel in 3D mode + focus mode */
+body.mode-3d #news-panel,
+body.focus-mode #news-panel {
+  opacity: 0 !important; pointer-events: none !important;
+  transform: translateX(calc(-100% - 70px)) !important;
+}
+
+/* ===== 22. HELP TOUR (SPOTLIGHT) =====
+   - Overlay phủ toàn màn hình; "lỗ" sáng = #tour-spot dùng box-shadow lan
+     ra 9999px tạo cảm giác khoét lỗ qua nền tối.
+   - Tooltip có mũi tên CSS chỉ về spotlight.
+   - Click bất kỳ đâu trên overlay → next step (xử lý trong JS).
+   ============================================== */
+#tour-overlay {
+  position: fixed; inset: 0;
+  z-index: 4500;
+  opacity: 0; pointer-events: none;
+  transition: opacity .25s ease;
+  cursor: pointer;
+}
+#tour-overlay.open { opacity: 1; pointer-events: auto; }
+
+#tour-spot {
+  position: absolute;
+  left: 0; top: 0; width: 0; height: 0;
+  border-radius: 14px;
+  box-shadow:
+    0 0 0 9999px rgba(0,0,0,.72),
+    0 0 0 3px var(--icon-blue),
+    0 0 24px rgba(43,182,230,.6);
+  transition:
+    left .35s cubic-bezier(.4,0,.2,1),
+    top .35s cubic-bezier(.4,0,.2,1),
+    width .35s cubic-bezier(.4,0,.2,1),
+    height .35s cubic-bezier(.4,0,.2,1),
+    border-radius .25s ease;
+  pointer-events: none;
+}
+#tour-spot.round { border-radius: 50%; }
+
+#tour-tip {
+  position: absolute;
+  background: #fff;
+  border-radius: 12px;
+  padding: 14px 18px 12px;
+  width: 280px;
+  box-shadow: 0 10px 32px rgba(0,0,0,.35);
+  pointer-events: auto;
+  transition: left .35s cubic-bezier(.4,0,.2,1), top .35s cubic-bezier(.4,0,.2,1);
+}
+.tt-step {
+  font-size: 11px; font-weight: 700; letter-spacing: .08em;
+  color: var(--icon-blue); text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.tt-label {
+  font-size: 14px; font-weight: 700; color: #1a1a1a;
+  line-height: 1.4; margin-bottom: 8px;
+}
+.tt-hint {
+  font-size: 11.5px; color: #888; font-style: italic;
+}
+#tour-skip {
+  position: absolute; top: 6px; right: 6px;
+  width: 24px; height: 24px; border-radius: 50%;
+  background: #f1f3f5; border: none; color: #666;
+  cursor: pointer; font-size: 16px; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .14s, color .14s;
+}
+#tour-skip:hover { background: #e74c3c; color: #fff; }
+
+/* Mũi tên CSS – mặc định trỏ lên (tip nằm DƯỚI spot).
+   Class .arrow-up/.arrow-down/.arrow-left/.arrow-right + biến --arrow-x/--arrow-y
+   được JS gán để định vị mũi tên dọc cạnh tooltip. */
+.tt-arrow {
+  position: absolute;
+  width: 14px; height: 14px;
+  background: #fff;
+  transform: rotate(45deg);
+}
+#tour-tip.arrow-up    .tt-arrow { top: -6px;    left: var(--arrow-x, 24px); box-shadow: -2px -2px 4px rgba(0,0,0,.04); }
+#tour-tip.arrow-down  .tt-arrow { bottom: -6px; left: var(--arrow-x, 24px); box-shadow: 2px 2px 4px rgba(0,0,0,.04); }
+#tour-tip.arrow-left  .tt-arrow { left: -6px;   top: var(--arrow-y, 20px);  box-shadow: -2px 2px 4px rgba(0,0,0,.04); }
+#tour-tip.arrow-right .tt-arrow { right: -6px;  top: var(--arrow-y, 20px);  box-shadow: 2px -2px 4px rgba(0,0,0,.04); }
+
+/* ===== 19. VIEW TRANSITION RIPPLE ===== */
+#view-transition {
+  position: fixed;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 3500;
+  transform: translate(-50%, -50%) scale(0);
+}

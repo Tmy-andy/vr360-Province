@@ -14,13 +14,11 @@ window.MapModule = (() => {
   const markers = {};
 
   function initMap() {
-    // Khởi động ở góc nhìn tỉnh Lâm Đồng (data.json > province)
     const p = window.APP_DATA.province;
     map = L.map('map', { center: [p.lat, p.lng], zoom: p.zoom, zoomControl: false });
     L.control.zoom({ position: 'bottomright' }).addTo(map);
     setLayer('satellite');
     window.APP_DATA.places.forEach(addMarker);
-    // expose biến `map` global để các button onclick="map.zoomIn()" trong HTML hoạt động
     window.map = map;
     return map;
   }
@@ -45,14 +43,14 @@ window.MapModule = (() => {
     const m = L.marker([place.lat, place.lng], { icon }).addTo(map);
     m.on('click', e => {
       L.DomEvent.stopPropagation(e);
-      window.UI.openSheet(place.id);
+      window.UI.enterVRMode(place);
     });
     markers[place.id] = { marker: m, el };
   }
 
   function flyTo(id) {
     const a = window.APP_DATA.places.find(x => x.id === id);
-    if (a) map.flyTo([a.lat, a.lng], 13, { duration: 1.1 });
+    if (a) map.flyTo([a.lat, a.lng], 15, { duration: 1.4 });
   }
 
   function flyToCoords(lat, lng, zoom) {

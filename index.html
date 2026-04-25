@@ -5,246 +5,354 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bản Đồ Du Lịch VR360 – Lâm Đồng</title>
 
-  <!-- ===== THƯ VIỆN NGOÀI ===== -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-
-  <!-- ===== CSS NỘI BỘ ===== -->
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
-<!-- ============================================================
-     SECTION 1: LOADING – Màn hình chờ khởi động
-     ============================================================ -->
+<!-- LOADING -->
 <div id="loading">
   <div class="ltitle">VR360 · Lâm Đồng</div>
   <div class="spin"></div>
   <p data-i18n="loading">Đang tải bản đồ…</p>
 </div>
 
-<!-- ============================================================
-     SECTION 2: TOP BAR – Menu, search, lọc Xã/Phường, layers
-     ============================================================ -->
+<!-- ===== 2D MODE UI ===== -->
+
+<!-- TOP BAR (2D mode) -->
 <header id="topbar">
-  <button id="menu-btn" data-i18n-title="top.menu" title="Ẩn/hiện giao diện">
+  <button id="menu-btn" title="Ẩn/hiện giao diện">
     <svg class="icon-bars" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     <svg class="icon-eye" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
   </button>
-
-  <!-- Ô tìm kiếm + dropdown gợi ý -->
   <div id="search-wrap">
     <div id="search-bar">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input id="search-input" type="text" data-i18n-placeholder="search.placeholder" placeholder="Tìm kiếm địa điểm…" autocomplete="off" />
+      <input id="search-input" type="text" placeholder="Tìm kiếm địa điểm…" autocomplete="off" />
     </div>
-    <!-- Dropdown gợi ý: được render bởi JS, ẩn khi input rỗng -->
     <div id="search-results"></div>
   </div>
-
-  <!-- Custom dropdown Xã/Phường: trigger pill + popup có search.
-       Options được render bởi JS từ data.json > areas. -->
   <div id="xa-dd" class="custom-dd">
     <button type="button" class="filter-pill xa-trigger">
       <span id="xa-current" data-i18n="filter.area_all">Xã/Phường (Tất cả)</span>
       <svg class="xa-caret" width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4 4-4"/></svg>
     </button>
     <div class="xa-popup">
-      <div class="xa-search">
-        <input type="text" id="xa-search-input" placeholder="" />
-      </div>
+      <div class="xa-search"><input type="text" id="xa-search-input" /></div>
       <div class="xa-list" id="xa-list"></div>
     </div>
   </div>
-
-  <!-- Cụm icon bên phải topbar (kiểu nút tròn xanh nổi) -->
   <div id="top-right">
-    <!-- Nút chuyển ngôn ngữ: hiển thị mã ngôn ngữ hiện tại, click để toggle -->
-    <button class="ticon" id="lang-btn" data-i18n-title="top.lang" title="Đổi ngôn ngữ">
+    <button class="ticon" id="lang-btn" title="Đổi ngôn ngữ">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg>
       <span id="lang-label">VI</span>
     </button>
-    <button class="ticon active" id="three-d-btn" data-i18n-title="top.3d" title="3D">3D</button>
-    <button class="ticon" id="fs-btn" data-i18n-title="top.locate" title="Vị trí của tôi">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/></svg>
+    <button class="ticon" id="three-d-btn" title="Xem VR 360°">3D</button>
+    <button class="ticon" id="fs-btn" title="Toàn màn hình">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"/></svg>
     </button>
-    <button class="ticon" data-i18n-title="top.zoom_in" title="Phóng to" onclick="map.zoomIn()">
+    <button class="ticon" id="zoom-in-btn" title="Phóng to" onclick="map.zoomIn()">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
     </button>
-    <button class="ticon" data-i18n-title="top.zoom_out" title="Thu nhỏ" onclick="map.zoomOut()">
+    <button class="ticon" id="zoom-out-btn" title="Thu nhỏ" onclick="map.zoomOut()">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/></svg>
     </button>
-    <button class="ticon" id="layers-btn" data-i18n-title="top.layers" title="Layers">
+    <button class="ticon" id="layers-btn" title="Layers">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
     </button>
   </div>
 </header>
 
-<!-- ============================================================
-     SECTION 3: LAYER POPUP – Chọn lớp bản đồ
-     (data-layer phải khớp key trong data.json > layers)
-     ============================================================ -->
+<!-- LAYER POPUP -->
 <div id="layer-popup">
   <div id="layer-popup-title" data-i18n="layers.title">Lớp bản đồ</div>
   <div class="layer-option active" data-layer="satellite">
     <div class="layer-thumb"><img src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/5/12/24" alt="" /></div>
-    <div><div class="layer-label" data-i18n="layers.satellite">Vệ tinh</div><div class="layer-sub" data-i18n="layers.satellite_sub">ESRI World Imagery</div></div>
+    <div><div class="layer-label">Vệ tinh</div><div class="layer-sub">ESRI World Imagery</div></div>
   </div>
   <div class="layer-option" data-layer="street">
     <div class="layer-thumb"><img src="https://tile.openstreetmap.org/5/24/12.png" alt="" /></div>
-    <div><div class="layer-label" data-i18n="layers.street">Đường phố</div><div class="layer-sub" data-i18n="layers.street_sub">OpenStreetMap</div></div>
+    <div><div class="layer-label">Đường phố</div><div class="layer-sub">OpenStreetMap</div></div>
   </div>
   <div class="layer-option" data-layer="topo">
     <div class="layer-thumb"><img src="https://tile.opentopomap.org/5/24/12.png" alt="" /></div>
-    <div><div class="layer-label" data-i18n="layers.topo">Địa hình</div><div class="layer-sub" data-i18n="layers.topo_sub">OpenTopoMap</div></div>
+    <div><div class="layer-label">Địa hình</div><div class="layer-sub">OpenTopoMap</div></div>
   </div>
   <div class="layer-option" data-layer="dark">
     <div class="layer-thumb"><img src="https://cartodb-basemaps-a.global.ssl.fastly.net/dark_all/5/24/12.png" alt="" /></div>
-    <div><div class="layer-label" data-i18n="layers.dark">Tối</div><div class="layer-sub" data-i18n="layers.dark_sub">CartoDB Dark</div></div>
+    <div><div class="layer-label">Tối</div><div class="layer-sub">CartoDB Dark</div></div>
   </div>
 </div>
 
-<!-- ============================================================
-     SECTION 4: LEFT TOOLBAR – Help / Sự kiện / Tài khoản
-     ============================================================ -->
+<!-- LEFT TOOLBAR -->
 <div id="left-bar">
-  <button class="lbtn" data-i18n-title="left.help" title="Trợ giúp">?</button>
-  <button class="lbtn" data-i18n-title="left.events" title="Sự kiện">
+  <button class="lbtn" id="help-btn" title="Trợ giúp">?</button>
+  <button class="lbtn" id="news-btn" title="Tin tức & Sự kiện">
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
   </button>
-  <button class="lbtn" data-i18n-title="left.account" title="Tài khoản">
+  <button class="lbtn" title="Tài khoản">
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
   </button>
 </div>
 
-<!-- ============================================================
-     SECTION 5: MAP – Container Leaflet
-     ============================================================ -->
+<!-- MAP (Leaflet) -->
 <div id="map"></div>
 
-<!-- ============================================================
-     SECTION 6: PANEL TOGGLE – Nút mở/đóng panel phải
-     ============================================================ -->
+<!-- PANEL TOGGLE -->
 <button id="panel-toggle">
   <svg width="8" height="12" viewBox="0 0 8 12" fill="none" stroke="#999" stroke-width="1.8" stroke-linecap="round"><polyline points="6,1 2,6 6,11"/></svg>
 </button>
 
-<!-- ============================================================
-     SECTION 7: RIGHT PANEL – Danh sách địa điểm + filter danh mục
-     (data-cat phải khớp `cat` trong data.json > places)
-     LAYERING: tách bg thành #right-panel-bg root-level để toggle
-     có thể chèn z-index GIỮA bg và content (cards).
-       z-index: bg 920 < panel-toggle 940 < right-panel(content) 960
-     ============================================================ -->
+<!-- RIGHT PANEL -->
 <div id="right-panel-bg"></div>
 <aside id="right-panel">
   <div id="ph">
     <div id="ph-top">
       <div id="ph-title" data-i18n="panel.title">Lâm Đồng</div>
       <div id="ph-search">
-        <input type="text" id="ph-input" data-i18n-placeholder="panel.search" placeholder="Tìm kiếm địa điểm…" />
+        <input type="text" id="ph-input" placeholder="Tìm kiếm địa điểm…" />
         <svg id="ph-search-btn" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       </div>
     </div>
     <div id="ph-cats">
-      <button class="pcat active" data-cat="all" data-i18n="cat.all">Tất cả</button>
-      <button class="pcat" data-cat="thac" data-i18n="cat.thac">Thác nước</button>
-      <button class="pcat" data-cat="ho" data-i18n="cat.ho">Hồ</button>
-      <button class="pcat" data-cat="nui" data-i18n="cat.nui">Núi</button>
-      <button class="pcat" data-cat="di-tich" data-i18n="cat.di-tich">Di tích</button>
-      <button class="pcat" data-cat="lang" data-i18n="cat.lang">Làng sinh thái</button>
+      <button class="pcat active" data-cat="all">Tất cả</button>
+      <button class="pcat" data-cat="thac">Thác nước</button>
+      <button class="pcat" data-cat="ho">Hồ</button>
+      <button class="pcat" data-cat="nui">Núi</button>
+      <button class="pcat" data-cat="di-tich">Di tích</button>
+      <button class="pcat" data-cat="lang">Làng sinh thái</button>
     </div>
   </div>
   <div id="p-count">12 địa điểm</div>
   <div id="p-list"></div>
 </aside>
 
-<!-- ============================================================
-     SECTION 8: BOTTOM SHEET – Chi tiết địa điểm
-     ============================================================ -->
-<div id="sheet">
-  <div id="sheet-handle"></div>
-  <div id="sheet-body">
-    <!-- Khung VR thu nhỏ. iframe được set src trong openSheet().
-         Overlay phía trên bắt double-click để mở VR fullscreen
-         (iframe nuốt event nên cần overlay trong suốt). -->
-    <div id="s-img-wrap" title="Bấm đúp để xem toàn màn hình">
-      <iframe id="s-img" src="" allow="vr; gyroscope; accelerometer"></iframe>
-      <div id="s-img-overlay"></div>
-    </div>
-    <div id="s-name"></div>
-    <div id="s-loc">
-      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a7 7 0 017 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 017-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
-      <span id="s-loc-txt"></span>
-    </div>
-    <div id="s-desc"></div>
-    <div class="s-pills">
-      <div class="s-pill"><div class="sl" data-i18n="sheet.hours">Giờ mở cửa</div><div class="sv" id="s-hours"></div></div>
-      <div class="s-pill"><div class="sl" data-i18n="sheet.entry">Vé vào cửa</div><div class="sv" id="s-entry"></div></div>
-      <div class="s-pill"><div class="sl" data-i18n="sheet.rating">Đánh giá</div><div class="sv" id="s-rating"></div></div>
-    </div>
-    <div class="s-btns">
-      <button id="s-vr">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 6h-17A1.5 1.5 0 002 7.5v9A1.5 1.5 0 003.5 18h17a1.5 1.5 0 001.5-1.5v-9A1.5 1.5 0 0020.5 6zM9 14.5A2.5 2.5 0 116.5 12 2.5 2.5 0 019 14.5zm6 0a2.5 2.5 0 112.5-2.5 2.5 2.5 0 01-2.5 2.5z"/></svg>
-        <span data-i18n="buttons.explore_vr">Khám phá VR 360°</span>
-      </button>
-      <button id="s-close" data-i18n="buttons.close">Đóng</button>
-    </div>
+<!-- HELP TOUR: spotlight overlay + tooltip có mũi tên -->
+<div id="tour-overlay">
+  <div id="tour-spot"></div>
+  <div id="tour-tip">
+    <div class="tt-arrow"></div>
+    <div class="tt-step"></div>
+    <div class="tt-label"></div>
+    <div class="tt-hint">Click bất kỳ đâu để tiếp tục →</div>
+    <button id="tour-skip" title="Bỏ qua">×</button>
   </div>
 </div>
 
-<!-- ============================================================
-     SECTION 9: BOTTOM BAR – Tab điều hướng dưới (pill floating)
-     - Mỗi .bbt có icon + <span class="bb-label">; label chỉ hiện
-       ở nút active.
-     - Nút active có hình tròn xanh phồng lên trên (CSS ::before).
-     ============================================================ -->
-<nav id="bottom-bar">
-  <!-- Bubble di chuyển: định vị tuyệt đối, JS dịch transform khi click -->
-  <span id="bb-indicator"></span>
+<!-- NEWS PANEL (left side, opened by left-bar's Sự kiện button) -->
+<aside id="news-panel">
+  <div id="np-header">
+    <button id="np-back" title="Đóng">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <div id="np-title">Tin tức</div>
+    <div id="np-date"></div>
+  </div>
+  <div id="np-tabs">
+    <button class="np-tab active" data-tab="news">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h12v16H4z"/><path d="M16 8h4v12a2 2 0 01-2 2H6"/><line x1="7" y1="8" x2="13" y2="8"/><line x1="7" y1="12" x2="13" y2="12"/><line x1="7" y1="16" x2="11" y2="16"/></svg>
+      <span>Tin tức</span>
+    </button>
+    <button class="np-tab" data-tab="events">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+      <span>Sự kiện</span>
+    </button>
+  </div>
+  <div id="np-list"></div>
+</aside>
 
+<!-- BOTTOM BAR -->
+<nav id="bottom-bar">
+  <span id="bb-indicator"></span>
   <button class="bbt active">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-    <span class="bb-label" data-i18n="nav.home">Trang chủ</span>
+    <span class="bb-label">Trang chủ</span>
   </button>
   <button class="bbt">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-    <span class="bb-label" data-i18n="nav.explore">Khám phá</span>
+    <span class="bb-label">Khám phá</span>
   </button>
   <button class="bbt">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-    <span class="bb-label" data-i18n="nav.contribute">Đóng góp</span>
+    <span class="bb-label">Đóng góp</span>
   </button>
   <button class="bbt">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-    <span class="bb-label" data-i18n="nav.deals">Ưu đãi</span>
+    <span class="bb-label">Ưu đãi</span>
   </button>
   <button class="bbt">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-    <span class="bb-label" data-i18n="nav.vr_tour">VR Tour</span>
+    <span class="bb-label">VR Tour</span>
   </button>
 </nav>
 
-<!-- ============================================================
-     SECTION 10: VR FULLSCREEN – Trình xem 360 độ
-     ============================================================ -->
-<div id="vr-full">
-  <div id="vr-tb">
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M20.5 6h-17A1.5 1.5 0 002 7.5v9A1.5 1.5 0 003.5 18h17a1.5 1.5 0 001.5-1.5v-9A1.5 1.5 0 0020.5 6zM9 14.5A2.5 2.5 0 116.5 12 2.5 2.5 0 019 14.5zm6 0a2.5 2.5 0 112.5-2.5 2.5 2.5 0 01-2.5 2.5z"/></svg>
-    <span id="vr-title" data-i18n="vr.title">VR 360°</span>
-    <button id="vr-x" data-i18n="buttons.exit_vr">✕ Thoát VR</button>
+<!-- ===== 3D MODE UI ===== -->
+
+<!-- VR VIEWER (Pannellum) -->
+<div id="vr-viewer">
+  <div id="vr-pannellum"></div>
+
+  <!-- 3D overlay UI -->
+  <div id="vr-ui">
+
+    <!-- TOP HEADER -->
+    <header id="vr-hd">
+      <!-- Logo -->
+      <div id="vr-logo">
+        <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
+          <rect width="44" height="44" rx="10" fill="rgba(255,255,255,0.12)"/>
+          <!-- Cloud -->
+          <path d="M10 26a6 6 0 016-6 5.98 5.98 0 0110.2-4.3A5 5 0 0134 21a5 5 0 010 10H10z" fill="rgba(255,255,255,0.85)"/>
+          <!-- Mountain peaks -->
+          <path d="M8 34l8-12 6 8 5-7 9 11H8z" fill="rgba(34,180,110,0.9)"/>
+        </svg>
+        <div>
+          <div class="vr-logo-title">LÂM ĐỒNG 360°</div>
+          <div class="vr-logo-sub">KHÁM PHÁ TÂY NGUYÊN</div>
+        </div>
+      </div>
+
+      <!-- Location selector: custom dropdown giống 2D filter-pill -->
+      <div id="vr-loc-dd">
+        <button type="button" id="vr-loc-trigger">
+          <span id="vr-loc-current"></span>
+          <svg class="vr-loc-caret" width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4 4-4"/></svg>
+        </button>
+        <div id="vr-loc-popup">
+          <div id="vr-loc-list"></div>
+        </div>
+      </div>
+
+      <!-- Right controls: glass dark buttons, cùng sizing với 2D ticon -->
+      <div id="vr-hd-right">
+        <!-- Lang: giống #lang-btn 2D – pill + globe icon + mã ngôn ngữ -->
+        <button class="vr-icon-btn vr-pill-btn" id="vr-lang-btn" title="Đổi ngôn ngữ">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg>
+          <span id="vr-lang-label">VI</span>
+        </button>
+        <button class="vr-icon-btn" id="vr-vol-btn" title="Âm thanh">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+        </button>
+        <button class="vr-icon-btn" id="vr-share-btn" title="Chia sẻ">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        </button>
+        <button class="vr-icon-btn" id="vr-help-btn" title="Trợ giúp">?</button>
+        <!-- Back to 2D: nổi bật hơn với màu xanh -->
+        <button class="vr-icon-btn vr-pill-btn vr-back-btn" id="vr-back-btn" title="Về bản đồ 2D">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+          2D
+        </button>
+      </div>
+    </header>
+
+    <!-- INFO PANEL: bottom-left, absolute positioned -->
+    <div id="vr-info">
+      <div id="vr-info-hd">
+        <div class="vr-info-tag">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12" stroke="white" stroke-width="2"/><line x1="12" y1="16" x2="12.01" y2="16" stroke="white" stroke-width="2"/></svg>
+          THÔNG TIN ĐIỂM ĐẾN:
+        </div>
+        <button id="vr-info-x" title="Thu gọn / mở rộng">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+      </div>
+      <div id="vr-place-name"></div>
+      <div id="vr-place-desc"></div>
+      <div id="vr-place-meta">
+        <div class="vr-meta-row"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span id="vr-meta-hours"></span></div>
+        <div class="vr-meta-row"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span id="vr-meta-rating"></span></div>
+        <div class="vr-meta-row"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg><span id="vr-meta-entry"></span></div>
+      </div>
+    </div>
+
+    <!-- BOTTOM CENTER: Controls + Related – absolute, centered on full viewport -->
+    <div id="vr-bottom">
+      <!-- Related destinations -->
+      <div id="vr-related">
+        <div id="vr-rel-hd">
+          <span>ĐIỂM ĐẾN LIÊN QUAN</span>
+          <div class="vr-rel-arrows">
+            <button id="vr-rel-prev">&#8249;</button>
+            <button id="vr-rel-next">&#8250;</button>
+          </div>
+        </div>
+        <div id="vr-rel-list"></div>
+      </div>
+
+      <!-- Controls toolbar -->
+      <div id="vr-ctrl">
+        <button class="vr-ctrl-btn" id="vr-autorot">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+          <span>Auto-rotate</span>
+        </button>
+        <button class="vr-ctrl-btn" id="vr-zout">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+          <span>Zoom out</span>
+        </button>
+        <button class="vr-ctrl-btn" id="vr-hideui">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          <span>Hide UI</span>
+        </button>
+        <button class="vr-ctrl-btn" id="vr-zin">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+          <span>Zoom in</span>
+        </button>
+        <button class="vr-ctrl-btn" id="vr-fullscr">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"/></svg>
+          <span>Fullscreen</span>
+        </button>
+      </div>
+    </div>
+
+  </div><!-- #vr-ui -->
+
+  <!-- Nút hiện lại UI – chỉ xuất hiện khi UI bị ẩn, nằm ngoài #vr-ui -->
+  <button id="vr-reveal-btn" title="Hiện giao diện">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+  </button>
+</div><!-- #vr-viewer -->
+
+<!-- MINIMAP – circular compass, click to return to 2D -->
+<div id="minimap" title="Nhấn để quay về bản đồ 2D">
+  <div id="mm-title">Minimap</div>
+  <div id="mm-circle">
+    <div id="minimap-map"></div>
+    <!-- SVG overlay: FOV sector + compass -->
+    <svg id="mm-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <!-- FOV sector – JS updates the path "d" attribute -->
+      <path id="fov-sector" fill="rgba(43,182,230,0.38)" stroke="#2bb6e6" stroke-width="1.5" stroke-linejoin="round"/>
+      <!-- Outer ring -->
+      <circle cx="100" cy="100" r="92" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+      <!-- Crosshair -->
+      <line x1="100" y1="8" x2="100" y2="192" stroke="rgba(255,255,255,0.08)" stroke-width="0.8"/>
+      <line x1="8" y1="100" x2="192" y2="100" stroke="rgba(255,255,255,0.08)" stroke-width="0.8"/>
+      <!-- Compass ticks -->
+      <line x1="100" y1="10" x2="100" y2="18" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+      <line x1="100" y1="182" x2="100" y2="190" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+      <line x1="10" y1="100" x2="18" y2="100" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+      <line x1="182" y1="100" x2="190" y2="100" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+      <!-- Compass labels -->
+      <text x="100" y="8" text-anchor="middle" dominant-baseline="hanging" fill="white" font-size="11" font-weight="700" font-family="'Be Vietnam Pro',sans-serif">N</text>
+      <text x="100" y="196" text-anchor="middle" fill="rgba(255,255,255,0.55)" font-size="9" font-family="'Be Vietnam Pro',sans-serif">S</text>
+      <text x="196" y="104" text-anchor="end" fill="rgba(255,255,255,0.55)" font-size="9" font-family="'Be Vietnam Pro',sans-serif">E</text>
+      <text x="4" y="104" text-anchor="start" fill="rgba(255,255,255,0.55)" font-size="9" font-family="'Be Vietnam Pro',sans-serif">W</text>
+      <!-- Center location dot -->
+      <circle cx="100" cy="100" r="5" fill="#2bb6e6" stroke="white" stroke-width="2.5"/>
+    </svg>
   </div>
-  <iframe id="vr-frame" src="" allowfullscreen allow="vr; gyroscope; accelerometer"></iframe>
 </div>
 
-<!-- ============================================================
-     SCRIPTS – Thứ tự nạp BẮT BUỘC: data → i18n → map → ui → main
-     ============================================================ -->
+<!-- VIEW TRANSITION RIPPLE -->
+<div id="view-transition"></div>
+
 <script src="js/data.js"></script>
 <script src="js/i18n.js"></script>
 <script src="js/map.js"></script>
 <script src="js/ui.js"></script>
 <script src="js/main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
 </body>
 </html>
