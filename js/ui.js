@@ -25,10 +25,12 @@ window.UI = (() => {
 
   const $ = id => document.getElementById(id);
 
-  /* ===== B. PANEL ===== */
+  /* ===== B. PANEL =====
+     Panel chia 2 layer (bg + content) cần animate cùng lúc. */
   function openPanel() {
     panelOpen = true;
     $('right-panel').classList.add('open');
+    $('right-panel-bg').classList.add('open');
     $('map').classList.add('panel-open');
     $('bottom-bar').classList.add('panel-open');
     $('panel-toggle').classList.remove('closed');
@@ -36,6 +38,7 @@ window.UI = (() => {
   function closePanel() {
     panelOpen = false;
     $('right-panel').classList.remove('open');
+    $('right-panel-bg').classList.remove('open');
     $('map').classList.remove('panel-open');
     $('bottom-bar').classList.remove('panel-open');
     $('panel-toggle').classList.add('closed');

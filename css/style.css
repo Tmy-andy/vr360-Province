@@ -365,20 +365,32 @@ html, body { height: 100%; font-family: 'Be Vietnam Pro', sans-serif; overflow: 
 }
 #panel-toggle.closed svg { transform: rotate(180deg); }
 
-#right-panel {
+/* LAYERING:
+     #right-panel-bg  z 920 — chỉ là nền trắng + shadow (BÊN DƯỚI toggle)
+     #panel-toggle    z 960 — nằm giữa
+     #right-panel     z 970 — chứa header + cards (BÊN TRÊN toggle)
+   Hai layer panel có cùng vị trí + cùng transform → trượt như một khối. */
+#right-panel-bg, #right-panel {
   position: fixed;
   top: calc(var(--topbar) + 20px);
   right: var(--panel-gap);
   bottom: var(--panel-gap);
-  width: var(--panel-w); background: #fff;
+  width: var(--panel-w);
   border-radius: var(--panel-radius);
-  box-shadow: 0 8px 28px rgba(0,0,0,.18);
-  display: flex; flex-direction: column; z-index: 950;
   transform: translateX(calc(100% + var(--panel-gap) + 10px));
   transition: transform .35s cubic-bezier(.4,0,.2,1), opacity .25s ease;
+}
+#right-panel-bg {
+  background: #fff;
+  box-shadow: 0 8px 28px rgba(0,0,0,.18);
+  z-index: 920;
+}
+#right-panel {
+  background: transparent;
+  display: flex; flex-direction: column; z-index: 970;
   overflow: hidden;
 }
-#right-panel.open { transform: translateX(0); }
+#right-panel.open, #right-panel-bg.open { transform: translateX(0); }
 
 /* panel header */
 #ph { padding: 14px 14px 10px; flex-shrink: 0; }
@@ -568,6 +580,7 @@ body.focus-mode #xa-dd,
 body.focus-mode #top-right,
 body.focus-mode #left-bar,
 body.focus-mode #right-panel,
+body.focus-mode #right-panel-bg,
 body.focus-mode #panel-toggle,
 body.focus-mode #bottom-bar,
 body.focus-mode #sheet,
@@ -585,6 +598,7 @@ body.focus-mode #layer-popup {
 /* Khi mở Layers popup: tạm ẩn panel phải + sheet để không che dropdown.
    Trạng thái mở/đóng nội bộ của chúng vẫn giữ; chỉ ẩn thị giác. */
 body.layers-open #right-panel,
+body.layers-open #right-panel-bg,
 body.layers-open #panel-toggle,
 body.layers-open #sheet {
   opacity: 0; pointer-events: none;
