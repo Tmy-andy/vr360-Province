@@ -1,12 +1,11 @@
 {
   "_note": "English dictionary. Mirror keys of vi.json. Supports {n}, {name} placeholders.",
 
-  "search":  { "placeholder": "Search places…" },
+  "search":  { "placeholder": "Search places…", "empty": "No places found" },
   "filter":  { "area_all": "Ward/Commune (All)" },
 
   "buttons": {
-    "more": "More",
-    "go": "View",
+"go": "View",
     "share": "Share",
     "close": "Close",
     "explore_vr": "Explore VR 360°",

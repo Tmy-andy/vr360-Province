@@ -59,18 +59,53 @@ html, body { height: 100%; font-family: 'Be Vietnam Pro', sans-serif; overflow: 
 }
 #menu-btn:hover { background: #f5f7fa; }
 
+/* Search wrap = bar + dropdown gợi ý cùng cụm */
+#search-wrap {
+  position: relative;
+  flex: 1; max-width: 360px; min-width: 0;
+}
 #search-bar {
-  flex: 1; max-width: 360px; height: var(--pill-h); background: #fff;
+  width: 100%; height: var(--pill-h); background: #fff;
   border: none; border-radius: var(--pill-radius); box-shadow: var(--pill-shadow);
   display: flex; align-items: center; gap: 10px; padding: 0 18px;
-  min-width: 0;
 }
 #search-bar input { flex: 1; border: none; outline: none; background: none; font-family: inherit; font-size: 14px; color: #333; min-width: 0; }
 #search-bar input::placeholder { color: #b0b6bd; }
 #search-bar svg { width: 16px; height: 16px; }
 
+/* Dropdown gợi ý: card trắng dưới search bar, animation đổ xuống (unroll) */
+#search-results {
+  position: absolute; top: calc(100% + 6px); left: 0; right: 0;
+  background: #fff; border-radius: 14px;
+  box-shadow: 0 8px 28px rgba(0,0,0,.18);
+  max-height: 60vh; overflow-y: auto;
+  z-index: 1500;
+  opacity: 0; pointer-events: none;
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path .3s cubic-bezier(.4,0,.2,1), opacity .22s ease;
+}
+#search-results.open {
+  opacity: 1; pointer-events: auto;
+  clip-path: inset(0);
+}
+#search-results::-webkit-scrollbar { width: 4px; }
+#search-results::-webkit-scrollbar-thumb { background: #d0d5db; border-radius: 4px; }
+
+.sr-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 11px 16px; cursor: pointer;
+  border-bottom: 1px solid #f2f4f6;
+  transition: background .12s;
+}
+.sr-item:last-child { border-bottom: none; }
+.sr-item:hover { background: #f4faff; }
+.sr-item svg { flex-shrink: 0; color: var(--icon-blue); margin-top: 2px; }
+.sr-item .sr-name { font-size: 13.5px; font-weight: 600; color: var(--icon-blue); line-height: 1.35; }
+.sr-empty { padding: 14px 16px; font-size: 12.5px; color: #999; text-align: center; }
+
 .filter-pill {
   height: var(--pill-h); padding: 0 18px; border-radius: var(--pill-radius);
+  min-width: 220px;
   border: none; background: #fff; box-shadow: var(--pill-shadow);
   font-family: inherit; font-size: 13.5px; color: #333; font-weight: 500;
   cursor: pointer;
@@ -79,21 +114,56 @@ html, body { height: 100%; font-family: 'Be Vietnam Pro', sans-serif; overflow: 
   appearance: none; -webkit-appearance: none;
 }
 .filter-pill:focus { outline: none; }
-select.filter-pill {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2326C6DA' fill='none' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat; background-position: right 14px center;
-  padding-right: 34px; background-color: #fff;
+/* ===== Custom Dropdown (dùng cho Xã/Phường) ===== */
+.custom-dd { position: relative; flex-shrink: 0; }
+.custom-dd .xa-trigger { color: #333; }
+/* Đẩy caret sát mép phải trong nút trigger */
+.custom-dd .xa-caret { color: var(--icon-blue); margin-left: auto; transition: transform .2s; }
+.custom-dd.open .xa-caret { transform: rotate(180deg); }
+
+/* Animation đổ xuống (unroll) */
+.xa-popup {
+  position: absolute; top: calc(100% + 6px); left: 0;
+  width: 100%; min-width: 220px;
+  background: #fff; border-radius: 12px;
+  box-shadow: 0 8px 28px rgba(0,0,0,.18);
+  overflow: hidden;
+  z-index: 1500;
+  opacity: 0; pointer-events: none;
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path .3s cubic-bezier(.4,0,.2,1), opacity .22s ease;
+}
+.custom-dd.open .xa-popup {
+  opacity: 1; pointer-events: auto;
+  clip-path: inset(0);
 }
 
-#more-btn {
-  height: var(--pill-h); padding: 0 22px; border-radius: var(--pill-radius);
-  background: #fff; box-shadow: var(--pill-shadow); border: none;
-  color: var(--icon-blue);
-  font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer;
-  display: flex; align-items: center; gap: 8px; white-space: nowrap;
-  flex-shrink: 0;
+.xa-search {
+  padding: 8px 10px;
+  border-bottom: 1px solid #eef0f2;
 }
-#more-btn svg { stroke: var(--icon-blue); }
+.xa-search input {
+  width: 100%; height: 32px;
+  border: 1.5px solid #b8d8ff; border-radius: 6px;
+  padding: 0 10px;
+  font-family: inherit; font-size: 13px; color: #333;
+  outline: none;
+  transition: border-color .15s;
+}
+.xa-search input:focus { border-color: var(--icon-blue); }
+
+.xa-list { max-height: 260px; overflow-y: auto; padding: 4px 0; }
+.xa-list::-webkit-scrollbar { width: 4px; }
+.xa-list::-webkit-scrollbar-thumb { background: #d0d5db; border-radius: 4px; }
+
+.xa-opt {
+  padding: 9px 14px; cursor: pointer;
+  font-size: 13.5px; color: #333;
+  transition: background .12s;
+}
+.xa-opt:hover { background: #f4faff; }
+.xa-opt.selected { background: var(--icon-blue); color: #fff; font-weight: 600; }
+.xa-empty { padding: 12px 14px; font-size: 12.5px; color: #999; text-align: center; }
 
 /* nhóm icon bên phải topbar – tròn đặc xanh */
 #top-right { margin-left: auto; display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
@@ -129,14 +199,23 @@ select.filter-pill {
   padding: 2px 8px; border-radius: 4px; white-space: nowrap; pointer-events: none;
 }
 
-/* ===== 4. LAYER POPUP ===== */
+/* ===== 4. LAYER POPUP =====
+   Animation: ĐỔ XUỐNG (unroll) từ trên — clip-path từ inset(0 0 100% 0)
+   (clip hết phần dưới) → inset(0) (lộ toàn bộ). Kết hợp opacity nhẹ.
+   ============================== */
 #layer-popup {
   position: fixed; top: calc(var(--topbar) + 6px); right: 8px;
   width: 220px; background: #fff; border-radius: 10px;
   box-shadow: 0 6px 24px rgba(0,0,0,.18);
-  z-index: 2000; display: none; overflow: hidden;
+  z-index: 2000; overflow: hidden;
+  opacity: 0; pointer-events: none;
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path .3s cubic-bezier(.4,0,.2,1), opacity .22s ease;
 }
-#layer-popup.open { display: block; }
+#layer-popup.open {
+  opacity: 1; pointer-events: auto;
+  clip-path: inset(0);
+}
 #layer-popup-title { font-size: 11px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: .06em; padding: 10px 14px 6px; }
 .layer-option {
   display: flex; align-items: center; gap: 10px;
@@ -195,8 +274,8 @@ select.filter-pill {
   width: var(--bb-bubble); height: var(--bb-bubble);
   background: var(--icon-blue);
   border-radius: 50%;
-  border: 5px solid #fff;
-  box-shadow: 0 4px 12px rgba(43,182,230,.4);
+  border: 4px solid #fff;
+  /* box-shadow: 0 4px 12px rgba(43,182,230,.4); */
   pointer-events: none;
   transform: translateX(0);
   transition: transform .42s cubic-bezier(.45, 1.4, .55, 1);  /* easing có "bouncy" nhẹ */
@@ -223,7 +302,7 @@ select.filter-pill {
 }
 .bbt.active { color: #fff; }
 .bbt.active svg {
-  transform: translateY(-30px);
+  transform: translateY(-27px);
   color: #fff;
 }
 
@@ -253,15 +332,33 @@ select.filter-pill {
   --panel-radius: 16px;         /* bo tròn panel */
 }
 
+/* Panel toggle: anchor giống panel (right: gap) và CHỈ dùng transform để
+   trượt — đồng bộ tuyệt đối với transform của #right-panel, không còn giật. */
 #panel-toggle {
-  position: fixed; top: 55%; right: calc(var(--panel-w) + var(--panel-gap) - 14px); transform: translateY(-50%);
-  width: 40px; height: 40px; background: #fff; border-radius: 50%;
-  box-shadow: 0 3px 10px rgba(0,0,0,.18); border: none; cursor: pointer;
+  position: fixed; top: 55%;
+  right: var(--panel-gap);
+  /* Khi panel ĐANG MỞ: dịch trái để dán vào mép trái panel */
+  transform: translate(calc(-1 * var(--panel-w) + 20px), -50%);
+  width: 40px; height: 40px; background: #fff; border-radius: 50%; border: none;
   z-index: 960; display: flex; align-items: center; justify-content: center;
-  transition: right .28s ease; color: #555;
+  transition:
+    transform .35s cubic-bezier(.4,0,.2,1),
+    opacity .25s ease,
+    box-shadow .2s ease;
+  color: #555;
 }
-#panel-toggle.closed { right: var(--panel-gap); }
-#panel-toggle svg { transition: transform .28s; }
+/* Khi panel ĐÓNG: dịch về sát mép phải (transform = 0) */
+#panel-toggle.closed {
+  transform: translate(0, -50%);
+}
+#panel-toggle:hover {
+  /* Hover scale: nhân với transform hiện tại — dùng !important để
+     không cần biết đang ở trạng thái nào */
+  box-shadow: 0 5px 16px rgba(0,0,0,.22);
+  color: var(--icon-blue);
+}
+/* Mũi tên xoay 180° khi panel đóng */
+#panel-toggle svg { transition: transform .35s cubic-bezier(.4,0,.2,1); }
 #panel-toggle.closed svg { transform: rotate(180deg); }
 
 #right-panel {
@@ -274,7 +371,7 @@ select.filter-pill {
   box-shadow: 0 8px 28px rgba(0,0,0,.18);
   display: flex; flex-direction: column; z-index: 950;
   transform: translateX(calc(100% + var(--panel-gap) + 10px));
-  transition: transform .28s cubic-bezier(.4,0,.2,1);
+  transition: transform .35s cubic-bezier(.4,0,.2,1), opacity .25s ease;
   overflow: hidden;
 }
 #right-panel.open { transform: translateX(0); }
@@ -313,6 +410,7 @@ select.filter-pill {
 
 /* ===== 8. CARD (mỗi thẻ là 1 khối trắng nổi, có shadow & gap) ===== */
 .lcard {
+  position: relative; z-index: 961;
   display: flex; gap: 10px;
   background: #fff; border: 1px solid #eef0f2;
   border-radius: var(--card-radius);
@@ -320,6 +418,7 @@ select.filter-pill {
   cursor: pointer; transition: box-shadow .14s, transform .14s;
   padding: 10px;
   margin-bottom: 10px;
+  z-index: 961;
 }
 .lcard:hover, .lcard.active {
   box-shadow: 0 6px 16px rgba(43,182,230,.18);
@@ -359,7 +458,7 @@ select.filter-pill {
   width: 540px; max-width: 100%; background: #fff;
   border-radius: 14px 14px 0 0; box-shadow: 0 -4px 20px rgba(0,0,0,.14);
   z-index: 1100; transform: translateY(110%);
-  transition: transform .3s cubic-bezier(.4,0,.2,1);
+  transition: transform .38s cubic-bezier(.4,0,.2,1), opacity .25s ease;
   max-height: 72vh; display: flex; flex-direction: column;
 }
 #sheet.open { transform: translateY(0); }
@@ -427,8 +526,19 @@ select.filter-pill {
 .mmarker:hover, .mmarker.active { background: var(--green); transform: scale(1.18); }
 
 /* ===== 11. VR FULL ===== */
-#vr-full { position: fixed; inset: 0; background: #000; z-index: 3000; display: none; flex-direction: column; }
-#vr-full.open { display: flex; }
+/* VR fullscreen: fade từ trong suốt + scale 1.04 → 1 */
+#vr-full {
+  position: fixed; inset: 0; background: #000; z-index: 3000;
+  display: flex; flex-direction: column;
+  opacity: 0; visibility: hidden;
+  transform: scale(1.04);
+  transition: opacity .3s ease, transform .3s cubic-bezier(.4,0,.2,1), visibility 0s linear .3s;
+}
+#vr-full.open {
+  opacity: 1; visibility: visible;
+  transform: scale(1);
+  transition: opacity .3s ease, transform .3s cubic-bezier(.4,0,.2,1), visibility 0s;
+}
 #vr-tb { height: 44px; background: #111; display: flex; align-items: center; padding: 0 14px; gap: 10px; flex-shrink: 0; }
 #vr-tb span { font-size: 13px; color: #fff; font-weight: 600; }
 #vr-x { margin-left: auto; padding: 5px 14px; border-radius: 6px; background: #333; border: none; color: #fff; cursor: pointer; font-family: inherit; font-size: 12px; }
@@ -449,10 +559,8 @@ select.filter-pill {
    Khi body có class .focus-mode: ẩn TẤT CẢ thành phần UI nổi trên map,
    chỉ giữ lại #menu-btn để bấm thoát chế độ.
    ============================ */
-body.focus-mode #search-bar,
-body.focus-mode #tinh-select,
-body.focus-mode #xa-select,
-body.focus-mode #more-btn,
+body.focus-mode #search-wrap,
+body.focus-mode #xa-dd,
 body.focus-mode #top-right,
 body.focus-mode #left-bar,
 body.focus-mode #right-panel,
@@ -463,10 +571,20 @@ body.focus-mode #layer-popup {
   opacity: 0; pointer-events: none;
   transition: opacity .25s ease;
 }
-/* các phần tử trên có transition mượt khi BẬT lại */
-#search-bar, #tinh-select, #xa-select, #more-btn, #top-right,
-#left-bar, #right-panel, #panel-toggle, #bottom-bar, #sheet, #layer-popup {
+/* các phần tử KHÔNG có animation riêng: chỉ cần fade opacity */
+#search-wrap, #xa-dd, #top-right,
+#left-bar, #panel-toggle, #bottom-bar {
   transition: opacity .25s ease;
+}
+/* (#right-panel, #sheet, #layer-popup ĐÃ có transition riêng — KHÔNG override ở đây) */
+
+/* Khi mở Layers popup: tạm ẩn panel phải + sheet để không che dropdown.
+   Trạng thái mở/đóng nội bộ của chúng vẫn giữ; chỉ ẩn thị giác. */
+body.layers-open #right-panel,
+body.layers-open #panel-toggle,
+body.layers-open #sheet {
+  opacity: 0; pointer-events: none;
+  transition: opacity .2s ease;
 }
 /* icon menu đổi giữa "hamburger" và "eye" tùy trạng thái */
 #menu-btn .icon-eye { display: none; }

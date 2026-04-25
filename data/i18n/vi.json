@@ -1,12 +1,11 @@
 {
   "_note": "Từ điển tiếng Việt. Key dùng dạng dot-notation (vd: 'sheet.hours'). Có thể dùng placeholder {n}, {name}.",
 
-  "search":  { "placeholder": "Tìm kiếm địa điểm…" },
+  "search":  { "placeholder": "Tìm kiếm địa điểm…", "empty": "Không tìm thấy địa điểm" },
   "filter":  { "area_all": "Xã/Phường (Tất cả)" },
 
   "buttons": {
-    "more": "Xem Thêm",
-    "go": "Xem vị trí",
+"go": "Xem vị trí",
     "share": "Chia sẻ",
     "close": "Đóng",
     "explore_vr": "Khám phá VR 360°",

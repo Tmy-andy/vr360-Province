@@ -124,15 +124,54 @@ window.UI = (() => {
   }
 
   /* ===== F. SEARCH ===== */
+  // Dùng cho ô tìm trong PANEL (#ph-input): lọc danh sách inline, mở panel.
   function doSearch(q) {
     searchQ = q.toLowerCase().trim();
     if (!panelOpen) openPanel();
     renderList();
   }
 
-  /* ===== I. LAYER POPUP ===== */
-  function closeLayerPopup() { $('layer-popup').classList.remove('open'); }
-  function toggleLayerPopup() { $('layer-popup').classList.toggle('open'); }
+  // Dùng cho ô tìm TOP BAR (#search-input): hiện dropdown gợi ý dưới ô.
+  function renderSearchResults(q) {
+    const box = $('search-results');
+    const query = q.toLowerCase().trim();
+    if (!query) { box.classList.remove('open'); box.innerHTML = ''; return; }
+    const matches = window.APP_DATA.places.filter(a =>
+      a.name.toLowerCase().includes(query) || a.loc.toLowerCase().includes(query)
+    );
+    if (!matches.length) {
+      box.innerHTML = `<div class="sr-empty">${window.I18n.t('search.empty') || 'Không tìm thấy'}</div>`;
+    } else {
+      box.innerHTML = matches.map(a => `
+        <div class="sr-item" data-id="${a.id}">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a7 7 0 017 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 017-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+          <div class="sr-name">${a.name}</div>
+        </div>
+      `).join('');
+      box.querySelectorAll('.sr-item').forEach(el => {
+        el.addEventListener('click', () => {
+          const id = +el.dataset.id;
+          openSheet(id);
+          $('search-input').value = '';
+          closeSearchResults();
+        });
+      });
+    }
+    box.classList.add('open');
+  }
+  function closeSearchResults() { $('search-results').classList.remove('open'); }
+
+  /* ===== I. LAYER POPUP =====
+     Khi popup mở: thêm class body.layers-open để CSS tạm ẩn panel + sheet
+     (giữ nguyên state nội bộ, chỉ ẩn thị giác). Đóng popup → khôi phục. */
+  function closeLayerPopup() {
+    $('layer-popup').classList.remove('open');
+    document.body.classList.remove('layers-open');
+  }
+  function toggleLayerPopup() {
+    const isOpen = $('layer-popup').classList.toggle('open');
+    document.body.classList.toggle('layers-open', isOpen);
+  }
 
   /* ===== L. INIT EVENTS ===== */
   function initEvents() {
@@ -158,7 +197,19 @@ window.UI = (() => {
     $('vr-x').addEventListener('click', closeVR);
 
     /* F – search */
-    $('search-input').addEventListener('input', e => doSearch(e.target.value));
+    // Topbar: hiện dropdown gợi ý (KHÔNG mở panel)
+    $('search-input').addEventListener('input', e => renderSearchResults(e.target.value));
+    $('search-input').addEventListener('focus', e => {
+      if (e.target.value.trim()) renderSearchResults(e.target.value);
+    });
+    $('search-input').addEventListener('keydown', e => {
+      if (e.key === 'Escape') { e.target.value = ''; closeSearchResults(); }
+    });
+    // Click ngoài để đóng dropdown
+    document.addEventListener('click', e => {
+      if (!$('search-wrap').contains(e.target)) closeSearchResults();
+    });
+    // Panel: lọc danh sách inline
     $('ph-input').addEventListener('input', e => doSearch(e.target.value));
 
     /* G – category */
@@ -171,20 +222,8 @@ window.UI = (() => {
       });
     });
 
-    /* H – select Xã/Phường (về "Tất cả" sẽ bay về tỉnh Lâm Đồng mặc định) */
-    $('xa-select').addEventListener('change', function () {
-      const v = this.value;
-      const areas = window.APP_DATA.areas;
-      if (v && areas[v]) {
-        window.MapModule.flyToCoords(areas[v].lat, areas[v].lng, areas[v].zoom);
-        locFilter = areas[v].label || '';
-      } else {
-        const p = window.APP_DATA.province;
-        window.MapModule.flyToCoords(p.lat, p.lng, p.zoom);
-        locFilter = '';
-      }
-      renderList();
-    });
+    /* H – Custom dropdown Xã/Phường (có search) */
+    initXaDropdown();
 
     /* I – layer popup */
     document.querySelectorAll('.layer-option').forEach(el => {
@@ -238,6 +277,93 @@ window.UI = (() => {
 
     /* Map click – đóng sheet & layer popup */
     window.MapModule.onMapClick(() => { closeSheet(); closeLayerPopup(); });
+  }
+
+  /* ===== H. CUSTOM DROPDOWN: Xã/Phường ===== */
+  // State riêng của dropdown này: key đang chọn ('' = Tất cả) và filter search.
+  let xaSelected = '';
+  let xaSearch = '';
+
+  function initXaDropdown() {
+    renderXaOptions();
+    const dd = $('xa-dd');
+    const trigger = dd.querySelector('.xa-trigger');
+    const searchInput = $('xa-search-input');
+
+    trigger.addEventListener('click', e => {
+      e.stopPropagation();
+      dd.classList.toggle('open');
+      if (dd.classList.contains('open')) {
+        searchInput.focus();
+      }
+    });
+    searchInput.addEventListener('input', e => {
+      xaSearch = e.target.value.toLowerCase().trim();
+      renderXaOptions();
+    });
+    document.addEventListener('click', e => {
+      if (!dd.contains(e.target)) dd.classList.remove('open');
+    });
+    // Re-render label khi đổi ngôn ngữ
+    window.addEventListener('langchange', () => {
+      renderXaOptions();
+      updateXaLabel();
+    });
+  }
+
+  function renderXaOptions() {
+    const areas = window.APP_DATA.areas;
+    const t = window.I18n.t;
+    // Item "Tất cả" luôn đứng đầu
+    const all = { key: '', label: t('filter.area_all') };
+    const items = [all, ...Object.entries(areas).map(([key, a]) => ({
+      key, label: a.label || key,
+    }))];
+    const filtered = xaSearch
+      ? items.filter(it => it.label.toLowerCase().includes(xaSearch))
+      : items;
+    const list = $('xa-list');
+    if (!filtered.length) {
+      list.innerHTML = `<div class="xa-empty">—</div>`;
+      return;
+    }
+    list.innerHTML = filtered.map(it => `
+      <div class="xa-opt ${it.key === xaSelected ? 'selected' : ''}" data-key="${it.key}">${it.label}</div>
+    `).join('');
+    list.querySelectorAll('.xa-opt').forEach(el => {
+      el.addEventListener('click', () => {
+        xaSelected = el.dataset.key;
+        applyXa(xaSelected);
+        $('xa-dd').classList.remove('open');
+        $('xa-search-input').value = '';
+        xaSearch = '';
+        renderXaOptions();
+        updateXaLabel();
+      });
+    });
+  }
+
+  function updateXaLabel() {
+    const areas = window.APP_DATA.areas;
+    const t = window.I18n.t;
+    const label = xaSelected && areas[xaSelected]
+      ? (areas[xaSelected].label || xaSelected)
+      : t('filter.area_all');
+    $('xa-current').textContent = label;
+  }
+
+  // Áp filter Xã/Phường: bay tới tọa độ tương ứng + cập nhật locFilter cho list
+  function applyXa(key) {
+    const areas = window.APP_DATA.areas;
+    if (key && areas[key]) {
+      window.MapModule.flyToCoords(areas[key].lat, areas[key].lng, areas[key].zoom);
+      locFilter = areas[key].label || '';
+    } else {
+      const p = window.APP_DATA.province;
+      window.MapModule.flyToCoords(p.lat, p.lng, p.zoom);
+      locFilter = '';
+    }
+    renderList();
   }
 
   /* Tính & set transform cho #bb-indicator để khớp với nút .bbt.active */

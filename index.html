@@ -33,29 +33,30 @@
     <svg class="icon-eye" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
   </button>
 
-  <!-- Ô tìm kiếm -->
-  <div id="search-bar">
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <input id="search-input" type="text" data-i18n-placeholder="search.placeholder" placeholder="Tìm kiếm địa điểm…" autocomplete="off" />
+  <!-- Ô tìm kiếm + dropdown gợi ý -->
+  <div id="search-wrap">
+    <div id="search-bar">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="search-input" type="text" data-i18n-placeholder="search.placeholder" placeholder="Tìm kiếm địa điểm…" autocomplete="off" />
+    </div>
+    <!-- Dropdown gợi ý: được render bởi JS, ẩn khi input rỗng -->
+    <div id="search-results"></div>
   </div>
 
-  <!-- Select Xã/Phường (giá trị value PHẢI khớp key trong data.json > areas) -->
-  <select class="filter-pill" id="xa-select">
-    <option value="" data-i18n="filter.area_all">Xã/Phường (Tất cả)</option>
-    <option value="dalat">TP. Đà Lạt</option>
-    <option value="lacdong">Lạc Dương</option>
-    <option value="donduong">Đơn Dương</option>
-    <option value="lamha">Lâm Hà</option>
-    <option value="ductröng">Đức Trọng</option>
-    <option value="baolon">Bảo Lộc</option>
-    <option value="catien">Cát Tiên</option>
-    <option value="dalinh">Đà Lạt (huyện ngoại ô)</option>
-  </select>
-
-  <button id="more-btn">
-    <span data-i18n="buttons.more">Xem Thêm</span>
-    <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-  </button>
+  <!-- Custom dropdown Xã/Phường: trigger pill + popup có search.
+       Options được render bởi JS từ data.json > areas. -->
+  <div id="xa-dd" class="custom-dd">
+    <button type="button" class="filter-pill xa-trigger">
+      <span id="xa-current" data-i18n="filter.area_all">Xã/Phường (Tất cả)</span>
+      <svg class="xa-caret" width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4 4-4"/></svg>
+    </button>
+    <div class="xa-popup">
+      <div class="xa-search">
+        <input type="text" id="xa-search-input" placeholder="" />
+      </div>
+      <div class="xa-list" id="xa-list"></div>
+    </div>
+  </div>
 
   <!-- Cụm icon bên phải topbar (kiểu nút tròn xanh nổi) -->
   <div id="top-right">
@@ -132,7 +133,11 @@
 <!-- ============================================================
      SECTION 7: RIGHT PANEL – Danh sách địa điểm + filter danh mục
      (data-cat phải khớp `cat` trong data.json > places)
+     LAYERING: tách bg thành #right-panel-bg root-level để toggle
+     có thể chèn z-index GIỮA bg và content (cards).
+       z-index: bg 920 < panel-toggle 940 < right-panel(content) 960
      ============================================================ -->
+<div id="right-panel-bg"></div>
 <aside id="right-panel">
   <div id="ph">
     <div id="ph-top">
