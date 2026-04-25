@@ -362,6 +362,7 @@ html, body { height: 100%; font-family: 'Be Vietnam Pro', sans-serif; overflow: 
   /* Hover scale: nhân với transform hiện tại — dùng !important để
      không cần biết đang ở trạng thái nào */
   color: var(--icon-blue);
+  cursor: pointer;
 }
 /* Mũi tên xoay 180° khi panel đóng */
 #panel-toggle svg { transition: transform .35s cubic-bezier(.4,0,.2,1); }
