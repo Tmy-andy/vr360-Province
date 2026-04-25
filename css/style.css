@@ -590,10 +590,10 @@ body.focus-mode #layer-popup {
 }
 /* các phần tử KHÔNG có animation riêng: chỉ cần fade opacity */
 #search-wrap, #xa-dd, #top-right,
-#left-bar, #panel-toggle, #bottom-bar {
+#left-bar, #bottom-bar {
   transition: opacity .25s ease;
 }
-/* (#right-panel, #sheet, #layer-popup ĐÃ có transition riêng — KHÔNG override ở đây) */
+/* (#right-panel, #sheet, #layer-popup, #panel-toggle ĐÃ có transition riêng — KHÔNG override ở đây) */
 
 /* Khi mở Layers popup: tạm ẩn panel phải + sheet để không che dropdown.
    Trạng thái mở/đóng nội bộ của chúng vẫn giữ; chỉ ẩn thị giác. */
