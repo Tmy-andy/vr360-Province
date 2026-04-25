@@ -1,0 +1,86 @@
+{
+  "_note": "Từ điển tiếng Việt. Key dùng dạng dot-notation (vd: 'sheet.hours'). Có thể dùng placeholder {n}, {name}.",
+
+  "search":  { "placeholder": "Tìm kiếm địa điểm…" },
+  "filter":  { "area_all": "Xã/Phường (Tất cả)" },
+
+  "buttons": {
+    "more": "Xem Thêm",
+    "go": "Xem vị trí",
+    "share": "Chia sẻ",
+    "close": "Đóng",
+    "explore_vr": "Khám phá VR 360°",
+    "exit_vr": "✕ Thoát VR"
+  },
+
+  "nav": {
+    "home": "Trang chủ",
+    "explore": "Khám phá",
+    "contribute": "Đóng góp",
+    "deals": "Ưu đãi",
+    "vr_tour": "VR Tour"
+  },
+
+  "panel": {
+    "title": "Lâm Đồng",
+    "search": "Tìm kiếm địa điểm…"
+  },
+
+  "cat": {
+    "all": "Tất cả",
+    "thac": "Thác nước",
+    "ho": "Hồ",
+    "nui": "Núi",
+    "di-tich": "Di tích",
+    "lang": "Làng sinh thái"
+  },
+
+  "cat_long": {
+    "thac": "Địa điểm du lịch – Thác nước",
+    "ho": "Địa điểm du lịch – Hồ",
+    "nui": "Địa điểm du lịch – Núi",
+    "di-tich": "Di tích lịch sử",
+    "lang": "Du lịch sinh thái"
+  },
+
+  "sheet": {
+    "hours": "Giờ mở cửa",
+    "entry": "Vé vào cửa",
+    "rating": "Đánh giá"
+  },
+
+  "card": { "reviews": "Đánh giá" },
+
+  "count": { "places": "{n} địa điểm" },
+
+  "left": {
+    "help": "Trợ giúp",
+    "events": "Sự kiện",
+    "account": "Tài khoản"
+  },
+
+  "top": {
+    "menu": "Ẩn/hiện giao diện",
+    "3d": "3D",
+    "locate": "Vị trí của tôi",
+    "zoom_in": "Phóng to",
+    "zoom_out": "Thu nhỏ",
+    "layers": "Layers",
+    "lang": "Đổi ngôn ngữ"
+  },
+
+  "layers": {
+    "title": "Lớp bản đồ",
+    "satellite": "Vệ tinh",
+    "satellite_sub": "ESRI World Imagery",
+    "street": "Đường phố",
+    "street_sub": "OpenStreetMap",
+    "topo": "Địa hình",
+    "topo_sub": "OpenTopoMap",
+    "dark": "Tối",
+    "dark_sub": "CartoDB Dark"
+  },
+
+  "loading": "Đang tải bản đồ…",
+  "vr": { "title": "VR 360°", "title_with": "VR 360° – {name}" }
+}

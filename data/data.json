@@ -1,0 +1,49 @@
+{
+  "_note": "Toàn bộ dữ liệu địa điểm VR360 Lâm Đồng. Sửa file này để thêm/bớt/đổi địa điểm — không cần chạm vào HTML/JS.",
+
+  "places": [
+    { "id": 1,  "name": "Hồ Xuân Hương",          "loc": "TP. Đà Lạt", "cat": "ho",       "r": 4.8, "rv": 1240, "hours": "Cả ngày",     "entry": "Miễn phí",   "lat": 11.9404, "lng": 108.4383, "img": "https://picsum.photos/seed/hxh1/400/280",        "desc": "Hồ Xuân Hương là viên ngọc xanh trung tâm Đà Lạt, bao quanh bởi hàng thông và thảm hoa rực rỡ." },
+    { "id": 2,  "name": "Thác Datanla",            "loc": "TP. Đà Lạt", "cat": "thac",     "r": 4.5, "rv": 870,  "hours": "7:00–17:00",  "entry": "50.000đ",    "lat": 11.9038, "lng": 108.4452, "img": "https://picsum.photos/seed/datanla2/400/280",    "desc": "Thác Datanla nhiều tầng giữa rừng thông nguyên sinh với máng trượt độc đáo, cách trung tâm 7km." },
+    { "id": 3,  "name": "Núi Lang Biang",          "loc": "Lạc Dương",  "cat": "nui",      "r": 4.9, "rv": 2100, "hours": "7:00–17:30",  "entry": "100.000đ",   "lat": 12.0714, "lng": 108.4258, "img": "https://picsum.photos/seed/langbiang3/400/280",  "desc": "Lang Biang cao 2.167m – biểu tượng Lâm Đồng gắn với truyền thuyết tình yêu bi tráng của đôi trai gái K'Ho." },
+    { "id": 4,  "name": "Thiền Viện Trúc Lâm",    "loc": "TP. Đà Lạt", "cat": "di-tich",  "r": 4.7, "rv": 640,  "hours": "6:00–18:00",  "entry": "Miễn phí",   "lat": 11.8931, "lng": 108.4237, "img": "https://picsum.photos/seed/trucl4/400/280",      "desc": "Thiền Viện Trúc Lâm tọa lạc đồi Phượng Hoàng bên hồ Tuyền Lâm – thiền viện Phật giáo lớn nhất Việt Nam." },
+    { "id": 5,  "name": "Hồ Tuyền Lâm",           "loc": "TP. Đà Lạt", "cat": "ho",       "r": 4.6, "rv": 920,  "hours": "Cả ngày",     "entry": "Miễn phí",   "lat": 11.8785, "lng": 108.4155, "img": "https://picsum.photos/seed/tuyen5/400/280",      "desc": "Hồ Tuyền Lâm 320ha được UNESCO công nhận khu dự trữ sinh quyển, bao bọc bởi rừng thông cổ thụ." },
+    { "id": 6,  "name": "Thác Voi",               "loc": "Lâm Hà",     "cat": "thac",     "r": 4.4, "rv": 380,  "hours": "7:00–17:00",  "entry": "30.000đ",    "lat": 11.7845, "lng": 108.2931, "img": "https://picsum.photos/seed/voi6/400/280",        "desc": "Thác Voi dòng nước đổ từ 30m, âm thanh ầm ầm như voi gầm giữa rừng nguyên sinh Lâm Hà." },
+    { "id": 7,  "name": "Đồi Chè Cầu Đất",       "loc": "Đơn Dương",  "cat": "lang",     "r": 4.5, "rv": 510,  "hours": "Cả ngày",     "entry": "Miễn phí",   "lat": 11.8512, "lng": 108.6023, "img": "https://picsum.photos/seed/caudat7/400/280",     "desc": "Đồi chè Cầu Đất trải dài ở 1.500m độ cao – nơi sản xuất chè Ô Long chất lượng hàng đầu Việt Nam." },
+    { "id": 8,  "name": "Dinh Bảo Đại",           "loc": "TP. Đà Lạt", "cat": "di-tich",  "r": 4.3, "rv": 760,  "hours": "7:30–17:00",  "entry": "40.000đ",    "lat": 11.9302, "lng": 108.4421, "img": "https://picsum.photos/seed/baodai8/400/280",     "desc": "Dinh III Bảo Đại – nơi nghỉ của vua cuối triều Nguyễn, kiến trúc Pháp–Á độc đáo với hiện vật quý." },
+    { "id": 9,  "name": "Thác Pongour",            "loc": "Đức Trọng",  "cat": "thac",     "r": 4.7, "rv": 1080, "hours": "7:00–17:30",  "entry": "40.000đ",    "lat": 11.7023, "lng": 108.3582, "img": "https://picsum.photos/seed/pong9/400/280",       "desc": "Thác Pongour 'Đệ nhất thác' Nam Trung Bộ & Tây Nguyên, rộng 100m với nhiều tầng xếp chồng hùng vĩ." },
+    { "id": 10, "name": "Làng Cù Lần",            "loc": "Lạc Dương",  "cat": "lang",     "r": 4.6, "rv": 430,  "hours": "8:00–18:00",  "entry": "50.000đ",    "lat": 12.0123, "lng": 108.3754, "img": "https://picsum.photos/seed/culan10/400/280",     "desc": "Làng Cù Lần bản sắc K'Ho – nhà sàn, ẩm thực bản địa giữa rừng thông Đà Lạt." },
+    { "id": 11, "name": "VQG Bidoup–Núi Bà",      "loc": "Lạc Dương",  "cat": "nui",      "r": 4.8, "rv": 560,  "hours": "7:00–17:00",  "entry": "Theo tour",  "lat": 12.1832, "lng": 108.5421, "img": "https://picsum.photos/seed/bidoup11/400/280",    "desc": "VQG Bidoup–Núi Bà, vùng lõi Khu Dự trữ Sinh quyển Langbiang, lý tưởng cho trekking khám phá." },
+    { "id": 12, "name": "Hồ Đan Kia–Suối Vàng",  "loc": "Lạc Dương",  "cat": "ho",       "r": 4.5, "rv": 290,  "hours": "Cả ngày",     "entry": "Miễn phí",   "lat": 12.0234, "lng": 108.3985, "img": "https://picsum.photos/seed/dankia12/400/280",    "desc": "Hồ Đan Kia–Suối Vàng ở 1.600m, nguồn nước Đà Lạt, mặt hồ phẳng lặng phản chiếu rừng thông." }
+  ],
+
+  "categories": {
+    "thac":    "Địa điểm du lịch – Thác nước",
+    "ho":      "Địa điểm du lịch – Hồ",
+    "nui":     "Địa điểm du lịch – Núi",
+    "di-tich": "Di tích lịch sử",
+    "lang":    "Du lịch sinh thái"
+  },
+
+  "areas": {
+    "dalat":    { "label": "TP. Đà Lạt",  "lat": 11.9404, "lng": 108.4383, "zoom": 13 },
+    "lacdong":  { "label": "Lạc Dương",   "lat": 12.0714, "lng": 108.4258, "zoom": 12 },
+    "donduong": { "label": "Đơn Dương",   "lat": 11.8512, "lng": 108.6023, "zoom": 12 },
+    "lamha":    { "label": "Lâm Hà",      "lat": 11.7845, "lng": 108.2931, "zoom": 12 },
+    "ductröng": { "label": "Đức Trọng",   "lat": 11.7023, "lng": 108.3582, "zoom": 12 },
+    "baolon":   { "label": "Bảo Lộc",     "lat": 11.5457, "lng": 107.8074, "zoom": 12 },
+    "catien":   { "label": null,          "lat": 11.5320, "lng": 107.4750, "zoom": 12 },
+    "dalinh":   { "label": null,          "lat": 11.9700, "lng": 108.5500, "zoom": 12 }
+  },
+
+  "layers": {
+    "satellite": [
+      { "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", "opts": { "maxZoom": 19 } },
+      { "url": "https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}", "opts": { "maxZoom": 19, "opacity": 0.9 } }
+    ],
+    "street": [{ "url": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", "opts": { "maxZoom": 19 } }],
+    "topo":   [{ "url": "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",   "opts": { "maxZoom": 17 } }],
+    "dark":   [{ "url": "https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png", "opts": { "maxZoom": 19 } }]
+  },
+
+  "province": { "label": "Lâm Đồng", "lat": 11.8, "lng": 108.3, "zoom": 10 }
+}

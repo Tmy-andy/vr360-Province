@@ -1,0 +1,86 @@
+{
+  "_note": "English dictionary. Mirror keys of vi.json. Supports {n}, {name} placeholders.",
+
+  "search":  { "placeholder": "Search places…" },
+  "filter":  { "area_all": "Ward/Commune (All)" },
+
+  "buttons": {
+    "more": "More",
+    "go": "View",
+    "share": "Share",
+    "close": "Close",
+    "explore_vr": "Explore VR 360°",
+    "exit_vr": "✕ Exit VR"
+  },
+
+  "nav": {
+    "home": "Home",
+    "explore": "Explore",
+    "contribute": "Contribute",
+    "deals": "Deals",
+    "vr_tour": "VR Tour"
+  },
+
+  "panel": {
+    "title": "Lam Dong",
+    "search": "Search places…"
+  },
+
+  "cat": {
+    "all": "All",
+    "thac": "Waterfalls",
+    "ho": "Lakes",
+    "nui": "Mountains",
+    "di-tich": "Heritage",
+    "lang": "Eco villages"
+  },
+
+  "cat_long": {
+    "thac": "Tourist site – Waterfall",
+    "ho": "Tourist site – Lake",
+    "nui": "Tourist site – Mountain",
+    "di-tich": "Historical site",
+    "lang": "Ecotourism"
+  },
+
+  "sheet": {
+    "hours": "Opening hours",
+    "entry": "Entry fee",
+    "rating": "Rating"
+  },
+
+  "card": { "reviews": "Reviews" },
+
+  "count": { "places": "{n} places" },
+
+  "left": {
+    "help": "Help",
+    "events": "Events",
+    "account": "Account"
+  },
+
+  "top": {
+    "menu": "Toggle UI",
+    "3d": "3D",
+    "locate": "My location",
+    "zoom_in": "Zoom in",
+    "zoom_out": "Zoom out",
+    "layers": "Layers",
+    "lang": "Switch language"
+  },
+
+  "layers": {
+    "title": "Map layers",
+    "satellite": "Satellite",
+    "satellite_sub": "ESRI World Imagery",
+    "street": "Streets",
+    "street_sub": "OpenStreetMap",
+    "topo": "Terrain",
+    "topo_sub": "OpenTopoMap",
+    "dark": "Dark",
+    "dark_sub": "CartoDB Dark"
+  },
+
+  "loading": "Loading map…",
+  "vr": { "title": "VR 360°", "title_with": "VR 360° – {name}" }
+}

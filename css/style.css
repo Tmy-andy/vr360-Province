@@ -1,0 +1,482 @@
+/* =========================================================
+   VR360 LÂM ĐỒNG – STYLE SHEET
+   Cấu trúc theo SECTION, mỗi section là một module UI rõ ràng:
+     1. BASE       – reset, biến màu, font
+     2. MAP        – container bản đồ Leaflet
+     3. TOPBAR     – thanh trên cùng (menu, search, lọc, layers)
+     4. LAYER POPUP– popup chọn lớp bản đồ
+     5. LEFT BAR   – thanh tròn bên trái (help/event/account)
+     6. BOTTOM BAR – thanh điều hướng dưới
+     7. PANEL      – panel danh sách bên phải
+     8. CARD       – thẻ địa điểm trong panel
+     9. SHEET      – bottom-sheet chi tiết
+    10. MARKER     – marker tròn trên map
+    11. VR FULL    – chế độ VR full màn hình
+    12. LEAFLET    – override CSS Leaflet mặc định
+    13. LOADING    – màn hình loading
+   ========================================================= */
+
+/* ===== 1. BASE ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --green: #1a8f5a; --green2: #22b46e; --teal: #26C6DA;
+  --topbar: 68px; --panel-w: 410px; --bottom-h: 54px;
+  --shadow: 0 2px 10px rgba(0,0,0,.14);
+}
+html, body { height: 100%; font-family: 'Be Vietnam Pro', sans-serif; overflow: hidden; }
+
+/* ===== 2. MAP =====
+   Map full màn hình; panel phải là overlay floating nên KHÔNG cần co map.
+   ============== */
+#map { position: fixed; inset: 0; }
+
+/* ===== 3. TOPBAR (floating pill style trên bản đồ) =====
+   - Nền topbar TRONG SUỐT, chỉ các nút/pill nổi lên trên map.
+   - Mỗi control là 1 pill trắng bo tròn có shadow.
+   - Cụm icon phải là các nút TRÒN màu teal/blue đặc.
+   ====================================================== */
+:root {
+  --pill-h: 44px;            /* chiều cao chuẩn của pill */
+  --pill-radius: 24px;       /* bo tròn pill */
+  --pill-shadow: 0 4px 14px rgba(0,0,0,.12);
+  --icon-blue: #2bb6e6;      /* xanh lam của nút icon phải */
+  --icon-blue-dark: #1aa0cf;
+}
+
+#topbar {
+  position: fixed; top: 12px; left: 12px; right: 12px; height: var(--pill-h);
+  background: transparent; box-shadow: none;
+  display: flex; align-items: center; gap: 10px;
+  padding: 0; z-index: 1000;
+}
+
+#menu-btn {
+  width: var(--pill-h); height: var(--pill-h); border-radius: 50%;
+  border: none; background: #fff; box-shadow: var(--pill-shadow);
+  cursor: pointer; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; color: #333;
+  transition: background .14s;
+}
+#menu-btn:hover { background: #f5f7fa; }
+
+#search-bar {
+  flex: 1; max-width: 360px; height: var(--pill-h); background: #fff;
+  border: none; border-radius: var(--pill-radius); box-shadow: var(--pill-shadow);
+  display: flex; align-items: center; gap: 10px; padding: 0 18px;
+  min-width: 0;
+}
+#search-bar input { flex: 1; border: none; outline: none; background: none; font-family: inherit; font-size: 14px; color: #333; min-width: 0; }
+#search-bar input::placeholder { color: #b0b6bd; }
+#search-bar svg { width: 16px; height: 16px; }
+
+.filter-pill {
+  height: var(--pill-h); padding: 0 18px; border-radius: var(--pill-radius);
+  border: none; background: #fff; box-shadow: var(--pill-shadow);
+  font-family: inherit; font-size: 13.5px; color: #333; font-weight: 500;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 6px; white-space: nowrap;
+  flex-shrink: 0;
+  appearance: none; -webkit-appearance: none;
+}
+.filter-pill:focus { outline: none; }
+select.filter-pill {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2326C6DA' fill='none' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 14px center;
+  padding-right: 34px; background-color: #fff;
+}
+
+#more-btn {
+  height: var(--pill-h); padding: 0 22px; border-radius: var(--pill-radius);
+  background: #fff; box-shadow: var(--pill-shadow); border: none;
+  color: var(--icon-blue);
+  font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer;
+  display: flex; align-items: center; gap: 8px; white-space: nowrap;
+  flex-shrink: 0;
+}
+#more-btn svg { stroke: var(--icon-blue); }
+
+/* nhóm icon bên phải topbar – tròn đặc xanh */
+#top-right { margin-left: auto; display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.ticon {
+  width: var(--pill-h); height: var(--pill-h); border-radius: 50%;
+  border: none; background: var(--icon-blue); color: #fff;
+  cursor: pointer; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--pill-shadow);
+  font-family: inherit; font-size: 14px; font-weight: 700;
+  transition: background .14s, transform .12s;
+  position: relative;
+}
+.ticon:hover { background: var(--icon-blue-dark); transform: translateY(-1px); }
+.ticon.active { background: var(--icon-blue); }
+.ticon svg { width: 18px; height: 18px; }
+
+/* Nút Lang: icon globe + text mã ngôn ngữ ("VI"/"EN") */
+#lang-btn {
+  width: auto; min-width: var(--pill-h);
+  padding: 0 14px; gap: 6px;
+  border-radius: var(--pill-radius);
+  font-size: 13px; font-weight: 700;
+}
+#lang-btn svg { width: 16px; height: 16px; }
+#lang-label { letter-spacing: .5px; }
+
+/* tooltip "Layers" hiển thị dưới nút Layers (giống ảnh mẫu) */
+#layers-btn::after {
+  content: attr(title);
+  position: absolute; bottom: -22px; left: 50%; transform: translateX(-50%);
+  background: rgba(0,0,0,.65); color: #fff; font-size: 10px; font-weight: 500;
+  padding: 2px 8px; border-radius: 4px; white-space: nowrap; pointer-events: none;
+}
+
+/* ===== 4. LAYER POPUP ===== */
+#layer-popup {
+  position: fixed; top: calc(var(--topbar) + 6px); right: 8px;
+  width: 220px; background: #fff; border-radius: 10px;
+  box-shadow: 0 6px 24px rgba(0,0,0,.18);
+  z-index: 2000; display: none; overflow: hidden;
+}
+#layer-popup.open { display: block; }
+#layer-popup-title { font-size: 11px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: .06em; padding: 10px 14px 6px; }
+.layer-option {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 14px; cursor: pointer; transition: background .12s;
+  border-top: 1px solid #f4f6f8;
+}
+.layer-option:hover { background: #f4f9f6; }
+.layer-option.active { background: #edf7f1; }
+.layer-thumb {
+  width: 42px; height: 30px; border-radius: 5px; overflow: hidden;
+  border: 2px solid #e2e6ea; flex-shrink: 0;
+}
+.layer-option.active .layer-thumb { border-color: var(--green); }
+.layer-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.layer-label { font-size: 12px; font-weight: 600; color: #333; }
+.layer-sub { font-size: 10px; color: #999; }
+
+/* ===== 5. LEFT BAR ===== */
+#left-bar {
+  position: fixed; left: 10px; top: 50%; transform: translateY(-50%);
+  display: flex; flex-direction: column; gap: 6px; z-index: 900;
+}
+.lbtn {
+  width: 36px; height: 36px; border-radius: 50%; border: none;
+  background: #fff; box-shadow: var(--shadow); color: var(--green);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; transition: background .14s, color .14s;
+}
+.lbtn:hover { background: var(--green); color: #fff; }
+
+/* ===== 6. BOTTOM BAR (pill floating với nút active phồng tròn) =====
+   - Bar hình pill bo tròn, nổi cách đáy 16px, có shadow.
+   - Nút thường: chỉ icon, label ẩn.
+   - Nút active: hình tròn xanh ::before phồng LÊN TRÊN bar,
+     icon trắng nằm trong vòng tròn, label hiện màu xanh phía dưới.
+   ============================================================== */
+:root {
+  --bb-h: 64px;             /* chiều cao bar */
+  --bb-bubble: 56px;        /* đường kính bubble nút active */
+}
+
+#bottom-bar {
+  position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+  height: var(--bb-h); width: auto; max-width: calc(100% - 28px);
+  background: #fff; border-radius: 36px;
+  box-shadow: 0 6px 22px rgba(0,0,0,.18);
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 16px; gap: 14px;
+  z-index: 1000;
+}
+
+/* Bubble xanh nổi trên bar – ONE element duy nhất, JS dịch chuyển bằng translateX */
+#bb-indicator {
+  position: absolute;
+  top: -22px; left: 0;
+  width: var(--bb-bubble); height: var(--bb-bubble);
+  background: var(--icon-blue);
+  border-radius: 50%;
+  border: 5px solid #fff;
+  box-shadow: 0 4px 12px rgba(43,182,230,.4);
+  pointer-events: none;
+  transform: translateX(0);
+  transition: transform .42s cubic-bezier(.45, 1.4, .55, 1);  /* easing có "bouncy" nhẹ */
+  z-index: 1;
+}
+
+.bbt {
+  width: 60px; height: var(--bb-h);
+  border: none; background: none; color: #4a5560;
+  cursor: pointer; font-family: inherit;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 2px; padding: 0;
+  position: relative;
+  transition: color .25s ease;
+}
+.bbt:hover { color: var(--icon-blue); }
+
+/* Icon: di chuyển từ dưới lên khi nút active. Transition cùng nhịp với bubble. */
+.bbt svg {
+  width: 22px; height: 22px;
+  position: relative; z-index: 2;
+  transform: translateY(0);
+  transition: transform .42s cubic-bezier(.45, 1.4, .55, 1), color .3s ease;
+}
+.bbt.active { color: #fff; }
+.bbt.active svg {
+  transform: translateY(-30px);
+  color: #fff;
+}
+
+/* Label: fade + trượt lên khi active */
+.bb-label {
+  font-size: 11px; font-weight: 600; color: var(--icon-blue);
+  position: absolute; bottom: 8px; left: 50%;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(-50%, 6px);
+  transition: opacity .28s ease .08s, transform .28s ease .08s;
+  pointer-events: none;
+}
+.bbt.active .bb-label {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* ===== 7. PANEL (floating card style) =====
+   - Panel KHÔNG dính cạnh phải nữa: bo tròn, có shadow, cách lề.
+   - Header: tiêu đề xanh + ô tìm kiếm pill có nút search vuông.
+   - Toggle (>) là nút tròn nổi giữa cạnh trái panel.
+   ============================================ */
+:root {
+  --panel-gap: 14px;            /* khoảng cách panel với mép phải/dưới */
+  --card-radius: 14px;          /* bo tròn từng card */
+  --panel-radius: 16px;         /* bo tròn panel */
+}
+
+#panel-toggle {
+  position: fixed; top: 55%; right: calc(var(--panel-w) + var(--panel-gap) - 14px); transform: translateY(-50%);
+  width: 40px; height: 40px; background: #fff; border-radius: 50%;
+  box-shadow: 0 3px 10px rgba(0,0,0,.18); border: none; cursor: pointer;
+  z-index: 960; display: flex; align-items: center; justify-content: center;
+  transition: right .28s ease; color: #555;
+}
+#panel-toggle.closed { right: var(--panel-gap); }
+#panel-toggle svg { transition: transform .28s; }
+#panel-toggle.closed svg { transform: rotate(180deg); }
+
+#right-panel {
+  position: fixed;
+  top: calc(var(--topbar) + 20px);
+  right: var(--panel-gap);
+  bottom: var(--panel-gap);
+  width: var(--panel-w); background: #fff;
+  border-radius: var(--panel-radius);
+  box-shadow: 0 8px 28px rgba(0,0,0,.18);
+  display: flex; flex-direction: column; z-index: 950;
+  transform: translateX(calc(100% + var(--panel-gap) + 10px));
+  transition: transform .28s cubic-bezier(.4,0,.2,1);
+  overflow: hidden;
+}
+#right-panel.open { transform: translateX(0); }
+
+/* panel header */
+#ph { padding: 14px 14px 10px; flex-shrink: 0; }
+#ph-top { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+#ph-title { font-size: 16px; font-weight: 800; color: var(--icon-blue); flex-shrink: 0; }
+#ph-search {
+  flex: 1; height: 36px; background: #fff; border: 1.5px solid #e4e8ec;
+  border-radius: 8px; display: flex; align-items: center; gap: 6px; padding: 0 0 0 12px;
+  overflow: hidden;
+}
+#ph-search input { flex: 1; border: none; outline: none; background: none; font-family: inherit; font-size: 12.5px; color: #333; }
+#ph-search input::placeholder { color: #b0b6bd; }
+#ph-search-btn {
+  width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+  color: var(--icon-blue); cursor: pointer; flex-shrink: 0;
+  border-left: 1.5px solid #e4e8ec;
+}
+
+/* category filter scroll ngang */
+#ph-cats { display: flex; gap: 5px; overflow-x: auto; padding-bottom: 2px; }
+#ph-cats::-webkit-scrollbar { display: none; }
+.pcat {
+  padding: 4px 12px; border-radius: 20px; font-size: 11.5px; font-weight: 600;
+  border: 1.5px solid #e2e6ea; background: #fff; color: #666;
+  cursor: pointer; white-space: nowrap; font-family: inherit; transition: all .13s;
+}
+.pcat.active, .pcat:hover { background: var(--icon-blue); border-color: var(--icon-blue); color: #fff; }
+
+#p-count { padding: 4px 14px 6px; font-size: 11px; color: #aaa; flex-shrink: 0; }
+#p-list { flex: 1; overflow-y: auto; padding: 4px 12px 12px; }
+#p-list::-webkit-scrollbar { width: 4px; }
+#p-list::-webkit-scrollbar-thumb { background: #d0d5db; border-radius: 4px; }
+
+/* ===== 8. CARD (mỗi thẻ là 1 khối trắng nổi, có shadow & gap) ===== */
+.lcard {
+  display: flex; gap: 10px;
+  background: #fff; border: 1px solid #eef0f2;
+  border-radius: var(--card-radius);
+  box-shadow: 0 2px 6px rgba(0,0,0,.06);
+  cursor: pointer; transition: box-shadow .14s, transform .14s;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+.lcard:hover, .lcard.active {
+  box-shadow: 0 6px 16px rgba(43,182,230,.18);
+  border-color: var(--icon-blue);
+}
+.lthumb {
+  width: 96px; height: 96px; border-radius: 10px; overflow: hidden;
+  flex-shrink: 0; background: #e8ecef;
+}
+.lthumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.lbody { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.lname { font-size: 13.5px; font-weight: 800; color: #1a1a1a; line-height: 1.3; text-wrap: pretty; }
+.ltype { font-size: 11.5px; color: var(--icon-blue); font-weight: 600; }
+.lrating { display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: #555; font-weight: 500; }
+.lstar { color: var(--icon-blue); font-size: 13px; }
+.lrating .sep { color: #d0d5db; }
+.lactions { display: flex; gap: 8px; margin-top: 4px; align-items: center; }
+.btn-go {
+  flex: 1; height: 30px; border-radius: 18px; border: none;
+  background: var(--icon-blue); color: #fff; font-family: inherit;
+  font-size: 11.5px; font-weight: 700; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+  transition: background .12s;
+}
+.btn-go:hover { background: var(--icon-blue-dark); }
+.btn-share {
+  width: 30px; height: 30px; border-radius: 50%;
+  border: 1.5px solid var(--icon-blue);
+  background: #fff; color: var(--icon-blue); cursor: pointer; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; transition: background .12s, color .12s;
+}
+.btn-share:hover { background: var(--icon-blue); color: #fff; }
+
+/* ===== 9. SHEET ===== */
+#sheet {
+  position: fixed; bottom: 0; left: 0;
+  width: 540px; max-width: 100%; background: #fff;
+  border-radius: 14px 14px 0 0; box-shadow: 0 -4px 20px rgba(0,0,0,.14);
+  z-index: 1100; transform: translateY(110%);
+  transition: transform .3s cubic-bezier(.4,0,.2,1);
+  max-height: 72vh; display: flex; flex-direction: column;
+}
+#sheet.open { transform: translateY(0); }
+#sheet-handle { width: 34px; height: 4px; background: #ddd; border-radius: 2px; margin: 10px auto 0; flex-shrink: 0; }
+#sheet-body { overflow-y: auto; padding: 10px 16px 16px; }
+#sheet-body::-webkit-scrollbar { width: 3px; }
+#sheet-body::-webkit-scrollbar-thumb { background: #ddd; border-radius: 2px; }
+/* VR thu nhỏ trong sheet: wrap = khung có background + bo tròn,
+   iframe = nội dung VR, overlay = lớp trong suốt bắt dblclick. */
+#s-img-wrap {
+  position: relative;
+  width: 100%; height: 345px;
+  border-radius: 10px; overflow: hidden;
+  background: #e8ecef; margin-bottom: 10px;
+  cursor: zoom-in;
+}
+#s-img { width: 100%; height: 100%; border: none; display: block; background: #000; }
+#s-img-overlay {
+  position: absolute; inset: 0;
+  background: transparent;
+  /* Overlay TRONG SUỐT phủ lên iframe để bắt được dblclick — vì iframe
+     cross-origin (pannellum) không cho event bubble ra ngoài. Đổi lại,
+     trong khung preview nhỏ user không thao tác xoay được; muốn xoay
+     thì dblclick mở fullscreen. */
+  cursor: zoom-in;
+}
+/* Hint "Bấm đúp để mở rộng" hiện khi hover khung preview */
+#s-img-wrap::after {
+  content: '⤢ ' attr(title);
+  position: absolute; bottom: 8px; right: 8px;
+  background: rgba(0,0,0,.6); color: #fff;
+  font-size: 10px; font-weight: 600;
+  padding: 4px 8px; border-radius: 6px;
+  opacity: 0; transition: opacity .2s;
+  pointer-events: none;
+}
+#s-img-wrap:hover::after { opacity: 1; }
+#s-name { font-size: 15px; font-weight: 800; color: #1a1a1a; }
+#s-loc { font-size: 11.5px; color: #888; margin-top: 2px; display: flex; align-items: center; gap: 3px; }
+#s-desc { font-size: 12px; color: #555; line-height: 1.72; margin-top: 9px; text-wrap: pretty; }
+.s-pills { display: flex; gap: 7px; margin-top: 9px; }
+.s-pill { flex: 1; background: #f4f6f8; border-radius: 8px; padding: 7px 8px; text-align: center; }
+.s-pill .sl { font-size: 9px; color: #aaa; text-transform: uppercase; letter-spacing: .05em; }
+.s-pill .sv { font-size: 11.5px; font-weight: 700; color: #333; margin-top: 2px; }
+.s-btns { display: flex; gap: 8px; margin-top: 11px; }
+#s-vr {
+  flex: 1; height: 38px; border-radius: 8px; border: none;
+  background: var(--green); color: #fff; font-family: inherit;
+  font-size: 13px; font-weight: 700; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  transition: background .14s;
+}
+#s-vr:hover { background: var(--green2); }
+#s-close { height: 38px; padding: 0 14px; border-radius: 8px; background: #f1f3f5; border: none; color: #666; cursor: pointer; font-family: inherit; font-size: 12px; }
+#s-close:hover { background: #e4e8ec; }
+
+/* ===== 10. MARKER ===== */
+.mmarker {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--teal); color: #fff; font-size: 11px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  border: 2.5px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,.28);
+  cursor: pointer; transition: transform .14s, background .14s;
+}
+.mmarker:hover, .mmarker.active { background: var(--green); transform: scale(1.18); }
+
+/* ===== 11. VR FULL ===== */
+#vr-full { position: fixed; inset: 0; background: #000; z-index: 3000; display: none; flex-direction: column; }
+#vr-full.open { display: flex; }
+#vr-tb { height: 44px; background: #111; display: flex; align-items: center; padding: 0 14px; gap: 10px; flex-shrink: 0; }
+#vr-tb span { font-size: 13px; color: #fff; font-weight: 600; }
+#vr-x { margin-left: auto; padding: 5px 14px; border-radius: 6px; background: #333; border: none; color: #fff; cursor: pointer; font-family: inherit; font-size: 12px; }
+#vr-frame { flex: 1; border: none; }
+
+/* ===== 12. LEAFLET OVERRIDE ===== */
+.leaflet-control-zoom { border: none !important; }
+.leaflet-control-zoom a {
+  background: #fff !important; color: #555 !important;
+  border: 1.5px solid #e2e6ea !important; border-radius: 6px !important;
+  width: 30px !important; height: 30px !important; line-height: 30px !important;
+  font-size: 16px !important; box-shadow: var(--shadow) !important;
+}
+.leaflet-control-zoom a:hover { background: var(--green) !important; color: #fff !important; border-color: var(--green) !important; }
+.leaflet-control-attribution { display: none !important; }
+
+/* ===== 14. FOCUS MODE =====
+   Khi body có class .focus-mode: ẩn TẤT CẢ thành phần UI nổi trên map,
+   chỉ giữ lại #menu-btn để bấm thoát chế độ.
+   ============================ */
+body.focus-mode #search-bar,
+body.focus-mode #tinh-select,
+body.focus-mode #xa-select,
+body.focus-mode #more-btn,
+body.focus-mode #top-right,
+body.focus-mode #left-bar,
+body.focus-mode #right-panel,
+body.focus-mode #panel-toggle,
+body.focus-mode #bottom-bar,
+body.focus-mode #sheet,
+body.focus-mode #layer-popup {
+  opacity: 0; pointer-events: none;
+  transition: opacity .25s ease;
+}
+/* các phần tử trên có transition mượt khi BẬT lại */
+#search-bar, #tinh-select, #xa-select, #more-btn, #top-right,
+#left-bar, #right-panel, #panel-toggle, #bottom-bar, #sheet, #layer-popup {
+  transition: opacity .25s ease;
+}
+/* icon menu đổi giữa "hamburger" và "eye" tùy trạng thái */
+#menu-btn .icon-eye { display: none; }
+body.focus-mode #menu-btn .icon-bars { display: none; }
+body.focus-mode #menu-btn .icon-eye { display: block; }
+
+/* ===== 13. LOADING ===== */
+#loading { position: fixed; inset: 0; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; z-index: 4000; transition: opacity .5s; }
+#loading.done { opacity: 0; pointer-events: none; }
+.spin { width: 38px; height: 38px; border-radius: 50%; border: 3px solid #e0e5ea; border-top-color: var(--green); animation: sp 1s linear infinite; }
+@keyframes sp { to { transform: rotate(360deg); } }
+#loading .ltitle { font-size: 20px; font-weight: 800; color: var(--green); }
+#loading p { font-size: 13px; color: #aaa; }
