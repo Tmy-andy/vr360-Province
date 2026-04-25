@@ -282,6 +282,8 @@ html, body { height: 100%; font-family: 'Be Vietnam Pro', sans-serif; overflow: 
   z-index: 1;
 }
 
+
+
 .bbt {
   width: 60px; height: var(--bb-h);
   border: none; background: none; color: #4a5560;
@@ -343,10 +345,10 @@ html, body { height: 100%; font-family: 'Be Vietnam Pro', sans-serif; overflow: 
   z-index: 960; display: flex; align-items: center; justify-content: center;
   transition:
     transform .35s cubic-bezier(.4,0,.2,1),
-    opacity .25s ease,
-    box-shadow .2s ease;
+    opacity .25s ease;
   color: #555;
 }
+
 /* Khi panel ĐÓNG: dịch về sát mép phải (transform = 0) */
 #panel-toggle.closed {
   transform: translate(0, -50%);
@@ -354,11 +356,13 @@ html, body { height: 100%; font-family: 'Be Vietnam Pro', sans-serif; overflow: 
 #panel-toggle:hover {
   /* Hover scale: nhân với transform hiện tại — dùng !important để
      không cần biết đang ở trạng thái nào */
-  box-shadow: 0 5px 16px rgba(0,0,0,.22);
   color: var(--icon-blue);
 }
 /* Mũi tên xoay 180° khi panel đóng */
 #panel-toggle svg { transition: transform .35s cubic-bezier(.4,0,.2,1); }
+#panel-toggle:not(.closed) svg {
+  transform: translateX(-3px);
+}
 #panel-toggle.closed svg { transform: rotate(180deg); }
 
 #right-panel {
