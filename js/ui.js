@@ -42,6 +42,7 @@ window.UI = (() => {
     $('map').classList.add('panel-open');
     $('bottom-bar').classList.add('panel-open');
     $('panel-toggle').classList.remove('closed');
+    const mb = $('mobile-panel-btn'); if (mb) mb.classList.add('active');
   }
   function closePanel() {
     panelOpen = false;
@@ -50,6 +51,7 @@ window.UI = (() => {
     $('map').classList.remove('panel-open');
     $('bottom-bar').classList.remove('panel-open');
     $('panel-toggle').classList.add('closed');
+    const mb = $('mobile-panel-btn'); if (mb) mb.classList.remove('active');
   }
 
   /* ===== LIST RENDER ===== */
@@ -431,6 +433,8 @@ window.UI = (() => {
   /* ===== HELP TOUR – DANH SÁCH BƯỚC ===== */
   const HELP_ITEMS_2D = [
     { target: '#menu-btn',     round: true,  svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>', label: 'Ẩn/hiện giao diện' },
+    { target: '#mobile-panel-btn', round: true, svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>', label: 'Mở danh sách địa điểm (toàn màn hình)' },
+    { target: '#mobile-more-btn', round: true, svg: '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>', label: 'Mở/đóng cột nút bên phải' },
     { target: '#search-bar',                 svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>', label: 'Tìm kiếm địa điểm' },
     { target: '#xa-dd',                      svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a7 7 0 017 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 017-7z"/><circle cx="12" cy="9" r="2.5"/></svg>', label: 'Lọc theo Xã/Phường' },
     { target: '#lang-btn',                   svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg>', label: 'Đổi ngôn ngữ' },
@@ -502,6 +506,11 @@ window.UI = (() => {
     if (!target) { tourIdx++; showTourStep(); return; }
 
     const rect = target.getBoundingClientRect();
+    /* Skip element ẩn (display:none / kích thước 0) — VD #mobile-panel-btn
+       trên desktop, hoặc các #top-right ticons trước khi mobile-menu mở */
+    if (rect.width === 0 || rect.height === 0) {
+      tourIdx++; showTourStep(); return;
+    }
     const pad = 6;
     const sx = rect.left - pad;
     const sy = rect.top - pad;
@@ -644,11 +653,20 @@ window.UI = (() => {
       e.stopPropagation();
       document.body.classList.toggle('mobile-menu-open');
     });
+    /* Mobile: nút mở right-panel full screen */
+    $('mobile-panel-btn').addEventListener('click', e => {
+      e.stopPropagation();
+      panelOpen ? closePanel() : openPanel();
+    });
+    /* Nút đóng panel (chỉ hiện ở mobile) */
+    $('ph-close').addEventListener('click', closePanel);
+
     /* Click ra ngoài → đóng menu mobile (trừ khi đang chạy tour) */
     document.addEventListener('click', e => {
       if (!document.body.classList.contains('mobile-menu-open')) return;
       if (tourActive) return;
       if (e.target.closest('#mobile-more-btn')) return;
+      if (e.target.closest('#mobile-panel-btn')) return;
       if (e.target.closest('#top-right')) return;
       if (e.target.closest('#left-bar')) return;
       document.body.classList.remove('mobile-menu-open');
@@ -820,25 +838,43 @@ window.UI = (() => {
     window.addEventListener('langchange', () => renderList());
   }
 
-  /* ===== XA DROPDOWN ===== */
+  /* ===== XA DROPDOWN (dùng chung cho topbar #xa-dd và panel #ph-xa-dd) ===== */
   let xaSelected = '';
   let xaSearch = '';
 
+  /* Cấu hình từng dropdown — để dễ thêm bản clone mới */
+  const XA_DROPDOWNS = [
+    { ddId: 'xa-dd',    listId: 'xa-list',    searchId: 'xa-search-input' },
+    { ddId: 'ph-xa-dd', listId: 'ph-xa-list', searchId: 'ph-xa-search-input' },
+  ];
+
   function initXaDropdown() {
     renderXaOptions();
-    const dd = $('xa-dd');
-    const searchInput = $('xa-search-input');
+    XA_DROPDOWNS.forEach(cfg => bindXaDropdown(cfg));
+    document.addEventListener('click', e => {
+      XA_DROPDOWNS.forEach(cfg => {
+        const dd = $(cfg.ddId);
+        if (dd && !dd.contains(e.target)) dd.classList.remove('open');
+      });
+    });
+    window.addEventListener('langchange', () => { renderXaOptions(); updateXaLabel(); });
+  }
+
+  function bindXaDropdown(cfg) {
+    const dd = $(cfg.ddId);
+    const searchInput = $(cfg.searchId);
+    if (!dd || !searchInput) return;
     dd.querySelector('.xa-trigger').addEventListener('click', e => {
       e.stopPropagation();
+      // Đóng các dropdown khác trước khi mở cái này
+      XA_DROPDOWNS.forEach(c => { if (c.ddId !== cfg.ddId) $(c.ddId)?.classList.remove('open'); });
       dd.classList.toggle('open');
-      if (dd.classList.contains('open')) searchInput.focus();
+      if (dd.classList.contains('open')) setTimeout(() => searchInput.focus(), 50);
     });
     searchInput.addEventListener('input', e => {
       xaSearch = e.target.value.toLowerCase().trim();
       renderXaOptions();
     });
-    document.addEventListener('click', e => { if (!dd.contains(e.target)) dd.classList.remove('open'); });
-    window.addEventListener('langchange', () => { renderXaOptions(); updateXaLabel(); });
   }
 
   function renderXaOptions() {
@@ -847,20 +883,27 @@ window.UI = (() => {
     const all = { key: '', label: t('filter.area_all') };
     const items = [all, ...Object.entries(areas).map(([key, a]) => ({ key, label: a.label || key }))];
     const filtered = xaSearch ? items.filter(it => it.label.toLowerCase().includes(xaSearch)) : items;
-    const list = $('xa-list');
-    if (!filtered.length) { list.innerHTML = '<div class="xa-empty">—</div>'; return; }
-    list.innerHTML = filtered.map(it =>
-      `<div class="xa-opt ${it.key === xaSelected ? 'selected' : ''}" data-key="${it.key}">${it.label}</div>`
-    ).join('');
-    list.querySelectorAll('.xa-opt').forEach(el => {
-      el.addEventListener('click', () => {
-        xaSelected = el.dataset.key;
-        applyXa(xaSelected);
-        $('xa-dd').classList.remove('open');
-        $('xa-search-input').value = '';
-        xaSearch = '';
-        renderXaOptions();
-        updateXaLabel();
+
+    XA_DROPDOWNS.forEach(cfg => {
+      const list = $(cfg.listId);
+      if (!list) return;
+      if (!filtered.length) { list.innerHTML = '<div class="xa-empty">—</div>'; return; }
+      list.innerHTML = filtered.map(it =>
+        `<div class="xa-opt ${it.key === xaSelected ? 'selected' : ''}" data-key="${it.key}">${it.label}</div>`
+      ).join('');
+      list.querySelectorAll('.xa-opt').forEach(el => {
+        el.addEventListener('click', () => {
+          xaSelected = el.dataset.key;
+          applyXa(xaSelected);
+          // Đóng & reset search ở MỌI dropdown
+          XA_DROPDOWNS.forEach(c => {
+            $(c.ddId)?.classList.remove('open');
+            const s = $(c.searchId); if (s) s.value = '';
+          });
+          xaSearch = '';
+          renderXaOptions();
+          updateXaLabel();
+        });
       });
     });
   }
@@ -869,7 +912,10 @@ window.UI = (() => {
     const areas = window.APP_DATA.areas;
     const t = window.I18n.t;
     const label = xaSelected && areas[xaSelected] ? (areas[xaSelected].label || xaSelected) : t('filter.area_all');
-    $('xa-current').textContent = label;
+    /* Sync label cho cả 2 trigger */
+    ['xa-current', 'ph-xa-current'].forEach(id => {
+      const el = $(id); if (el) el.textContent = label;
+    });
   }
 
   function applyXa(key) {

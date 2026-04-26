@@ -402,6 +402,26 @@ html, body { height: 100%; font-family: 'Be Vietnam Pro', sans-serif; overflow: 
 #ph { padding: 14px 14px 10px; flex-shrink: 0; }
 #ph-top { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
 #ph-title { font-size: 16px; font-weight: 800; color: var(--icon-blue); flex-shrink: 0; }
+/* Nút đóng panel — chỉ hiện trên mobile */
+#ph-close {
+  display: none;
+  width: 32px; height: 32px; border-radius: 50%;
+  border: none; background: #f4f6f8; color: #333;
+  cursor: pointer;
+  align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: background .14s, color .14s;
+}
+#ph-close:hover { background: var(--icon-blue); color: #fff; }
+/* Dropdown Xã/Phường TRONG PANEL — đồng bộ style với topbar #xa-dd
+   Khác duy nhất: full chiều ngang panel + margin-bottom cách #ph-cats. */
+#ph-xa-dd { width: 100%; margin-bottom: 10px; }
+#ph-xa-dd .xa-trigger {
+  width: 100%;
+  min-width: 0;
+  max-width: none;
+}
+#ph-xa-dd .xa-popup { min-width: 100%; }
 #ph-search {
   flex: 1; height: 36px; background: #fff; border: 1.5px solid #e4e8ec;
   border-radius: 8px; display: flex; align-items: center; gap: 6px; padding: 0 0 0 12px;
@@ -1162,6 +1182,12 @@ body.focus-mode #news-panel {
   pointer-events: auto;
   transition: left .35s cubic-bezier(.4,0,.2,1), top .35s cubic-bezier(.4,0,.2,1);
 }
+/* Khi tour KHÔNG mở: ép cả tip + spot inert để khỏi ăn tap ở góc viewport */
+#tour-overlay:not(.open) #tour-tip,
+#tour-overlay:not(.open) #tour-spot {
+  pointer-events: none !important;
+  visibility: hidden;
+}
 .tt-step {
   font-size: 11px; font-weight: 700; letter-spacing: .08em;
   color: var(--icon-blue); text-transform: uppercase;
@@ -1223,6 +1249,22 @@ body.mobile-menu-open #mobile-more-btn {
   transform: rotate(90deg);
 }
 
+/* Nút mở right-panel full screen trên mobile (dưới #menu-btn) */
+#mobile-panel-btn {
+  display: none;
+  position: fixed; top: calc(12px + var(--pill-h) + 8px); left: 12px;
+  width: var(--pill-h); height: var(--pill-h);
+  border-radius: 50%;
+  border: none; background: #fff; color: var(--icon-blue);
+  cursor: pointer;
+  align-items: center; justify-content: center;
+  box-shadow: var(--pill-shadow);
+  z-index: 1100;
+  transition: background .14s, color .14s, transform .12s;
+}
+#mobile-panel-btn:hover { background: var(--icon-blue); color: #fff; transform: translateY(-1px); }
+#mobile-panel-btn.active { background: var(--icon-blue); color: #fff; }
+
 @media (max-width: 768px) {
   /* Hiện nút more, ẩn các cụm gốc cho đến khi mở menu */
   #mobile-more-btn { display: flex; }
@@ -1274,11 +1316,53 @@ body.mobile-menu-open #mobile-more-btn {
   }
   #left-bar .lbtn.active { background: var(--icon-blue-dark) !important; color: #fff !important; }
 
-  /* Topbar: chỉ còn menu + search + filter, dồn về trái, chừa chỗ cho more-btn */
-  #topbar { right: calc(12px + var(--pill-h) + 8px); gap: 8px; }
-  #search-wrap { max-width: none; }
-  /* Trên mobile rất hẹp: ẩn filter Xã/Phường để đỡ chật */
-  #xa-dd { display: none; }
+  /* Topbar 1 hàng trên mobile:
+       menu-btn + search-wrap (co giãn) + xa-dd (compact)
+       Cấp phát chiều rộng theo tỷ lệ cố định để không bao giờ chèn ra ngoài.
+       Khoảng hở 16px tới mobile-more-btn. */
+  #topbar {
+    right: calc(12px + var(--pill-h) + 16px);
+    gap: 6px;
+    flex-wrap: nowrap;
+    /* KHÔNG dùng overflow:hidden — sẽ cắt dropdown popup của xa-dd
+       và search-results khi sổ xuống. Sizing cứng bên dưới đã đủ. */
+  }
+  /* search-wrap: ưu tiên co giãn, chiếm phần lớn khoảng trống */
+  #search-wrap {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: none;
+  }
+  /* xa-dd compact: chiều rộng cố định, không co không giãn */
+  #xa-dd {
+    flex: 0 0 130px;
+    min-width: 0;
+  }
+  #xa-dd .xa-trigger,
+  #xa-dd .filter-pill {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    padding: 0 12px;
+    font-size: 12.5px;
+    gap: 4px;
+  }
+  #xa-current {
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    min-width: 0; flex: 1;
+  }
+  /* Search bar gọn hơn, font nhỏ để input đủ chỗ */
+  #search-bar { padding: 0 14px; gap: 8px; }
+  #search-bar input { font-size: 13px; }
+
+  /* Dropdown xa-popup: trên mobile xa-dd chỉ 130px nhưng popup có min-width:220
+     → nếu anchor left:0 sẽ tràn ra ngoài phải. Anchor RIGHT vào mép phải xa-dd
+     và giới hạn max-width trong viewport. */
+  .xa-popup {
+    left: auto; right: 0;
+    min-width: 200px;
+    max-width: calc(100vw - 24px);
+  }
 
   /* TOP-RIGHT: chuyển thành cột floating dưới nút more */
   #top-right {
@@ -1339,8 +1423,27 @@ body.mobile-menu-open #mobile-more-btn {
     to   { opacity: 1; transform: translateY(0)    scale(1); }
   }
 
-  /* Panel phải full màn hình trên mobile cho dễ xem */
-  :root { --panel-w: calc(100vw - 24px); }
+  /* Hiện nút mở right-panel full screen */
+  #mobile-panel-btn { display: flex; }
+  /* Ẩn nút #panel-toggle (dấu >) trên mobile — đã có #mobile-panel-btn thay thế */
+  #panel-toggle { display: none !important; }
+
+  /* === RIGHT PANEL: FULL SCREEN trên mobile === */
+  #right-panel-bg, #right-panel {
+    top: 0; right: 0; bottom: 0; left: 0;
+    width: 100%;
+    border-radius: 0;
+    transform: translateY(100%);
+    transition: transform .35s cubic-bezier(.4,0,.2,1), opacity .25s ease;
+  }
+  #right-panel-bg.open, #right-panel.open { transform: translateY(0); }
+  #right-panel-bg { z-index: 1300; }
+  #right-panel { z-index: 1310; }
+
+  /* Hiện nút đóng panel (mũi tên trái) trong header */
+  #ph-close { display: flex; }
+  #ph { padding: 16px 14px 10px; }
+  #ph-title { font-size: 18px; }
   /* News panel sát mép trái */
   #news-panel { left: 12px; right: 12px; width: auto; }
 }
