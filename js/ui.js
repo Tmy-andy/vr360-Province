@@ -7,7 +7,7 @@ window.UI = (() => {
   let activeCat = 'all';
   let searchQ = '';
   let locFilter = '';
-  let panelOpen = true;
+  let panelOpen = false;
   let vrMode = false;
   let uiHidden = false;
   let autoRotating = false;

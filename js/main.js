@@ -20,7 +20,12 @@ window.addEventListener('load', async () => {
     setTimeout(() => {
       document.getElementById('loading').classList.add('done');
       window.UI.renderList();
-      window.UI.openPanel();
+      const first = window.APP_DATA.places && window.APP_DATA.places[0];
+      if (first) {
+        window.UI.enterVRMode(first);
+      } else {
+        window.UI.openPanel();
+      }
     }, 700);
   } catch (err) {
     console.error('[VR360] Khởi động thất bại:', err);
