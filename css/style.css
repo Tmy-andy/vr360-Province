@@ -726,6 +726,9 @@ body.mode-3d #vr-ui > * { pointer-events: auto; }
 #vr-loc-current { flex: 1; overflow: hidden; text-overflow: ellipsis; text-align: left; }
 .vr-loc-caret { color: var(--icon-blue); flex-shrink: 0; transition: transform .2s; }
 #vr-loc-dd.open .vr-loc-caret { transform: rotate(180deg); }
+/* Pin icon + close button: chỉ dùng cho mobile, desktop ẩn */
+.vr-loc-pin { display: none; }
+#vr-loc-collapse { display: none; }
 
 #vr-loc-popup {
   position: absolute; top: calc(100% + 6px); left: 0;
@@ -794,6 +797,37 @@ body.mode-3d #vr-ui > * { pointer-events: auto; }
 .vr-back-btn svg { stroke: var(--icon-blue); }
 .vr-back-btn:hover { background: #e8f7fd; color: var(--icon-blue-dark); }
 
+/* FAB tròn cho mobile — desktop ẩn hoàn toàn (chỉ media mobile mới bật display) */
+#vr-info-fab {
+  display: none;
+  position: absolute;
+  left: 12px; bottom: 12px;
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,.94);
+  color: var(--icon-blue-dark);
+  font-family: 'Be Vietnam Pro', serif;
+  font-style: italic;
+  font-weight: 800;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 5;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .3s ease;
+  box-shadow: 0 4px 14px rgba(0,0,0,.15);
+  align-items: center;
+  justify-content: center;
+}
+#vr-info.collapsed ~ #vr-info-fab {
+  opacity: 1;
+  pointer-events: auto;
+  /* hiện sau khi panel co xong (~.82s) */
+  transition: opacity .3s ease .85s;
+}
+
 /* --- INFO PANEL – bottom-left, nền trắng glass + text xanh, đồng bộ với 2D --- */
 #vr-info {
   position: absolute;
@@ -812,7 +846,16 @@ body.mode-3d #vr-ui > * { pointer-events: auto; }
 #vr-info.hidden { opacity: 0; pointer-events: none; transform: translateY(8px); }
 
 /* Thu gọn: animate mượt mà – max-height + opacity + margin */
-#vr-info { transition: opacity .25s ease, transform .25s ease, padding .35s cubic-bezier(.4,0,.2,1); }
+#vr-info {
+  transition:
+    opacity .25s ease,
+    transform .25s ease,
+    padding .4s cubic-bezier(.4,0,.2,1),
+    width .42s cubic-bezier(.4,0,.2,1),
+    height .42s cubic-bezier(.4,0,.2,1),
+    border-radius .42s cubic-bezier(.4,0,.2,1),
+    background-color .3s ease;
+}
 #vr-info.collapsed { padding: 12px 16px; }
 
 /* Wrapper desc + meta để chung 1 transition */
@@ -1444,8 +1487,16 @@ body.mobile-menu-open #mobile-more-btn {
   #ph-close { display: flex; }
   #ph { padding: 16px 14px 10px; }
   #ph-title { font-size: 18px; }
-  /* News panel sát mép trái */
-  #news-panel { left: 12px; right: 12px; width: auto; }
+  /* === NEWS PANEL: FULL SCREEN trên mobile (giống right-panel) === */
+  #news-panel {
+    top: 0; right: 0; bottom: 0; left: 0;
+    width: 100%;
+    border-radius: 0;
+    transform: translateY(100%);
+    transition: transform .35s cubic-bezier(.4,0,.2,1), opacity .25s ease;
+    z-index: 1310;
+  }
+  #news-panel.open { transform: translateY(0); }
 
   /* Mobile dọc: icon bottom-bar nhảy lên cao hơn (-25px) */
   .bbt.active svg { transform: translateY(-27px); }
@@ -1578,8 +1629,8 @@ body.mobile-menu-open #mobile-more-btn {
     background: linear-gradient(to bottom, rgba(0,0,0,.7) 0%, transparent 100%);
   }
 
-  /* Logo nhỏ hơn */
-  #vr-logo { gap: 8px; }
+  /* Logo nhỏ hơn — chiếm trọn hàng 1, đẩy mọi thứ khác xuống hàng 2 */
+  #vr-logo { gap: 8px; flex: 0 0 100%; }
   #vr-logo > svg { width: 38px; height: 38px; }
   .vr-logo-title { font-size: 13px; letter-spacing: .03em; }
   .vr-logo-sub { font-size: 8px; letter-spacing: .1em; }
@@ -1596,40 +1647,168 @@ body.mobile-menu-open #mobile-more-btn {
   }
   #vr-lang-label { display: none; }
 
-  /* Back-2D pill: thu về dạng tròn icon-only, ẩn ký tự "2D" */
-  .vr-back-btn {
-    width: var(--pill-h);
-    min-width: var(--pill-h);
-    padding: 0;
-    gap: 0;
-    font-size: 0;
-  }
-  .vr-back-btn svg { width: 16px; height: 16px; }
+  /* Back-2D pill: giữ nguyên dạng pill có chữ "2D" trên mobile dọc */
+  .vr-back-btn svg { width: 14px; height: 14px; }
 
-  /* Dropdown địa điểm: xuống hàng 2, chiếm full width còn lại */
+  /* === Dropdown địa điểm trên mobile portrait ===
+     - Mặc định: nút TRÒN cố định ở góc trên-trái (đè lên/cạnh logo)
+     - .expanded: dịch xuống hàng 2 và nở thành pill full-width
+     Animation: dùng position fixed + transform/width/left/top px → mượt */
   #vr-loc-dd {
     order: 3;
     flex: 1 1 100%;
     margin-top: 2px;
+    /* dùng max-width=0 + opacity=0 để placeholder hàng 2 không chiếm chỗ
+       khi chưa expanded (giúp header chỉ 1 hàng) */
+    max-width: 0;
+    overflow: visible;
+    margin: 0;
   }
+  /* Pill trigger: position fixed ở GÓC TRÊN-TRÁI, ngang bằng với #vr-hd-right.
+     Logo bị ẩn trên mobile để nhường chỗ cho nút tròn này. */
   #vr-loc-trigger {
-    width: 100%;
+    position: fixed;
+    z-index: 60;
+    top: 58px;
+    left: 12px;
+    right: auto;
+    width: var(--pill-h);
+    height: var(--pill-h);
     min-width: 0;
     max-width: none;
-    padding: 0 16px;
+    padding: 0;
+    /* dùng px (999px ~ capsule) thay 50% để border-radius nội suy được
+       với 24px expanded → bo góc giảm/tăng mượt theo width */
+    border-radius: 999px;
+    overflow: hidden;
     font-size: 13.5px;
+    display: block;             /* dùng block + pin absolute để pin KHÔNG bị xê dịch */
+    transition:
+      width .4s cubic-bezier(.4,0,.2,1) 0s,
+      border-radius .4s cubic-bezier(.4,0,.2,1) 0s,
+      padding .4s cubic-bezier(.4,0,.2,1) 0s,
+      top .4s cubic-bezier(.4,0,.2,1) .42s,
+      left .4s cubic-bezier(.4,0,.2,1) .42s,
+      right .4s cubic-bezier(.4,0,.2,1) .42s;
+  }
+  /* Pin icon: position absolute → giữ NGUYÊN vị trí xuyên suốt 2 trạng thái */
+  .vr-loc-pin {
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: calc(var(--pill-h) / 2);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+  #vr-loc-current,
+  .vr-loc-caret { display: none; }
+  #vr-loc-dd.expanded #vr-loc-current {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 0; bottom: 0;
+    left: calc(var(--pill-h) / 2 + 18px);
+    right: 32px;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1;
+    animation: locFadeIn .35s ease .55s both;
+  }
+  #vr-loc-dd.expanded .vr-loc-caret {
+    display: block;
+    position: absolute;
+    top: 50%;
+    right: 14px;
+    transform: translateY(-50%);
+    animation: locFadeOnly .35s ease .6s both;
+  }
+  @keyframes locFadeOnly {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes locFadeIn {
+    from { opacity: 0; transform: translateX(-6px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  /* Nút collapse (×) — chỉ hiện khi expanded */
+  #vr-loc-collapse {
+    position: fixed;
+    top: calc(58px + var(--pill-h) + 10px);
+    right: 12px;
+    width: var(--pill-h);
+    height: var(--pill-h);
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,.95);
+    color: var(--icon-blue-dark);
+    cursor: pointer;
+    z-index: 61;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,.18);
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(.6);
+    transition:
+      opacity .3s ease,
+      transform .45s cubic-bezier(.4,1.5,.5,1);
   }
 
-  /* Info panel: full-width sát mép, ngồi phía trên cụm bottom */
+  /* === EXPANDED state === */
+  #vr-loc-dd.expanded #vr-loc-trigger {
+    /* Hàng 3 (dưới hàng round-dd + right cluster): 58 + pill-h + 10 */
+    top: calc(58px + var(--pill-h) + 10px);
+    left: 12px;
+    right: auto;
+    width: calc(100vw - 12px - 12px - var(--pill-h) - 10px);
+    border-radius: var(--pill-radius);
+    padding: 0;
+    /* Pha MỞ: di chuyển xuống TRƯỚC, sau đó mới nở rộng ngang */
+    transition:
+      top .4s cubic-bezier(.4,0,.2,1) 0s,
+      left .4s cubic-bezier(.4,0,.2,1) 0s,
+      right .4s cubic-bezier(.4,0,.2,1) 0s,
+      width .4s cubic-bezier(.4,0,.2,1) .42s,
+      border-radius .4s cubic-bezier(.4,0,.2,1) .42s,
+      padding .4s cubic-bezier(.4,0,.2,1) .42s;
+  }
+  #vr-loc-dd.expanded #vr-loc-current,
+  #vr-loc-dd.expanded .vr-loc-caret {
+    opacity: 1;
+    transition: opacity .35s ease .25s;
+  }
+  #vr-loc-dd.expanded #vr-loc-collapse {
+    opacity: 1;
+    pointer-events: auto;
+    transform: scale(1);
+    transition:
+      opacity .3s ease .25s,
+      transform .55s cubic-bezier(.34,1.7,.5,1) .2s;
+  }
+  /* Popup list cũng cần fixed để khớp với pill expanded */
+  #vr-loc-dd.expanded #vr-loc-popup {
+    position: fixed;
+    top: calc(58px + var(--pill-h) * 2 + 18px);
+    left: 12px;
+    right: calc(12px + var(--pill-h) + 10px);
+    min-width: 0;
+    width: auto;
+  }
+
+  /* Info panel: anchor góc dưới-trái (left+bottom). Dùng height (px)
+     thay max-height để shrink nội suy đều, không bị "khựng" giai đoạn
+     đầu (max-height phía trên content height không tạo thay đổi thị giác). */
   #vr-info {
     left: 12px;
-    right: 12px;
-    width: auto;
+    right: auto;
+    width: calc(100vw - 24px);
     max-width: none;
-    /* khoảng cách so với đáy: controls(~50) + related(~110) + gap */
     bottom: 188px;
     padding: 12px 14px;
     border-radius: 14px;
+    height: 200px;
+    overflow: hidden;
   }
   #vr-place-name { font-size: 18px; margin-bottom: 4px; }
   #vr-info.collapsed #vr-place-name { font-size: 14px; }
@@ -1642,6 +1821,49 @@ body.mobile-menu-open #mobile-more-btn {
   }
   .vr-meta-row { font-size: 11.5px; }
   .vr-info-tag { font-size: 9px; }
+
+  /* Pha MỞ (collapsed → expanded): width nở ngang TRƯỚC, height nở dọc SAU. */
+  #vr-info {
+    transition:
+      width .4s cubic-bezier(.4,0,.2,1) 0s,
+      border-radius .4s cubic-bezier(.4,0,.2,1) 0s,
+      padding .4s cubic-bezier(.4,0,.2,1) 0s,
+      height .4s cubic-bezier(.4,0,.2,1) .42s,
+      background-color .3s ease;
+  }
+  /* Pha THU (expanded → collapsed): height co dọc TRƯỚC, width co ngang SAU. */
+  #vr-info.collapsed {
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    border-radius: 999px;
+    background: rgba(255,255,255,.94);
+    pointer-events: none;
+    transition:
+      height .4s cubic-bezier(.4,0,.2,1) 0s,
+      width .4s cubic-bezier(.4,0,.2,1) .42s,
+      border-radius .4s cubic-bezier(.4,0,.2,1) .42s,
+      padding .4s cubic-bezier(.4,0,.2,1) .42s,
+      background-color .3s ease;
+  }
+  /* Children: fade-in CHẬM (sau khi panel nở xong), fade-out NHANH (trước khi panel thu) */
+  #vr-info-hd, #vr-place-name, #vr-place-desc, #vr-place-meta {
+    transition: opacity .3s ease .85s;
+  }
+  #vr-info.collapsed #vr-info-hd,
+  #vr-info.collapsed #vr-place-name,
+  #vr-info.collapsed #vr-place-desc,
+  #vr-info.collapsed #vr-place-meta {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .15s ease;
+  }
+  /* Hiện FAB trên mobile portrait — căn theo góc dưới-trái của #vr-info */
+  #vr-info-fab {
+    display: flex;
+    bottom: 188px;          /* khớp với #vr-info bottom */
+    left: 12px;
+  }
 
   /* Bottom cụm: full-width, sát đáy */
   #vr-bottom {
@@ -1666,13 +1888,16 @@ body.mobile-menu-open #mobile-more-btn {
     padding: 14px 6px 5px;
   }
 
-  /* Controls toolbar: icon-only, ẩn label, thu gọn */
+  /* Controls toolbar: icon-only, full-width trên mobile portrait */
   #vr-ctrl {
     padding: 6px 8px;
     gap: 2px;
     border-radius: 999px;
+    width: 100%;
+    justify-content: space-between;
   }
   .vr-ctrl-btn {
+    flex: 1;
     min-width: 0;
     padding: 8px 10px;
     border-radius: 999px;
@@ -1683,7 +1908,8 @@ body.mobile-menu-open #mobile-more-btn {
   /* Minimap: thu nhỏ, dời lên dưới header (mép phải) — tránh đè bottom cluster */
   #minimap {
     bottom: auto;
-    top: calc(var(--pill-h) * 2 + 32px);
+    /* Header mobile wrap 2 dòng (logo+nút | dropdown) → cần đủ chỗ né dropdown */
+    top: calc(var(--pill-h) * 2 + 56px);
     right: 12px;
   }
   #mm-title { font-size: 8.5px; margin-bottom: 3px; }
@@ -1705,9 +1931,17 @@ body.mobile-menu-open #mobile-more-btn {
   #vr-hd-right { gap: 5px; }
 
   #mm-circle { width: 100px; height: 100px; }
-  #minimap { top: calc(var(--pill-h) * 2 + 28px); right: 10px; }
+  #minimap { top: calc(var(--pill-h) * 2 + 50px); right: 10px; }
 
   #vr-info { bottom: 176px; padding: 10px 12px; }
+  #vr-info-fab { bottom: 176px; }
+
+  /* Dropdown round Y khớp với #vr-hd-right ở 480px:
+     padding-top(9) + logo svg(34) + row-gap(10) = 53 */
+  #vr-loc-trigger { top: 49px; }
+  #vr-loc-dd.expanded #vr-loc-trigger { top: calc(53px + var(--pill-h) + 10px); }
+  #vr-loc-collapse { top: calc(53px + var(--pill-h) + 10px); }
+  #vr-loc-dd.expanded #vr-loc-popup { top: calc(53px + var(--pill-h) * 2 + 18px); }
   #vr-place-name { font-size: 16px; }
   #vr-place-desc { font-size: 12.5px; }
 
@@ -1757,7 +1991,7 @@ body.mobile-menu-open #mobile-more-btn {
   /* Pill height co lại để header chỉ ~ 44–48px */
   :root { --pill-h: 38px; }
 
-  /* Info panel: cố định trái-dưới như desktop, hẹp lại, vẫn line-clamp 2 */
+  /* Info panel landscape: same sequenced animation như portrait */
   #vr-info {
     left: 12px;
     right: auto;
@@ -1766,7 +2000,44 @@ body.mobile-menu-open #mobile-more-btn {
     max-width: 38vw;
     padding: 9px 12px;
     border-radius: 12px;
+    overflow: hidden;
+    height: 170px;
+    /* Pha MỞ: width nở ngang TRƯỚC, height nở dọc SAU */
+    transition:
+      width .4s cubic-bezier(.4,0,.2,1) 0s,
+      border-radius .4s cubic-bezier(.4,0,.2,1) 0s,
+      padding .4s cubic-bezier(.4,0,.2,1) 0s,
+      height .4s cubic-bezier(.4,0,.2,1) .42s,
+      background-color .3s ease;
   }
+  #vr-info.collapsed {
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    border-radius: 999px;
+    background: rgba(255,255,255,.94);
+    pointer-events: none;
+    /* Pha THU: dọc co TRƯỚC, ngang SAU */
+    transition:
+      height .4s cubic-bezier(.4,0,.2,1) 0s,
+      width .4s cubic-bezier(.4,0,.2,1) .42s,
+      border-radius .4s cubic-bezier(.4,0,.2,1) .42s,
+      padding .4s cubic-bezier(.4,0,.2,1) .42s,
+      background-color .3s ease;
+  }
+  #vr-info-hd, #vr-place-name, #vr-place-desc, #vr-place-meta {
+    transition: opacity .3s ease .85s;
+  }
+  #vr-info.collapsed #vr-info-hd,
+  #vr-info.collapsed #vr-place-name,
+  #vr-info.collapsed #vr-place-desc,
+  #vr-info.collapsed #vr-place-meta {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .15s ease;
+  }
+  /* Hiện FAB trên mobile landscape */
+  #vr-info-fab { display: flex; align-items: center; justify-content: center; }
   #vr-place-name { font-size: 15px; margin-bottom: 3px; }
   #vr-info.collapsed #vr-place-name { font-size: 13px; }
   #vr-place-desc {
@@ -1791,6 +2062,12 @@ body.mobile-menu-open #mobile-more-btn {
     width: auto;
     max-width: none;
     gap: 6px;
+    transition: left .55s cubic-bezier(.4,0,.2,1);
+  }
+  /* Khi info thu lại thành icon tròn → bottom cluster được "kéo lại" giữa
+     (chỉ né minimap bên phải, không cần né info nữa) */
+  #vr-info.collapsed ~ #vr-bottom {
+    left: calc(48px + 24px);      /* chỉ né cái nút tròn ~48px */
   }
   #vr-rel-hd { margin-bottom: 4px; }
   #vr-rel-hd span { font-size: 8.5px; }
@@ -1845,6 +2122,7 @@ body.mobile-menu-open #mobile-more-btn {
     width: auto;
     bottom: 8px;
   }
+  #vr-info.collapsed ~ #vr-bottom { left: calc(48px + 20px); }
   .vr-rel-card { width: 84px; }
   .vr-rel-card img { height: 46px; }
 
@@ -1863,3 +2141,97 @@ body.mobile-menu-open #mobile-more-btn {
   z-index: 3500;
   transform: translate(-50%, -50%) scale(0);
 }
+
+/* ===== 20. HOTSPOT HOVER CARD ===== */
+#hotspot-card {
+  position: absolute;
+  z-index: 1200;
+  width: 280px;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 10px 32px rgba(0,0,0,.22);
+  overflow: hidden;
+  font-family: 'Be Vietnam Pro', sans-serif;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -100%) translateY(-18px) scale(.96);
+  transform-origin: 50% calc(100% + 14px);
+  transition: opacity .18s ease, transform .22s cubic-bezier(.4,1.3,.5,1);
+}
+#hotspot-card.show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, -100%) translateY(-18px) scale(1);
+}
+#hotspot-card::after {
+  content: '';
+  position: absolute;
+  left: 50%; bottom: -8px;
+  width: 16px; height: 16px;
+  background: #fff;
+  transform: translateX(-50%) rotate(45deg);
+  box-shadow: 3px 3px 6px rgba(0,0,0,.08);
+  z-index: -1;
+}
+.hc-img {
+  position: relative;
+  width: 100%; height: 140px;
+  background: #e9eef3 center/cover no-repeat;
+}
+.hc-views {
+  position: absolute;
+  top: 10px; right: 10px;
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--icon-blue, #2bb6e6);
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px; font-weight: 700;
+  box-shadow: 0 2px 8px rgba(0,0,0,.18);
+}
+.hc-body { padding: 12px 14px 14px; }
+.hc-name {
+  font-size: 16px; font-weight: 700; color: #14202b;
+  margin: 0 0 4px;
+}
+.hc-desc {
+  font-size: 12.5px; color: #5a6573;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+.hc-rating {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12.5px; color: #5a6573;
+  margin-bottom: 10px;
+}
+.hc-rating b { color: #14202b; font-weight: 700; }
+.hc-stars { color: #d8dde3; letter-spacing: 1px; font-size: 13px; }
+.hc-stars .on { color: #ffb627; }
+.hc-rating .sep { color: #cfd6dd; margin: 0 4px; }
+.hc-actions { display: flex; gap: 8px; }
+.hc-go {
+  flex: 1;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  height: 36px;
+  border: none; border-radius: 999px;
+  background: var(--icon-blue, #2bb6e6); color: #fff;
+  font-size: 13px; font-weight: 700;
+  cursor: pointer;
+  transition: filter .2s ease;
+}
+.hc-go:hover { filter: brightness(1.08); }
+.hc-go svg { background: rgba(255,255,255,.22); border-radius: 50%; padding: 2px; }
+.hc-icon {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: #f0f4f8; color: var(--icon-blue, #2bb6e6);
+  border: none; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: background .2s ease;
+}
+.hc-icon:hover { background: #e3edf4; }

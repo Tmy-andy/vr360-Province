@@ -723,7 +723,21 @@ window.UI = (() => {
     /* 3D: location dropdown */
     $('vr-loc-trigger').addEventListener('click', e => {
       e.stopPropagation();
-      $('vr-loc-dd').classList.toggle('open');
+      const dd = $('vr-loc-dd');
+      const isMobile = window.matchMedia('(max-width: 768px)').matches;
+      // Mobile: bấm lần 1 → nở từ nút tròn ra pill; lần 2 → mở list
+      if (isMobile && !dd.classList.contains('expanded')) {
+        dd.classList.add('expanded');
+      } else {
+        dd.classList.toggle('open');
+      }
+    });
+    /* 3D: collapse dropdown trên mobile (× bên phải pill) */
+    $('vr-loc-collapse').addEventListener('click', e => {
+      e.stopPropagation();
+      const dd = $('vr-loc-dd');
+      dd.classList.remove('open');
+      dd.classList.remove('expanded');
     });
 
     /* 3D: back to 2D */
@@ -733,7 +747,16 @@ window.UI = (() => {
     $('minimap').addEventListener('click', exitVRMode);
 
     /* 3D: info panel toggle (thu gọn / mở rộng) */
-    $('vr-info-x').addEventListener('click', () => $('vr-info').classList.toggle('collapsed'));
+    $('vr-info-x').addEventListener('click', e => {
+      e.stopPropagation();
+      $('vr-info').classList.toggle('collapsed');
+    });
+    /* Mobile: nút FAB tròn để mở lại panel khi đang collapsed */
+    const fab = $('vr-info-fab');
+    if (fab) fab.addEventListener('click', e => {
+      e.stopPropagation();
+      $('vr-info').classList.remove('collapsed');
+    });
 
     /* 3D: language toggle – đồng bộ cả 2D và 3D label */
     $('vr-lang-btn').addEventListener('click', async () => {
