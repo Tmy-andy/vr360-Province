@@ -309,7 +309,7 @@ html, body { height: 100%; font-family: 'Be Vietnam Pro', sans-serif; overflow: 
 }
 .bbt.active { color: #fff; }
 .bbt.active svg {
-  transform: translateY(-22.5px);
+  transform: translateY(-27px);
   color: #fff;
 }
 
@@ -1520,6 +1520,7 @@ body.mobile-menu-open #mobile-more-btn {
   .bbt { padding: 4px 8px; }
   .bb-label { font-size: 10px; }
   .bbt svg { width: 18px; height: 18px; }
+  .bbt.active svg { transform: translateY(-22.5px); }
 
   /* --- NÚT MỞ PANEL: dời mobile-panel-btn ra MÉP PHẢI giữa (như #panel-toggle desktop) --- */
   #mobile-panel-btn {
