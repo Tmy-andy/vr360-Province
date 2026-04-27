@@ -309,7 +309,7 @@ html, body { height: 100%; font-family: 'Be Vietnam Pro', sans-serif; overflow: 
 }
 .bbt.active { color: #fff; }
 .bbt.active svg {
-  transform: translateY(-27px);
+  transform: translateY(-22.5px);
   color: #fff;
 }
 
@@ -1446,6 +1446,9 @@ body.mobile-menu-open #mobile-more-btn {
   #ph-title { font-size: 18px; }
   /* News panel sát mép trái */
   #news-panel { left: 12px; right: 12px; width: auto; }
+
+  /* Mobile dọc: icon bottom-bar nhảy lên cao hơn (-25px) */
+  .bbt.active svg { transform: translateY(-27px); }
 }
 
 @media (max-width: 480px) {
