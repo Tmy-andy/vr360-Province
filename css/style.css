@@ -328,6 +328,130 @@ html, body { height: 100%; font-family: 'Be Vietnam Pro', sans-serif; overflow: 
   transform: translate(-50%, 0);
 }
 
+/* ===== AI ASSISTANT BUTTON (bottom-bar, thay thế "Đóng góp") =====
+   - Orb tròn xanh lá nổi cao hơn các nút khác
+   - Idle: glow breathing nhẹ thu hút mắt
+   - Listening (.listening): vòng tròn pulse mở rộng + sóng âm hai bên + tooltip
+   ============================================================ */
+/* Token màu xanh neon cho AI button */
+:root {
+  --ai-neon: #16d472;
+  --ai-neon-soft: rgba(22,212,114,.18);
+  --ai-neon-strong: rgba(22,212,114,.55);
+}
+.bb-ai { width: 64px; overflow: visible; }
+.bb-ai .ai-orb {
+  position: relative;
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2.5px solid var(--ai-neon);
+  box-shadow:
+    0 0 0 4px var(--ai-neon-soft),
+    0 0 14px var(--ai-neon-strong),
+    0 6px 14px rgba(0,0,0,.10);
+  display: flex; align-items: center; justify-content: center;
+  transform: translateY(-22px);
+  transition: transform .35s cubic-bezier(.45,1.4,.55,1), box-shadow .3s ease, border-color .3s;
+  z-index: 4;
+  animation: aiBreath 2.2s ease-in-out infinite;
+}
+.bb-ai:hover .ai-orb { transform: translateY(-25px) scale(1.05); }
+.bb-ai .ai-mic {
+  width: 22px; height: 22px;
+  color: var(--ai-neon);
+  position: relative; z-index: 4;
+  transform: none !important;
+  filter: drop-shadow(0 0 4px var(--ai-neon-strong));
+}
+.bb-ai .bb-label {
+  bottom: 6px;
+  color: var(--ai-neon);
+  font-weight: 700;
+  opacity: 1;
+  transform: translate(-50%, 0);
+  letter-spacing: .2px;
+  text-shadow: 0 0 6px rgba(22,212,114,.25);
+}
+@keyframes aiBreath {
+  0%, 100% { box-shadow: 0 0 0 4px var(--ai-neon-soft), 0 0 10px var(--ai-neon-strong), 0 6px 14px rgba(0,0,0,.10); }
+  50%      { box-shadow: 0 0 0 6px var(--ai-neon-soft), 0 0 22px var(--ai-neon), 0 6px 16px rgba(0,0,0,.12); }
+}
+
+.bb-ai.listening .ai-orb {
+  animation: none;
+  border-color: var(--ai-neon);
+  box-shadow:
+    0 0 0 4px var(--ai-neon-soft),
+    0 0 28px var(--ai-neon),
+    0 6px 18px rgba(22,212,114,.35);
+}
+
+/* Sóng âm hai bên orb – nổi bật, dày, glow */
+.bb-ai .ai-waves {
+  position: absolute;
+  top: -22px; left: 50%;
+  transform: translateX(-50%);
+  width: 150px; height: 52px;
+  display: flex; align-items: center; justify-content: space-between;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .25s ease;
+  z-index: 2;
+  padding: 0 4px;
+  box-sizing: border-box;
+}
+.bb-ai.listening .ai-waves { opacity: 1; }
+.bb-ai .ai-waves > span {
+  width: 4px; border-radius: 3px;
+  background: var(--ai-neon);
+  box-shadow: 0 0 8px var(--ai-neon), 0 0 14px var(--ai-neon-strong);
+  transform-origin: center;
+}
+.bb-ai.listening .ai-waves > span { animation: aiWave 1s ease-in-out infinite; }
+.bb-ai .ai-waves > span:nth-child(1) { height: 24%; animation-delay: 0s;   }
+.bb-ai .ai-waves > span:nth-child(2) { height: 55%; animation-delay: .10s; }
+.bb-ai .ai-waves > span:nth-child(3) { height: 88%; animation-delay: .22s; }
+.bb-ai .ai-waves > span:nth-child(4) { height: 88%; animation-delay: .34s; }
+.bb-ai .ai-waves > span:nth-child(5) { height: 55%; animation-delay: .46s; }
+.bb-ai .ai-waves > span:nth-child(6) { height: 24%; animation-delay: .58s; }
+@keyframes aiWave {
+  0%, 100% { transform: scaleY(.35); opacity: .55; }
+  50%      { transform: scaleY(1.5); opacity: 1;   }
+}
+
+/* Tooltip "Hỏi tôi về địa điểm này" – nổi phía trên khi listening */
+.bb-ai .ai-tip {
+  position: absolute;
+  bottom: calc(100% + 30px);
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  background: #fff;
+  color: var(--ai-neon);
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1.5px solid var(--ai-neon);
+  font-size: 12px; font-weight: 700;
+  white-space: nowrap;
+  opacity: 0; pointer-events: none;
+  box-shadow: 0 0 14px var(--ai-neon-strong), 0 6px 16px rgba(0,0,0,.12);
+  transition: opacity .25s ease, transform .25s ease;
+  z-index: 5;
+}
+.bb-ai .ai-tip::after {
+  content: ""; position: absolute;
+  top: 100%; left: 50%; transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: var(--ai-neon);
+}
+.bb-ai.listening .ai-tip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* AI button không dùng .active state (orb tự nổi sẵn) */
+.bb-ai.active svg.ai-mic { transform: none !important; }
+
 /* ===== 7. PANEL (floating card style) =====
    - Panel KHÔNG dính cạnh phải nữa: bo tròn, có shadow, cách lề.
    - Header: tiêu đề xanh + ô tìm kiếm pill có nút search vuông.

@@ -448,7 +448,7 @@ window.UI = (() => {
     { target: '#left-bar .lbtn:nth-child(3)', round: true, svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>', label: 'Tài khoản người dùng' },
     { target: '#bottom-bar .bbt:nth-child(2)', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>', label: 'Trang chủ' },
     { target: '#bottom-bar .bbt:nth-child(3)', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>', label: 'Khám phá địa điểm' },
-    { target: '#bottom-bar .bbt:nth-child(4)', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>', label: 'Đóng góp ý kiến' },
+    { target: '#bottom-bar .bbt:nth-child(4)', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><line x1="12" y1="18" x2="12" y2="22"/></svg>', label: 'AI Hỗ trợ – Hỏi tôi về địa điểm' },
     { target: '#bottom-bar .bbt:nth-child(5)', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>', label: 'Ưu đãi, đặt vé' },
     { target: '#bottom-bar .bbt:nth-child(6)', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>', label: 'Khởi động VR Tour 360°' },
   ];
@@ -846,10 +846,21 @@ window.UI = (() => {
     /* Bottom bar bubble */
     document.querySelectorAll('.bbt').forEach(btn => {
       btn.addEventListener('click', function () {
+        if (this.classList.contains('bb-ai')) {
+          this.classList.toggle('listening');
+          return;
+        }
         document.querySelectorAll('.bbt').forEach(b => b.classList.remove('active'));
         this.classList.add('active');
         moveBubble();
       });
+    });
+    /* Click ngoài để tắt listening AI */
+    document.addEventListener('click', e => {
+      const ai = document.getElementById('bb-ai-btn');
+      if (ai && ai.classList.contains('listening') && !ai.contains(e.target)) {
+        ai.classList.remove('listening');
+      }
     });
     requestAnimationFrame(moveBubble);
     window.addEventListener('resize', moveBubble);
