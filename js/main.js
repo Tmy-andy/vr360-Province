@@ -16,6 +16,7 @@ window.addEventListener('load', async () => {
     document.getElementById('lang-label').textContent = window.I18n.lang.toUpperCase();
     window.MapModule.initMap();
     window.UI.initEvents();
+    if (window.ViewRouter) window.ViewRouter.initRouter();
 
     setTimeout(() => {
       document.getElementById('loading').classList.add('done');

@@ -216,33 +216,22 @@ window.UI = (() => {
     $('vr-meta-rating').textContent = `★ ${place.r}  (${place.rv?.toLocaleString('vi')} đánh giá)`;
     $('vr-meta-entry').textContent = place.entry || '—';
 
-    // Location dropdown (custom, giống 2D .xa-opt)
+    // Location dropdown – có thumbnail ảnh cho từng lựa chọn
     $('vr-loc-current').textContent = place.name;
     const locList = $('vr-loc-list');
-    locList.innerHTML = window.APP_DATA.places.map(p =>
-      `<div class="vr-loc-opt${p.id === place.id ? ' selected' : ''}" data-id="${p.id}">${p.name}</div>`
-    ).join('');
+    locList.innerHTML = window.APP_DATA.places.map(p => `
+      <div class="vr-loc-opt${p.id === place.id ? ' selected' : ''}" data-id="${p.id}">
+        <div class="vr-loc-thumb"><img src="${p.img}" alt="" loading="lazy" onerror="this.style.opacity=0"/></div>
+        <div class="vr-loc-meta">
+          <div class="vr-loc-name">${p.name}</div>
+          ${p.area ? `<div class="vr-loc-sub">${p.area}</div>` : ''}
+        </div>
+      </div>
+    `).join('');
     locList.querySelectorAll('.vr-loc-opt').forEach(el => {
       el.addEventListener('click', () => {
         const newPlace = window.APP_DATA.places.find(x => x.id === +el.dataset.id);
         if (newPlace) { $('vr-loc-dd').classList.remove('open'); switchVRPlace(newPlace); }
-      });
-    });
-
-    // Related destinations (other places, same category first)
-    const related = window.APP_DATA.places
-      .filter(p => p.id !== place.id)
-      .sort((a, b) => (b.cat === place.cat ? 1 : 0) - (a.cat === place.cat ? 1 : 0));
-    $('vr-rel-list').innerHTML = related.map(p => `
-      <div class="vr-rel-card" data-id="${p.id}">
-        <img src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.style.opacity=0"/>
-        <div class="vr-rel-name">${p.name.toUpperCase()}</div>
-      </div>
-    `).join('');
-    document.querySelectorAll('.vr-rel-card').forEach(el => {
-      el.addEventListener('click', () => {
-        const p = window.APP_DATA.places.find(x => x.id === +el.dataset.id);
-        if (p) switchVRPlace(p);
       });
     });
 
@@ -461,7 +450,6 @@ window.UI = (() => {
     { target: '#vr-help-btn',     round: true,        label: 'Mở hướng dẫn sử dụng chế độ VR' },
     { target: '#vr-back-btn',                         label: 'Quay về bản đồ 2D' },
     { target: '#vr-info',                             label: 'Thông tin điểm đến: tên, giờ mở, đánh giá, vé vào' },
-    { target: '#vr-related',                          label: 'Khám phá các điểm đến liên quan khác' },
     { target: '#vr-autorot',                          label: 'Bật chế độ tự động xoay 360°' },
     { target: '#vr-zout',                             label: 'Thu nhỏ tầm nhìn (zoom out)' },
     { target: '#vr-hideui',                           label: 'Ẩn giao diện để xem toàn cảnh VR' },
@@ -807,10 +795,6 @@ window.UI = (() => {
       if (!document.fullscreenElement) $('vr-viewer').requestFullscreen?.();
       else document.exitFullscreen?.();
     });
-
-    /* 3D: related scroll arrows */
-    $('vr-rel-prev').addEventListener('click', () => $('vr-rel-list').scrollBy({ left: -220, behavior: 'smooth' }));
-    $('vr-rel-next').addEventListener('click', () => $('vr-rel-list').scrollBy({ left: 220, behavior: 'smooth' }));
 
     /* 2D: search */
     $('search-input').addEventListener('input', e => renderSearchResults(e.target.value));

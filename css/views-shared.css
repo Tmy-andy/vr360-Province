@@ -1,0 +1,326 @@
+/* =========================================================
+   VIEWS SHARED – Tokens dùng chung cho Guide & Invest view
+   - Shell FULL-PAGE (top:0 → bottom: var(--bottom-h)+gap),
+     không dùng border-radius/shadow (full-bleed).
+   - .view-topbar trong shell: logo trái + search center + lang/fs phải.
+   - Sidebar pattern (260–280px desktop / horizontal chip-bar mobile).
+   - Tái dùng biến từ css/style.css: --icon-blue, --pill-shadow,
+     --bottom-h, --pill-h.
+   - File này load TRƯỚC guide.css/invest.css để override được.
+   ========================================================= */
+
+:root {
+  --view-side-w: 260px;
+  --view-side-w-iv: 280px;
+  --view-topbar-h: 68px;
+  --view-border: #eef0f2;
+  --view-border-strong: #e4e8ec;
+  --view-bg-soft: #f4f6f8;
+  --view-bg-hover: #f4faff;
+  --view-bg-active: #e8f6fc;
+  --view-text: #1a1a1a;
+  --view-muted: #888;
+  --view-muted-2: #aaa;
+  --view-body: #555;
+}
+
+/* ===== Mặc định ẩn 2 view; chỉ hiện khi body có class tương ứng ===== */
+#guide-view, #invest-view { display: none; }
+body.view-guide  #guide-view  { display: block; }
+body.view-invest #invest-view { display: block; }
+
+/* ===== SHELL CHUNG (full-page, chỉ chừa bottom-bar) ===== */
+#gv-shell, #iv-shell {
+  position: fixed;
+  inset: 0 0 calc(var(--bottom-h) + 16px) 0;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 900;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity .3s cubic-bezier(.4,0,.2,1),
+              transform .3s cubic-bezier(.4,0,.2,1);
+}
+body.view-guide  #gv-shell,
+body.view-invest #iv-shell {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== VIEW TOPBAR (logo + search + lang/fs) – dùng chung ===== */
+.view-topbar {
+  flex-shrink: 0;
+  height: var(--view-topbar-h);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--view-border);
+  background: #fff;
+}
+
+.vt-brand {
+  display: flex; align-items: center; gap: 12px;
+  flex-shrink: 0;
+  min-width: 220px;
+  cursor: pointer;
+  background: none; border: none; padding: 0;
+  font-family: inherit;
+}
+.vt-logo {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #2bb6e6 0%, #22b46e 100%);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.vt-logo svg { width: 22px; height: 22px; color: #fff; }
+.vt-brand-text { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.1; }
+.vt-brand-name { font-size: 15px; font-weight: 800; color: var(--view-text); letter-spacing: .5px; }
+.vt-brand-sub  { font-size: 9.5px; font-weight: 600; color: var(--view-muted); letter-spacing: 1.2px; text-transform: uppercase; margin-top: 2px; }
+
+.vt-search {
+  flex: 1;
+  max-width: 720px;
+  height: 44px;
+  background: var(--view-bg-soft);
+  border: 1px solid transparent;
+  border-radius: 22px;
+  display: flex; align-items: center;
+  padding: 0 18px; gap: 10px;
+  transition: border-color .15s, background .15s;
+}
+.vt-search:focus-within {
+  background: #fff;
+  border-color: var(--icon-blue);
+}
+.vt-search svg { width: 16px; height: 16px; color: var(--view-muted); flex-shrink: 0; }
+.vt-search input {
+  flex: 1; border: none; outline: none; background: none;
+  font-family: inherit; font-size: 13.5px; color: var(--view-text);
+  min-width: 0;
+}
+.vt-search input::placeholder { color: var(--view-muted-2); }
+
+.vt-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.vt-icon-btn {
+  height: 40px; padding: 0 14px;
+  border: 1px solid var(--view-border);
+  background: #fff; border-radius: 20px;
+  display: inline-flex; align-items: center; gap: 6px;
+  cursor: pointer; color: var(--view-text);
+  font-family: inherit; font-size: 13px; font-weight: 600;
+  transition: border-color .15s, background .15s;
+}
+.vt-icon-btn:hover { border-color: var(--icon-blue); background: var(--view-bg-hover); }
+.vt-icon-btn.icon-only { width: 40px; padding: 0; justify-content: center; }
+.vt-icon-btn svg { width: 16px; height: 16px; }
+
+.vt-close {
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 1px solid var(--view-border);
+  background: #fff; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--view-text);
+  transition: background .15s, border-color .15s;
+  flex-shrink: 0;
+}
+.vt-close:hover { background: var(--view-bg-hover); border-color: var(--icon-blue); }
+.vt-close svg { width: 16px; height: 16px; }
+
+/* ===== BODY: sidebar + main – flex row dưới topbar ===== */
+.view-body {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  min-height: 0;
+}
+
+/* ===== SIDEBAR CHUNG ===== */
+#gv-sidebar, #iv-sidebar {
+  flex-shrink: 0;
+  padding: 18px 14px;
+  border-right: 1px solid var(--view-border);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow-y: auto;
+  background: #fff;
+}
+#gv-sidebar { width: var(--view-side-w); }
+#iv-sidebar { width: var(--view-side-w-iv); }
+
+.gv-side-title, .iv-side-title {
+  font-size: 11px; font-weight: 700;
+  color: var(--view-muted);
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  padding: 0 4px;
+}
+
+#gv-side-list, #iv-side-list {
+  display: flex; flex-direction: column; gap: 2px;
+  flex: 1;
+}
+
+/* Item dạng nút trong sidebar */
+.gv-side-item, .iv-side-item {
+  width: 100%;
+  text-align: left;
+  padding: 11px 12px;
+  border-radius: 10px;
+  border: 1.5px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-family: inherit;
+  transition: background .15s, border-color .15s;
+}
+.gv-side-item:hover, .iv-side-item:hover { background: var(--view-bg-hover); }
+.gv-side-item.active, .iv-side-item.active {
+  background: var(--view-bg-active);
+  border-color: var(--icon-blue);
+}
+.gv-side-icon, .iv-side-icon {
+  width: 24px; height: 24px;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--icon-blue);
+}
+.gv-side-icon svg, .iv-side-icon svg { width: 20px; height: 20px; }
+.gv-side-text, .iv-side-text { min-width: 0; }
+.gv-side-name, .iv-side-name {
+  font-size: 13.5px; font-weight: 700;
+  color: var(--view-text); line-height: 1.3;
+}
+.gv-side-sub, .iv-side-sub {
+  font-size: 11.5px; color: var(--view-muted);
+  margin-top: 2px; line-height: 1.35;
+}
+
+/* Nút footer sidebar (PDF / contact) */
+.gv-pdf, .iv-side-btn {
+  margin-top: 12px;
+  height: 40px;
+  border: none;
+  border-radius: 10px;
+  background: var(--view-bg-soft);
+  color: var(--view-text);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 12px;
+  transition: background .15s, color .15s;
+}
+.gv-pdf:hover, .iv-side-btn:hover { background: var(--icon-blue); color: #fff; }
+.iv-side-btn.primary { background: var(--icon-blue); color: #fff; }
+.iv-side-btn.primary:hover { background: var(--icon-blue-dark); }
+.iv-side-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+
+/* ===== MAIN CONTENT ===== */
+#gv-main, #iv-main {
+  flex: 1;
+  padding: 22px 28px 28px;
+  overflow-y: auto;
+  min-width: 0;
+  background: #fff;
+}
+#gv-main::-webkit-scrollbar,
+#iv-main::-webkit-scrollbar { width: 6px; }
+#gv-main::-webkit-scrollbar-thumb,
+#iv-main::-webkit-scrollbar-thumb { background: #d0d5db; border-radius: 6px; }
+
+.gv-header h1, .iv-header h1 {
+  font-size: 22px; font-weight: 800;
+  color: var(--view-text); line-height: 1.25;
+}
+.gv-header .hl, .iv-header .hl { color: var(--icon-blue); margin-left: 6px; }
+.gv-sub, .iv-sub {
+  font-size: 13px; color: var(--view-muted); margin-top: 4px;
+}
+
+/* ===== SECTION HEADER ===== */
+.view-section-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--view-text);
+  margin: 22px 0 12px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+
+/* ===== RESPONSIVE: tablet ===== */
+@media (max-width: 1023px) {
+  #gv-sidebar { width: 220px; }
+  #iv-sidebar { width: 230px; }
+  #gv-main, #iv-main { padding: 18px 18px 22px; }
+  .vt-brand { min-width: 0; }
+  .vt-brand-text { display: none; }
+}
+
+/* ===== RESPONSIVE: mobile <768px ===== */
+@media (max-width: 767px) {
+  :root { --view-topbar-h: 58px; }
+  .view-topbar { padding: 0 12px; gap: 8px; }
+  .vt-search { height: 38px; padding: 0 14px; }
+  .vt-search input { font-size: 12.5px; }
+  .vt-icon-btn, .vt-close { height: 36px; }
+  .vt-icon-btn { padding: 0 10px; }
+  .vt-icon-btn span { display: none; }
+
+  .view-body { flex-direction: column; }
+  #gv-sidebar, #iv-sidebar {
+    width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: visible;
+    padding: 10px 12px;
+    gap: 8px;
+    border-right: none;
+    border-bottom: 1px solid var(--view-border);
+    flex-shrink: 0;
+  }
+  .gv-side-title, .iv-side-title { display: none; }
+  #gv-side-list, #iv-side-list { flex-direction: row; gap: 8px; }
+  .gv-side-item, .iv-side-item {
+    flex-direction: row; align-items: center;
+    padding: 8px 14px; border-radius: 18px;
+    border: 1.5px solid var(--view-border-strong);
+    white-space: nowrap; width: auto;
+  }
+  .gv-side-sub, .iv-side-sub { display: none; }
+  .gv-side-name, .iv-side-name { font-size: 12.5px; }
+  .gv-side-item.active, .iv-side-item.active {
+    background: var(--icon-blue);
+    border-color: var(--icon-blue);
+  }
+  .gv-side-item.active .gv-side-name,
+  .gv-side-item.active .gv-side-icon,
+  .iv-side-item.active .iv-side-name,
+  .iv-side-item.active .iv-side-icon { color: #fff; }
+
+  .gv-pdf, .iv-side-actions { flex-shrink: 0; margin-top: 0; }
+  .iv-side-actions { flex-direction: row; gap: 6px; }
+  .gv-pdf, .iv-side-btn { height: 36px; padding: 0 14px; }
+
+  #gv-main, #iv-main { padding: 16px; }
+  .gv-header h1, .iv-header h1 { font-size: 18px; }
+}
+
+/* ===== Focus visible ===== */
+.gv-side-item:focus-visible, .iv-side-item:focus-visible,
+.gv-pdf:focus-visible, .iv-side-btn:focus-visible,
+.vt-icon-btn:focus-visible, .vt-close:focus-visible, .vt-brand:focus-visible {
+  outline: 2px solid rgba(43,182,230,.5);
+  outline-offset: 2px;
+}

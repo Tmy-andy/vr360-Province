@@ -1,0 +1,66 @@
+<!-- ==========================================================
+     PARTIAL: Đầu tư Lâm Đồng (#invest-view)
+     Lazy-loaded bởi js/view-router.js, mount vào #invest-mount.
+     - Shell full-page: .view-topbar dùng chung + body.
+     - Sprint 1+2: chỉ shell + sidebar + header. Content (hero,
+       projects, policy…) làm ở Sprint 3.
+     ========================================================== -->
+<section id="invest-view">
+  <div id="iv-shell">
+    <header class="view-topbar">
+      <button class="vt-brand" type="button" data-view-home="invest" title="Về Đầu tư">
+        <span class="vt-logo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/><line x1="4.93" y1="4.93" x2="7.05" y2="7.05"/><line x1="16.95" y1="16.95" x2="19.07" y2="19.07"/><line x1="4.93" y1="19.07" x2="7.05" y2="16.95"/><line x1="16.95" y1="7.05" x2="19.07" y2="4.93"/></svg>
+        </span>
+        <span class="vt-brand-text">
+          <span class="vt-brand-name">LÂM ĐỒNG</span>
+          <span class="vt-brand-sub">TINH HOA CAO NGUYÊN</span>
+        </span>
+      </button>
+      <div class="vt-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input id="iv-search" type="text" data-i18n-placeholder="invest.search.placeholder" placeholder="Tìm dự án, lĩnh vực…" autocomplete="off" />
+      </div>
+      <div class="vt-actions">
+        <button class="vt-icon-btn" id="iv-lang-btn" title="Đổi ngôn ngữ" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg>
+          <span id="iv-lang-label">VI</span>
+        </button>
+        <button class="vt-icon-btn icon-only" id="iv-fs-btn" title="Toàn màn hình" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"/></svg>
+        </button>
+        <button class="vt-close" data-view-go="map" title="Đóng" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="view-body">
+      <aside id="iv-sidebar" aria-label="Lĩnh vực ưu tiên">
+        <div class="iv-side-title" data-i18n="invest.sidebar.title">LĨNH VỰC ƯU TIÊN</div>
+        <div id="iv-side-list"></div>
+        <div class="iv-side-actions">
+          <button id="iv-pdf-btn" class="iv-side-btn" type="button">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <span data-i18n="invest.cta.download">Tải Cẩm nang Đầu tư</span>
+          </button>
+          <button id="iv-contact-btn" class="iv-side-btn primary" type="button">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <span data-i18n="invest.cta.contact">Liên hệ Trung tâm XTĐT</span>
+          </button>
+        </div>
+      </aside>
+
+      <main id="iv-main">
+        <header class="iv-header">
+          <h1>
+            <span data-i18n="invest.title">Đầu tư &amp; Phát triển</span>
+            <span class="hl" data-i18n="invest.title_hl">Lâm Đồng</span>
+          </h1>
+          <p class="iv-sub" data-i18n="invest.sub">Cơ hội đầu tư hấp dẫn – Đồng hành phát triển bền vững</p>
+        </header>
+        <div id="iv-content"></div>
+      </main>
+    </div>
+  </div>
+</section>

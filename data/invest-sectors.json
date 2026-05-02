@@ -1,0 +1,12 @@
+{
+  "_note": "Lĩnh vực ưu tiên thu hút đầu tư – schema tối thiểu cho Sprint 1 (sidebar). 1 mục 'Tất cả' + 6 lĩnh vực.",
+  "sectors": [
+    { "id": "all",       "icon": "grid",      "titleKey": "invest.sectors.all.title",       "subKey": "invest.sectors.all.sub" },
+    { "id": "tourism",   "icon": "briefcase", "titleKey": "invest.sectors.tourism.title",   "subKey": "invest.sectors.tourism.sub" },
+    { "id": "agri",      "icon": "leaf",      "titleKey": "invest.sectors.agri.title",      "subKey": "invest.sectors.agri.sub" },
+    { "id": "industry",  "icon": "factory",   "titleKey": "invest.sectors.industry.title",  "subKey": "invest.sectors.industry.sub" },
+    { "id": "energy",    "icon": "wind",      "titleKey": "invest.sectors.energy.title",    "subKey": "invest.sectors.energy.sub" },
+    { "id": "infra",     "icon": "building",  "titleKey": "invest.sectors.infra.title",     "subKey": "invest.sectors.infra.sub" },
+    { "id": "logistics", "icon": "truck",     "titleKey": "invest.sectors.logistics.title", "subKey": "invest.sectors.logistics.sub" }
+  ]
+}

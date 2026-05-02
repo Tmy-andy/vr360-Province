@@ -1,0 +1,38 @@
+{
+  "_note": "Cẩm nang Du lịch Lâm Đồng – nội dung landing. Bài viết tách riêng ở data/guide-articles.json. Ảnh dùng picsum.photos để Sprint sau dễ replace.",
+  "topics": [
+    { "id": "overview",   "icon": "book",      "titleKey": "guide.topics.overview.title",   "subKey": "guide.topics.overview.sub" },
+    { "id": "when",       "icon": "calendar",  "titleKey": "guide.topics.when.title",       "subKey": "guide.topics.when.sub" },
+    { "id": "transport",  "icon": "car",       "titleKey": "guide.topics.transport.title",  "subKey": "guide.topics.transport.sub" },
+    { "id": "stay",       "icon": "bed",       "titleKey": "guide.topics.stay.title",       "subKey": "guide.topics.stay.sub" },
+    { "id": "food",       "icon": "utensils",  "titleKey": "guide.topics.food.title",       "subKey": "guide.topics.food.sub" },
+    { "id": "places",     "icon": "map-pin",   "titleKey": "guide.topics.places.title",     "subKey": "guide.topics.places.sub" },
+    { "id": "activities", "icon": "camera",    "titleKey": "guide.topics.activities.title", "subKey": "guide.topics.activities.sub" },
+    { "id": "tips",       "icon": "lightbulb", "titleKey": "guide.topics.tips.title",       "subKey": "guide.topics.tips.sub" }
+  ],
+
+  "hero": {
+    "tag": "TỔNG QUAN LÂM ĐỒNG",
+    "title": "Cao nguyên của thiên nhiên và văn hoá",
+    "desc": "Lâm Đồng – vùng đất cao nguyên trù phú, khí hậu mát mẻ quanh năm, cảnh quan thiên nhiên hùng vĩ cùng bản sắc văn hoá đa dạng.",
+    "cta": "Khám phá ngay",
+    "ctaHref": "#guide/article/cam-nang-da-lat-tu-tuc",
+    "image": "https://picsum.photos/seed/lamdong-hero/900/600"
+  },
+
+  "stats": [
+    { "icon": "thermo",   "label": "Nhiệt độ trung bình", "value": "18 – 24°C" },
+    { "icon": "calendar", "label": "Mùa đẹp nhất",         "value": "Tháng 11 – 4" },
+    { "icon": "plane",    "label": "Sân bay",              "value": "Liên Khương (30km)" },
+    { "icon": "pin",      "label": "Số điểm đến",          "value": "120+" }
+  ],
+
+  "featured": ["top10-diem-den", "cam-nang-da-lat-tu-tuc", "trai-nghiem-doc-dao", "dac-san-lam-dong", "homestay-view-dep"],
+
+  "tips": [
+    { "icon": "bed",      "title": "Đặt phòng sớm",   "desc": "Trước 1–2 tuần vào mùa cao điểm và dịp lễ Tết." },
+    { "icon": "jacket",   "title": "Mang áo ấm",      "desc": "Nhiệt độ về đêm có thể xuống thấp, đặc biệt mùa đông." },
+    { "icon": "medkit",   "title": "Chuẩn bị thuốc",  "desc": "Mang theo thuốc cá nhân và thuốc say xe khi đi đường dài." },
+    { "icon": "heart",    "title": "Tôn trọng văn hoá","desc": "Giữ gìn môi trường, tôn trọng phong tục và người dân địa phương." }
+  ]
+}

@@ -15,9 +15,61 @@
   "nav": {
     "home": "Trang chủ",
     "explore": "Khám phá",
+    "guide": "Cẩm nang",
     "contribute": "Đóng góp",
     "deals": "Ưu đãi",
+    "invest": "Đầu tư",
     "vr_tour": "VR Tour"
+  },
+
+  "guide": {
+    "title": "Cẩm nang Du lịch",
+    "title_hl": "Lâm Đồng",
+    "sub": "Thông tin hữu ích cho hành trình khám phá trọn vẹn",
+    "sidebar": { "title": "CHỦ ĐỀ CẨM NANG" },
+    "pdf": "Tải cẩm nang PDF",
+    "pdfShort": "Tải PDF",
+    "search": { "placeholder": "Tìm kiếm thông tin cẩm nang, hướng dẫn, kinh nghiệm…" },
+    "featured": "BÀI VIẾT NỔI BẬT",
+    "tipsTitle": "MẸO HỮU ÍCH CHO DU KHÁCH",
+    "tocTitle": "NỘI DUNG BÀI VIẾT",
+    "minRead": "phút đọc",
+    "publishedOn": "Đăng ngày",
+    "like": "Yêu thích",
+    "share": "Chia sẻ",
+    "empty": "Không tìm thấy bài viết phù hợp.",
+    "notFound": "Bài viết không tồn tại.",
+    "topics": {
+      "overview":   { "title": "Tổng quan",        "sub": "Giới thiệu Lâm Đồng" },
+      "when":       { "title": "Thời điểm du lịch", "sub": "Mùa nào đẹp nhất" },
+      "transport":  { "title": "Di chuyển",         "sub": "Đến và đi lại trong tỉnh" },
+      "stay":       { "title": "Lưu trú",           "sub": "Khách sạn, homestay" },
+      "food":       { "title": "Ẩm thực",           "sub": "Đặc sản nên thử" },
+      "places":     { "title": "Điểm đến",          "sub": "Xem trên bản đồ" },
+      "activities": { "title": "Hoạt động",         "sub": "Trải nghiệm thú vị" },
+      "tips":       { "title": "Kinh nghiệm",       "sub": "Mẹo hữu ích" }
+    }
+  },
+
+  "invest": {
+    "title": "Đầu tư & Phát triển",
+    "title_hl": "Lâm Đồng",
+    "sub": "Cơ hội đầu tư hấp dẫn – Đồng hành phát triển bền vững",
+    "sidebar": { "title": "LĨNH VỰC ƯU TIÊN" },
+    "search": { "placeholder": "Tìm dự án, lĩnh vực…" },
+    "cta": {
+      "download": "Tải Cẩm nang Đầu tư",
+      "contact":  "Liên hệ Trung tâm XTĐT"
+    },
+    "sectors": {
+      "all":       { "title": "Tất cả",                       "sub": "Xem tất cả lĩnh vực" },
+      "tourism":   { "title": "Du lịch – Dịch vụ",            "sub": "Resort, MICE, sinh thái" },
+      "agri":      { "title": "Nông nghiệp công nghệ cao",     "sub": "Rau, hoa, dược liệu" },
+      "industry":  { "title": "Công nghiệp chế biến",          "sub": "Nông sản, gỗ, thực phẩm" },
+      "energy":    { "title": "Năng lượng tái tạo",            "sub": "Điện gió, điện mặt trời" },
+      "infra":     { "title": "Hạ tầng – Đô thị",              "sub": "Đô thị mới, BĐS, KCN" },
+      "logistics": { "title": "Thương mại – Logistics",        "sub": "Kho vận, trung tâm phân phối" }
+    }
   },
 
   "panel": {

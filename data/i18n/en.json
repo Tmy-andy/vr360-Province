@@ -15,9 +15,63 @@
   "nav": {
     "home": "Home",
     "explore": "Explore",
+    "guide": "Guide",
     "contribute": "Contribute",
     "deals": "Deals",
+    "invest": "Invest",
     "vr_tour": "VR Tour"
+  },
+
+  "guide": {
+    "_todo": "TODO: dịch EN — Sprint 1 tạm copy VI",
+    "title": "Travel Guide",
+    "title_hl": "Lam Dong",
+    "sub": "Useful information for a complete journey",
+    "sidebar": { "title": "GUIDE TOPICS" },
+    "pdf": "Download guide PDF",
+    "pdfShort": "Download PDF",
+    "search": { "placeholder": "Search guides, tips, experience…" },
+    "featured": "FEATURED ARTICLES",
+    "tipsTitle": "USEFUL TIPS FOR TRAVELERS",
+    "tocTitle": "TABLE OF CONTENTS",
+    "minRead": "min read",
+    "publishedOn": "Published on",
+    "like": "Like",
+    "share": "Share",
+    "empty": "No matching articles.",
+    "notFound": "Article not found.",
+    "topics": {
+      "overview":   { "title": "Overview",      "sub": "About Lam Dong" },
+      "when":       { "title": "When to visit", "sub": "Best season" },
+      "transport":  { "title": "Getting around", "sub": "Travel & transit" },
+      "stay":       { "title": "Where to stay", "sub": "Hotels, homestays" },
+      "food":       { "title": "Food",          "sub": "Local specialties" },
+      "places":     { "title": "Destinations",  "sub": "View on the map" },
+      "activities": { "title": "Activities",    "sub": "Things to do" },
+      "tips":       { "title": "Tips",          "sub": "Helpful tips" }
+    }
+  },
+
+  "invest": {
+    "_todo": "TODO: dịch EN — Sprint 1 tạm copy VI",
+    "title": "Investment & Development",
+    "title_hl": "Lam Dong",
+    "sub": "Attractive investment opportunities — Sustainable partnerships",
+    "sidebar": { "title": "PRIORITY SECTORS" },
+    "search": { "placeholder": "Search projects, sectors…" },
+    "cta": {
+      "download": "Download Investment Guide",
+      "contact":  "Contact Investment Promotion Center"
+    },
+    "sectors": {
+      "all":       { "title": "All",                          "sub": "All sectors" },
+      "tourism":   { "title": "Tourism & Services",           "sub": "Resorts, MICE, eco" },
+      "agri":      { "title": "Hi-tech Agriculture",           "sub": "Vegetables, flowers, herbs" },
+      "industry":  { "title": "Processing Industry",           "sub": "Agro, wood, food" },
+      "energy":    { "title": "Renewable Energy",              "sub": "Wind, solar power" },
+      "infra":     { "title": "Infrastructure & Urban",        "sub": "New towns, real estate, IZs" },
+      "logistics": { "title": "Trade & Logistics",             "sub": "Warehousing, distribution" }
+    }
   },
 
   "panel": {

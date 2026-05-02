@@ -1,0 +1,22 @@
+/* =========================================================
+   INVEST VIEW – "Đầu tư Lâm Đồng"
+   Style riêng cho #invest-view. Phần shell/sidebar đã có ở
+   views-shared.css; file này chỉ override khi cần và chứa
+   các block content riêng (sprint 3 sẽ điền hero/projects…).
+   ========================================================= */
+
+.iv-header { padding-bottom: 10px; border-bottom: 1px solid var(--view-border); }
+
+#iv-content {
+  padding-top: 16px;
+  min-height: 200px;
+}
+#iv-content:empty::before {
+  content: 'Sprint 3 sẽ render hero, reasons, projects, policy…';
+  display: block;
+  text-align: center;
+  color: var(--view-muted-2);
+  font-size: 12.5px;
+  padding: 40px 0;
+  font-style: italic;
+}

@@ -1,0 +1,137 @@
+{
+  "_note": "Bài viết Cẩm nang. Body là mảng block: para, heading (có num để hiển thị '01.'), stats, callout. articles[].slug làm route #guide/article/:slug.",
+  "articles": [
+    {
+      "slug": "cam-nang-da-lat-tu-tuc",
+      "topicId": "tips",
+      "category": "Kinh nghiệm",
+      "title": "Kinh nghiệm du lịch Đà Lạt tự túc từ A–Z",
+      "excerpt": "Cẩm nang chi tiết giúp bạn có chuyến đi trọn vẹn và tiết kiệm. Từ di chuyển, lưu trú, ẩm thực đến lịch trình gợi ý và những điểm check-in không thể bỏ lỡ.",
+      "hero": "https://picsum.photos/seed/dalat-sunset/1200/600",
+      "author": "Du lịch Lâm Đồng",
+      "verified": true,
+      "date": "2025-05-24",
+      "readMin": 7,
+      "stats": [
+        { "icon": "altitude", "label": "Độ cao trung bình", "value": "1.500 m" },
+        { "icon": "thermo",   "label": "Nhiệt độ trung bình", "value": "18 – 24°C" },
+        { "icon": "calendar", "label": "Thời điểm đẹp nhất", "value": "Tháng 11 – 4" },
+        { "icon": "users",    "label": "Dân số", "value": "≈ 665.000 người" }
+      ],
+      "body": [
+        { "type": "para", "text": "Đà Lạt – thành phố ngàn hoa, nằm ở độ cao hơn 1.500m so với mực nước biển, được thiên nhiên ưu ái với khí hậu mát mẻ quanh năm, cảnh quan thơ mộng và nền văn hoá đặc sắc. Đây là điểm đến lý tưởng cho những ai muốn tìm kiếm không gian yên bình và gần gũi với thiên nhiên." },
+        { "type": "heading", "num": "01", "text": "Tổng quan về Đà Lạt" },
+        { "type": "para", "text": "Đà Lạt thuộc tỉnh Lâm Đồng, cách TP. Hồ Chí Minh khoảng 300km. Thành phố nổi tiếng với khí hậu mát mẻ quanh năm, cảnh quan thiên nhiên hùng vĩ và nhiều công trình kiến trúc mang đậm dấu ấn thời gian." },
+        { "type": "stats" },
+        { "type": "heading", "num": "02", "text": "Thời điểm du lịch lý tưởng" },
+        { "type": "para", "text": "Tháng 11 đến tháng 4 năm sau là khoảng thời gian khô ráo, hoa nở rộ – đặc biệt mùa hoa mai anh đào (tháng 1–2) và lễ hội hoa Đà Lạt cuối năm. Tránh tháng 7–9 vì mưa kéo dài." },
+        { "type": "heading", "num": "03", "text": "Di chuyển đến Đà Lạt" },
+        { "type": "para", "text": "Bạn có thể bay tới sân bay Liên Khương (cách trung tâm 30km), đi xe khách giường nằm từ TP.HCM/Nha Trang, hoặc tự lái xe theo QL20. Trong thành phố nên thuê xe máy để chủ động khám phá các điểm xa." },
+        { "type": "heading", "num": "04", "text": "Ở đâu khi du lịch Đà Lạt?" },
+        { "type": "para", "text": "Khu trung tâm Hồ Xuân Hương phù hợp cho lần đầu đến. Khu Tuyền Lâm – Trại Mát có nhiều resort yên tĩnh. Homestay nhỏ ven hồ, view rừng thông là lựa chọn được giới trẻ ưa chuộng." },
+        { "type": "heading", "num": "05", "text": "Ăn gì ở Đà Lạt?" },
+        { "type": "para", "text": "Bánh tráng nướng, lẩu gà lá é, bánh ướt lòng gà, sữa đậu nành nóng chợ đêm, atiso hầm giò heo, dâu tây và đặc sản mứt rau củ là những món bạn không nên bỏ lỡ." },
+        { "type": "heading", "num": "06", "text": "Đi đâu ở Đà Lạt?" },
+        { "type": "para", "text": "Hồ Tuyền Lâm, thác Datanla, Langbiang, vườn dâu, đồi chè Cầu Đất, ga Đà Lạt cổ, Quảng trường Lâm Viên, nhà thờ Con Gà, biệt thự cổ Pháp – mỗi nơi mang một câu chuyện riêng." },
+        { "type": "heading", "num": "07", "text": "Lịch trình gợi ý" },
+        { "type": "para", "text": "Lịch trình 3N2Đ kinh điển: Ngày 1 – check-in trung tâm, dạo Hồ Xuân Hương; Ngày 2 – Langbiang + đồi chè + làng Cù Lần; Ngày 3 – thác Datanla + ga Đà Lạt + chợ đêm." },
+        { "type": "heading", "num": "08", "text": "Kinh nghiệm và lưu ý" },
+        { "type": "para", "text": "Đặt phòng sớm vào dịp lễ. Mang áo khoác mỏng cho buổi tối. Chuẩn bị thuốc say xe nếu di chuyển đường đèo. Tôn trọng môi trường: không xả rác, không bẻ hoa." }
+      ],
+      "tipBox": {
+        "title": "MẸO HỮU ÍCH",
+        "text": "Đặt vé và phòng trước ít nhất 1–2 tuần, đặc biệt vào mùa cao điểm và dịp lễ Tết để có giá tốt và nhiều lựa chọn hơn."
+      }
+    },
+    {
+      "slug": "top10-diem-den",
+      "topicId": "places",
+      "category": "Điểm đến",
+      "title": "Top 10 điểm đến không thể bỏ lỡ tại Lâm Đồng",
+      "excerpt": "Những địa danh đẹp nhất bạn nhất định phải ghé thăm khi đến Lâm Đồng.",
+      "hero": "https://picsum.photos/seed/lamdong-cherry/1200/600",
+      "author": "Du lịch Lâm Đồng",
+      "verified": true,
+      "date": "2025-05-18",
+      "readMin": 5,
+      "stats": [],
+      "body": [
+        { "type": "para", "text": "Bài viết tổng hợp 10 điểm đến hàng đầu Lâm Đồng — từ thác nước, hồ, núi đến các khu di sản và làng sinh thái." },
+        { "type": "heading", "num": "01", "text": "Hồ Tuyền Lâm" },
+        { "type": "para", "text": "Hồ nước trong xanh giữa rừng thông, lý tưởng cho chèo SUP và đạp xe ven hồ." },
+        { "type": "heading", "num": "02", "text": "Núi Langbiang" },
+        { "type": "para", "text": "Đỉnh núi mang truyền thuyết tình yêu của người K'Ho, view toàn cảnh cao nguyên." }
+      ],
+      "tipBox": {
+        "title": "MẸO HỮU ÍCH",
+        "text": "Lên đỉnh Langbiang vào sáng sớm để săn mây và tránh đông khách buổi trưa."
+      }
+    },
+    {
+      "slug": "trai-nghiem-doc-dao",
+      "topicId": "activities",
+      "category": "Hoạt động",
+      "title": "Những trải nghiệm độc đáo tại Lâm Đồng",
+      "excerpt": "Khám phá các hoạt động thú vị giữa thiên nhiên cao nguyên.",
+      "hero": "https://picsum.photos/seed/lamdong-waterfall/1200/600",
+      "author": "Du lịch Lâm Đồng",
+      "verified": true,
+      "date": "2025-05-12",
+      "readMin": 6,
+      "stats": [],
+      "body": [
+        { "type": "para", "text": "Lâm Đồng có nhiều trải nghiệm vượt ngoài tour truyền thống: trekking, canyoning, cắm trại, tour cà phê…" },
+        { "type": "heading", "num": "01", "text": "Canyoning Datanla" },
+        { "type": "para", "text": "Đu dây vượt thác Datanla – một trong những trải nghiệm canyoning hàng đầu Đông Nam Á." }
+      ],
+      "tipBox": {
+        "title": "MẸO HỮU ÍCH",
+        "text": "Chọn đơn vị tour có giấy phép và bảo hiểm khi tham gia hoạt động mạo hiểm."
+      }
+    },
+    {
+      "slug": "dac-san-lam-dong",
+      "topicId": "food",
+      "category": "Ẩm thực",
+      "title": "Đặc sản Lâm Đồng – Hương vị cao nguyên",
+      "excerpt": "Top món ngon đặc trưng khiến bạn nhớ mãi không quên.",
+      "hero": "https://picsum.photos/seed/lamdong-food/1200/600",
+      "author": "Du lịch Lâm Đồng",
+      "verified": true,
+      "date": "2025-04-30",
+      "readMin": 4,
+      "stats": [],
+      "body": [
+        { "type": "para", "text": "Ẩm thực Lâm Đồng là sự pha trộn giữa món Việt, K'Ho và ảnh hưởng Pháp. Từ lẩu gà lá é đến atiso hầm." },
+        { "type": "heading", "num": "01", "text": "Lẩu gà lá é" },
+        { "type": "para", "text": "Hương lá é nồng nàn, gà ta dai ngọt – món không thể thiếu khi tới Đà Lạt." }
+      ],
+      "tipBox": {
+        "title": "MẸO HỮU ÍCH",
+        "text": "Tới chợ đêm Đà Lạt sau 19h để thử bánh tráng nướng và sữa đậu nành nóng."
+      }
+    },
+    {
+      "slug": "homestay-view-dep",
+      "topicId": "stay",
+      "category": "Lưu trú",
+      "title": "Top homestay view đẹp ở Lâm Đồng",
+      "excerpt": "Gợi ý những nơi lưu trú lý tưởng, gần gũi thiên nhiên.",
+      "hero": "https://picsum.photos/seed/lamdong-homestay/1200/600",
+      "author": "Du lịch Lâm Đồng",
+      "verified": true,
+      "date": "2025-04-22",
+      "readMin": 5,
+      "stats": [],
+      "body": [
+        { "type": "para", "text": "Khu Tuyền Lâm và Trại Mát có loạt homestay view rừng thông và đồi chè đáng để check-in." },
+        { "type": "heading", "num": "01", "text": "Homestay rừng thông" },
+        { "type": "para", "text": "Cabin gỗ đặt giữa rừng thông, lò sưởi và khoảng sân ngắm sao đêm." }
+      ],
+      "tipBox": {
+        "title": "MẸO HỮU ÍCH",
+        "text": "Đặt phòng qua kênh chính chủ hoặc booking quốc tế để tránh phòng ảo."
+      }
+    }
+  ]
+}
