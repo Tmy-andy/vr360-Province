@@ -24,14 +24,16 @@ window.UI = (() => {
     $('vr-ui').classList.toggle('ui-hidden', uiHidden);
     $('minimap').classList.toggle('ui-hidden', uiHidden);
     $('vr-reveal-btn').classList.toggle('visible', uiHidden);
-    $('vr-hideui').classList.toggle('active', uiHidden);
+    document.body.classList.toggle('vr-ui-hidden', uiHidden);
+    $('hide-ui-btn').classList.toggle('active', uiHidden);
   }
   function showVRUI() {
     uiHidden = false;
     $('vr-ui').classList.remove('ui-hidden');
     $('minimap').classList.remove('ui-hidden');
     $('vr-reveal-btn').classList.remove('visible');
-    $('vr-hideui').classList.remove('active');
+    document.body.classList.remove('vr-ui-hidden');
+    $('hide-ui-btn').classList.remove('active');
   }
 
   /* ===== PANEL ===== */
@@ -87,7 +89,9 @@ window.UI = (() => {
     document.querySelectorAll('.lcard').forEach(el => {
       el.addEventListener('click', () => {
         const place = window.APP_DATA.places.find(x => x.id === +el.dataset.id);
-        if (place) enterVRMode(place);
+        if (!place) return;
+        if (vrMode) switchVRPlace(place);
+        else enterVRMode(place);
       });
     });
     document.querySelectorAll('.btn-go').forEach(el =>
@@ -159,6 +163,8 @@ window.UI = (() => {
     vrMode = true;
     uiHidden = false;
     document.body.classList.add('mode-3d');
+    const _mtLabel = document.querySelector('#three-d-btn .mt-label');
+    if (_mtLabel) _mtLabel.textContent = '2D';
 
     // 4. Init Pannellum VR
     initVRViewer(place);
@@ -216,34 +222,12 @@ window.UI = (() => {
     $('vr-meta-rating').textContent = `★ ${place.r}  (${place.rv?.toLocaleString('vi')} đánh giá)`;
     $('vr-meta-entry').textContent = place.entry || '—';
 
-    // Location dropdown – có thumbnail ảnh cho từng lựa chọn
-    $('vr-loc-current').textContent = place.name;
-    const locList = $('vr-loc-list');
-    locList.innerHTML = window.APP_DATA.places.map(p => `
-      <div class="vr-loc-opt${p.id === place.id ? ' selected' : ''}" data-id="${p.id}">
-        <div class="vr-loc-thumb"><img src="${p.img}" alt="" loading="lazy" onerror="this.style.opacity=0"/></div>
-        <div class="vr-loc-meta">
-          <div class="vr-loc-name">${p.name}</div>
-          ${p.area ? `<div class="vr-loc-sub">${p.area}</div>` : ''}
-        </div>
-      </div>
-    `).join('');
-    locList.querySelectorAll('.vr-loc-opt').forEach(el => {
-      el.addEventListener('click', () => {
-        const newPlace = window.APP_DATA.places.find(x => x.id === +el.dataset.id);
-        if (newPlace) { $('vr-loc-dd').classList.remove('open'); switchVRPlace(newPlace); }
-      });
-    });
-
-    // Language label sync
-    $('vr-lang-label').textContent = window.I18n.lang.toUpperCase();
-
     // Show info panel
     $('vr-info').classList.remove('hidden');
 
     // Reset controls state
     autoRotating = false;
-    $('vr-autorot').classList.remove('active');
+    $('autorot-btn').classList.remove('active');
   }
 
   async function switchVRPlace(newPlace) {
@@ -262,7 +246,6 @@ window.UI = (() => {
     }
     initVRViewer(newPlace);
     populateVROverlay(newPlace);
-    $('vr-loc-current').textContent = newPlace.name;
 
     // Update minimap tile
     document.getElementById('minimap-map').style.backgroundImage = `url(${minimapTileUrl(newPlace, 12)})`;
@@ -346,6 +329,8 @@ window.UI = (() => {
     uiHidden = false;
     document.body.classList.remove('mode-3d');
     $('vr-ui').classList.remove('ui-hidden');
+    const _mtLabel = document.querySelector('#three-d-btn .mt-label');
+    if (_mtLabel) _mtLabel.textContent = '3D';
 
     if (headingRaf) { cancelAnimationFrame(headingRaf); headingRaf = null; }
     if (vrViewer && typeof vrViewer.destroy === 'function') {
@@ -358,9 +343,10 @@ window.UI = (() => {
 
     // Reset UI state
     autoRotating = false;
-    $('vr-autorot').classList.remove('active');
+    $('autorot-btn').classList.remove('active');
     $('vr-reveal-btn').classList.remove('visible');
-    $('vr-hideui').classList.remove('active');
+    $('hide-ui-btn').classList.remove('active');
+    document.body.classList.remove('vr-ui-hidden');
 
     // Reset markers
     Object.values(window.MapModule.markers).forEach(({ el }) => el.classList.remove('active'));
@@ -415,13 +401,24 @@ window.UI = (() => {
     document.body.classList.remove('layers-open');
   }
   function toggleLayerPopup() {
-    const isOpen = $('layer-popup').classList.toggle('open');
+    const popup = $('layer-popup');
+    const btn = $('layers-btn');
+    /* Neo popup ngay dưới-trái của nút Layers — đúng cho cả desktop + mobile */
+    if (btn) {
+      const r = btn.getBoundingClientRect();
+      const popW = 220;
+      const left = Math.max(8, Math.min(window.innerWidth - popW - 8, r.right - popW));
+      popup.style.top   = (r.bottom + 6) + 'px';
+      popup.style.left  = left + 'px';
+      popup.style.right = 'auto';
+    }
+    const isOpen = popup.classList.toggle('open');
     document.body.classList.toggle('layers-open', isOpen);
   }
 
   /* ===== HELP TOUR – DANH SÁCH BƯỚC ===== */
   const HELP_ITEMS_2D = [
-    { target: '#menu-btn',     round: true,  svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>', label: 'Ẩn/hiện giao diện' },
+    { target: '#hide-ui-btn',  round: true,  svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>', label: 'Ẩn/hiện giao diện' },
     { target: '#mobile-panel-btn', round: true, svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>', label: 'Mở danh sách địa điểm (toàn màn hình)' },
     { target: '#mobile-more-btn', round: true, svg: '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>', label: 'Mở/đóng cột nút bên phải' },
     { target: '#search-bar',                 svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>', label: 'Tìm kiếm địa điểm' },
@@ -432,31 +429,37 @@ window.UI = (() => {
     { target: '#zoom-in-btn',  round: true,  svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>', label: 'Phóng to bản đồ' },
     { target: '#zoom-out-btn', round: true,  svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/></svg>', label: 'Thu nhỏ bản đồ' },
     { target: '#layers-btn',   round: true,  svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>', label: 'Thay đổi bản đồ nền' },
-    { target: '#invest-layer-btn', round: true, svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>', label: 'Hiện/ẩn dự án đầu tư + ranh giới các KCN trên bản đồ' },
     { target: '#help-btn',     round: true,  txt: '?', label: 'Mở hướng dẫn sử dụng' },
-    { target: '#news-btn',     round: true,  svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>', label: 'Xem tin tức, sự kiện' },
-    { target: '#left-bar .lbtn:nth-child(3)', round: true, svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>', label: 'Tài khoản người dùng' },
+    {
+      target: () => {
+        const tg = document.getElementById('panel-toggle');
+        const closed = tg && tg.classList.contains('closed');
+        return closed ? tg : (document.getElementById('right-panel') || tg);
+      },
+      label: () => {
+        const closed = document.getElementById('panel-toggle')?.classList.contains('closed');
+        return closed
+          ? 'Mở bảng danh sách địa điểm bên phải'
+          : 'Bảng danh sách địa điểm – tìm kiếm, lọc theo Xã/Phường, lọc theo loại địa điểm';
+      }
+    },
     { target: '#bottom-bar .bbt:nth-child(2)', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>', label: 'Trang chủ' },
     { target: '#bottom-bar .bbt:nth-child(3)', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>', label: 'Cẩm nang Du lịch – Mẹo, kinh nghiệm, gợi ý lịch trình' },
-    { target: '#bottom-bar .bbt:nth-child(4)', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><line x1="12" y1="18" x2="12" y2="22"/></svg>', label: 'Trợ lý AI – Câu hỏi nhanh về du lịch & đầu tư' },
-    { target: '#bottom-bar .bbt:nth-child(5)', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>', label: 'Đầu tư Lâm Đồng – Dự án, chính sách, dashboard' },
-    { target: '#bottom-bar .bbt:nth-child(6)', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>', label: 'Khởi động VR Tour 360°' },
+    { target: '#bottom-bar .bbt:nth-child(4)', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><line x1="12" y1="18" x2="12" y2="22"/></svg>', label: 'Trợ lý AI – Câu hỏi nhanh về du lịch' },
+    { target: '#bottom-bar .bbt:nth-child(5)', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>', label: 'Khởi động VR Tour 360°' },
   ];
 
   const HELP_ITEMS_3D = [
-    { target: '#vr-loc-trigger',                      label: 'Chọn điểm đến VR khác từ danh sách' },
-    { target: '#vr-lang-btn',     round: true,        label: 'Đổi ngôn ngữ giao diện' },
-    { target: '#vr-vol-btn',      round: true,        label: 'Bật/tắt âm thanh nền' },
-    { target: '#vr-share-btn',    round: true,        label: 'Chia sẻ điểm đến VR đang xem' },
-    { target: '#vr-help-btn',     round: true,        label: 'Mở hướng dẫn sử dụng chế độ VR' },
-    { target: '#vr-back-btn',                         label: 'Quay về bản đồ 2D' },
-    { target: '#vr-info',                             label: 'Thông tin điểm đến: tên, giờ mở, đánh giá, vé vào' },
-    { target: '#vr-autorot',                          label: 'Bật chế độ tự động xoay 360°' },
-    { target: '#vr-zout',                             label: 'Thu nhỏ tầm nhìn (zoom out)' },
-    { target: '#vr-hideui',                           label: 'Ẩn giao diện để xem toàn cảnh VR' },
-    { target: '#vr-zin',                              label: 'Phóng to tầm nhìn (zoom in)' },
-    { target: '#vr-fullscr',                          label: 'Xem VR ở chế độ toàn màn hình' },
-    { target: '#minimap',                             label: 'Minimap la bàn – click để quay về bản đồ 2D' },
+    { target: '#help-btn',     round: true, txt: '?',  label: 'Mở hướng dẫn sử dụng chế độ VR' },
+    { target: '#autorot-btn',  round: true,            label: 'Bật/tắt chế độ tự động xoay 360°' },
+    { target: '#lang-btn',                             label: 'Đổi ngôn ngữ giao diện' },
+    { target: '#fs-btn',       round: true,            label: 'Xem VR ở chế độ toàn màn hình' },
+    { target: '#zoom-in-btn',  round: true,            label: 'Phóng to tầm nhìn (zoom in)' },
+    { target: '#zoom-out-btn', round: true,            label: 'Thu nhỏ tầm nhìn (zoom out)' },
+    { target: '#hide-ui-btn',  round: true,            label: 'Ẩn giao diện để xem toàn cảnh VR' },
+    { target: '#three-d-btn',  round: true, txt: '2D', label: 'Quay về bản đồ 2D' },
+    { target: '#vr-info',                              label: 'Thông tin điểm đến: tên, giờ mở, đánh giá, vé vào' },
+    { target: '#minimap',                              label: 'Minimap la bàn – click để quay về bản đồ 2D' },
   ];
 
   /* ===== HELP TOUR (spotlight) ===== */
@@ -491,7 +494,10 @@ window.UI = (() => {
     if (!tourActive) return;
     if (tourIdx >= tourItems.length) { endTour(); return; }
     const item = tourItems[tourIdx];
-    const target = item.target ? document.querySelector(item.target) : null;
+    /* target: string selector | function returning Element */
+    let target = null;
+    if (typeof item.target === 'function')      target = item.target();
+    else if (typeof item.target === 'string')   target = document.querySelector(item.target);
     if (!target) { tourIdx++; showTourStep(); return; }
 
     const rect = target.getBoundingClientRect();
@@ -516,7 +522,7 @@ window.UI = (() => {
     // Tooltip nội dung
     const tip = $('tour-tip');
     tip.querySelector('.tt-step').textContent = `Bước ${tourIdx + 1} / ${tourItems.length}`;
-    tip.querySelector('.tt-label').textContent = item.label;
+    tip.querySelector('.tt-label').textContent = (typeof item.label === 'function') ? item.label() : item.label;
 
     // Định vị tooltip: chọn cạnh có nhiều không gian nhất
     const vw = window.innerWidth;
@@ -615,13 +621,11 @@ window.UI = (() => {
     newsPanelOpen = true;
     $('np-date').textContent = formatDate();
     $('news-panel').classList.add('open');
-    $('news-btn').classList.add('active');
     renderNewsList();
   }
   function closeNewsPanel() {
     newsPanelOpen = false;
     $('news-panel').classList.remove('open');
-    $('news-btn').classList.remove('active');
   }
   function setNewsTab(tab) {
     newsTab = tab;
@@ -635,7 +639,12 @@ window.UI = (() => {
   function initEvents() {
     /* 2D panel */
     $('panel-toggle').addEventListener('click', () => panelOpen ? closePanel() : openPanel());
-    $('menu-btn').addEventListener('click', () => document.body.classList.toggle('focus-mode'));
+
+    /* hide-ui-btn: ở 2D toggle focus-mode, ở 3D toggle vr-ui */
+    $('hide-ui-btn').addEventListener('click', () => {
+      if (vrMode) toggleVRUI();
+      else document.body.classList.toggle('focus-mode');
+    });
 
     /* Mobile: nút "more" gom top-right + left-bar */
     $('mobile-more-btn').addEventListener('click', e => {
@@ -657,13 +666,14 @@ window.UI = (() => {
       if (e.target.closest('#mobile-more-btn')) return;
       if (e.target.closest('#mobile-panel-btn')) return;
       if (e.target.closest('#top-right')) return;
-      if (e.target.closest('#left-bar')) return;
       document.body.classList.remove('mobile-menu-open');
     });
 
-    /* Help: click "?" → start spotlight tour ngay từ bước 1 */
-    $('help-btn').addEventListener('click', e => { e.stopPropagation(); startTour(HELP_ITEMS_2D); });
-    $('vr-help-btn').addEventListener('click', e => { e.stopPropagation(); startTour(HELP_ITEMS_3D); });
+    /* Help: click "?" → start spotlight tour theo mode hiện tại */
+    $('help-btn').addEventListener('click', e => {
+      e.stopPropagation();
+      startTour(vrMode ? HELP_ITEMS_3D : HELP_ITEMS_2D);
+    });
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape' && tourActive) endTour();
     });
@@ -679,58 +689,53 @@ window.UI = (() => {
     /* Tour: cập nhật vị trí khi resize để spotlight bám đúng nút */
     window.addEventListener('resize', () => { if (tourActive) showTourStep(); });
 
-    /* News panel: open/close + tab switching */
-    $('news-btn').addEventListener('click', e => {
-      e.stopPropagation();
-      newsPanelOpen ? closeNewsPanel() : openNewsPanel();
-    });
-    $('np-back').addEventListener('click', closeNewsPanel);
-    document.querySelectorAll('.np-tab').forEach(t => {
-      t.addEventListener('click', () => setNewsTab(t.dataset.tab));
-    });
-
-    /* 2D: 3D button – enter VR for first/random place */
+    /* three-d-btn: ở 2D enter VR, ở 3D exit VR */
     $('three-d-btn').addEventListener('click', () => {
-      if (vrMode) return;
+      if (vrMode) { exitVRMode(); return; }
       const first = window.APP_DATA.places[0];
       if (first) enterVRMode(first);
     });
 
-    /* 2D: fullscreen */
+    /* fs-btn: ở 2D fullscreen document, ở 3D fullscreen vr-viewer */
     $('fs-btn').addEventListener('click', () => {
-      if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+      const target = vrMode ? $('vr-viewer') : document.documentElement;
+      if (!document.fullscreenElement) target.requestFullscreen?.();
       else document.exitFullscreen?.();
     });
 
-    /* 2D: lang */
+    /* zoom: ở 2D zoom Leaflet, ở 3D zoom Pannellum */
+    $('zoom-in-btn').addEventListener('click', () => {
+      if (vrMode) {
+        if (vrViewer && vrViewer.getHfov) vrViewer.setHfov(Math.max(30, vrViewer.getHfov() - 15));
+      } else {
+        window.MapModule?.zoomIn?.();
+      }
+    });
+    $('zoom-out-btn').addEventListener('click', () => {
+      if (vrMode) {
+        if (vrViewer && vrViewer.getHfov) vrViewer.setHfov(Math.min(120, vrViewer.getHfov() + 15));
+      } else {
+        window.MapModule?.zoomOut?.();
+      }
+    });
+
+    /* autorot-btn: chỉ hoạt động ở 3D */
+    $('autorot-btn').addEventListener('click', function () {
+      if (!vrMode) return;
+      autoRotating = !autoRotating;
+      this.classList.toggle('active', autoRotating);
+      if (vrViewer) {
+        if (autoRotating) vrViewer.startAutoRotate(2);
+        else vrViewer.stopAutoRotate();
+      }
+    });
+
+    /* lang */
     $('lang-btn').addEventListener('click', async () => {
       const next = window.I18n.lang === 'vi' ? 'en' : 'vi';
       await window.I18n.setLang(next);
       $('lang-label').textContent = next.toUpperCase();
     });
-
-    /* 3D: location dropdown */
-    $('vr-loc-trigger').addEventListener('click', e => {
-      e.stopPropagation();
-      const dd = $('vr-loc-dd');
-      const isMobile = window.matchMedia('(max-width: 768px)').matches;
-      // Mobile: bấm lần 1 → nở từ nút tròn ra pill; lần 2 → mở list
-      if (isMobile && !dd.classList.contains('expanded')) {
-        dd.classList.add('expanded');
-      } else {
-        dd.classList.toggle('open');
-      }
-    });
-    /* 3D: collapse dropdown trên mobile (× bên phải pill) */
-    $('vr-loc-collapse').addEventListener('click', e => {
-      e.stopPropagation();
-      const dd = $('vr-loc-dd');
-      dd.classList.remove('open');
-      dd.classList.remove('expanded');
-    });
-
-    /* 3D: back to 2D */
-    $('vr-back-btn').addEventListener('click', exitVRMode);
 
     /* 3D: minimap click → exit VR */
     $('minimap').addEventListener('click', exitVRMode);
@@ -747,43 +752,6 @@ window.UI = (() => {
       $('vr-info').classList.remove('collapsed');
     });
 
-    /* 3D: language toggle – đồng bộ cả 2D và 3D label */
-    $('vr-lang-btn').addEventListener('click', async () => {
-      const next = window.I18n.lang === 'vi' ? 'en' : 'vi';
-      await window.I18n.setLang(next);
-      ['lang-label', 'vr-lang-label'].forEach(id => {
-        const el = $(id); if (el) el.textContent = next.toUpperCase();
-      });
-    });
-
-    /* 3D: share */
-    $('vr-share-btn').addEventListener('click', () => {
-      if (navigator.share) {
-        navigator.share({ title: currentVRPlace?.name || 'VR360 Lâm Đồng', url: location.href });
-      } else {
-        navigator.clipboard?.writeText(location.href);
-      }
-    });
-
-    /* 3D: controls */
-    $('vr-autorot').addEventListener('click', function () {
-      autoRotating = !autoRotating;
-      this.classList.toggle('active', autoRotating);
-      if (vrViewer) {
-        if (autoRotating) vrViewer.startAutoRotate(2);
-        else vrViewer.stopAutoRotate();
-      }
-    });
-
-    $('vr-zin').addEventListener('click', () => {
-      if (vrViewer && vrViewer.getHfov) vrViewer.setHfov(Math.max(30, vrViewer.getHfov() - 15));
-    });
-    $('vr-zout').addEventListener('click', () => {
-      if (vrViewer && vrViewer.getHfov) vrViewer.setHfov(Math.min(120, vrViewer.getHfov() + 15));
-    });
-
-    $('vr-hideui').addEventListener('click', toggleVRUI);
-
     /* Click trên vùng VR (không phải UI) khi UI ẩn → hiện lại */
     $('vr-viewer').addEventListener('click', e => {
       if (uiHidden && e.target === $('vr-viewer') || e.target === $('vr-pannellum')) {
@@ -791,11 +759,6 @@ window.UI = (() => {
       }
     });
     $('vr-reveal-btn').addEventListener('click', showVRUI);
-
-    $('vr-fullscr').addEventListener('click', () => {
-      if (!document.fullscreenElement) $('vr-viewer').requestFullscreen?.();
-      else document.exitFullscreen?.();
-    });
 
     /* 2D: search */
     $('search-input').addEventListener('input', e => renderSearchResults(e.target.value));
@@ -824,19 +787,8 @@ window.UI = (() => {
     });
     $('layers-btn').addEventListener('click', e => { e.stopPropagation(); toggleLayerPopup(); });
 
-    /* Sprint 5: invest layer toggle (markers dự án + polygon KCN) */
-    const _investBtn = $('invest-layer-btn');
-    if (_investBtn) {
-      _investBtn.addEventListener('click', async e => {
-        e.stopPropagation();
-        const visible = await window.MapModule.toggleInvestLayer();
-        _investBtn.classList.toggle('active', visible);
-      });
-    }
-
     document.addEventListener('click', e => {
       if (!$('layer-popup').contains(e.target) && e.target.id !== 'layers-btn') closeLayerPopup();
-      if (!$('vr-loc-dd').contains(e.target)) $('vr-loc-dd').classList.remove('open');
     });
 
     /* Bottom bar bubble */

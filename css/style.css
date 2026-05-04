@@ -174,12 +174,64 @@ html, body { height: 100%; font-family: 'Be Vietnam Pro', sans-serif; overflow: 
   display: flex; align-items: center; justify-content: center;
   box-shadow: var(--pill-shadow);
   font-family: inherit; font-size: 14px; font-weight: 700;
-  transition: background .14s, transform .12s;
+  /* Animation slide khi ẩn/hiện: width + margin + opacity + scale chuyển mượt;
+     các nút bên trái tự dịch sang phải/trái khi nút giữa biến mất/xuất hiện */
+  transition:
+    background .14s,
+    transform .32s cubic-bezier(.4,0,.2,1),
+    width .32s cubic-bezier(.4,0,.2,1),
+    margin .32s cubic-bezier(.4,0,.2,1),
+    padding .32s cubic-bezier(.4,0,.2,1),
+    opacity .22s ease;
   position: relative;
+  overflow: hidden;
 }
 .ticon:hover { background: var(--icon-blue-dark); transform: translateY(-1px); }
 .ticon.active { background: var(--icon-blue); }
 .ticon svg { width: 18px; height: 18px; }
+
+/* --- Ẩn/hiện nút theo mode (2D / 3D): collapse width + margin về 0,
+   các nút phía bên trái tự "trượt" sang phải nhờ flex – cùng transition. --- */
+body.mode-3d #top-right .only-2d,
+body:not(.mode-3d) #top-right .only-3d {
+  width: 0 !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+  margin-left: -8px;   /* triệt tiêu gap để layout co lại mượt */
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(.6);
+  border: 0;
+}
+/* Đảm bảo nút bị ẩn không hiện flash icon khi co */
+body.mode-3d #top-right .only-2d > *,
+body:not(.mode-3d) #top-right .only-3d > * { opacity: 0; transition: opacity .15s ease; }
+
+/* hide-ui-btn: hiện 2 icon (bars / eye) tuỳ trạng thái focus-mode (giống menu-btn cũ) */
+#hide-ui-btn .icon-eye { display: none; }
+body.focus-mode #hide-ui-btn .icon-bars { display: none; }
+body.focus-mode #hide-ui-btn .icon-eye  { display: block; }
+body.mode-3d #hide-ui-btn .icon-eye      { display: none; }
+body.mode-3d #vr-ui.ui-hidden ~ * #hide-ui-btn .icon-bars { display: none; }
+
+/* Help button (?) – màu trắng nền, text xanh để nổi bật như nút "?" trên 3D cũ */
+#help-btn {
+  background: #fff;
+  color: var(--icon-blue);
+  font-size: 16px;
+}
+#help-btn:hover { background: #e8f7fd; color: var(--icon-blue-dark); }
+
+/* Mode-toggle (2D ↔ 3D): luôn ngoài cùng phải, kế thừa style 3D-btn cũ.
+   Ở 3D đổi label thành "2D" và đổi sang nền trắng/text xanh để nổi bật. */
+.mode-toggle-btn { font-size: 13px; letter-spacing: .5px; }
+body.mode-3d .mode-toggle-btn {
+  background: #fff;
+  color: var(--icon-blue);
+}
+body.mode-3d .mode-toggle-btn:hover { background: #e8f7fd; color: var(--icon-blue-dark); }
+
+/* hide-ui-btn ở 3D: khi UI ẩn thì sẽ thuộc #vr-reveal-btn xử lý – ở đây chỉ giữ icon */
 
 /* Nút Lang: icon globe + text mã ngôn ngữ ("VI"/"EN") */
 #lang-btn {
@@ -751,20 +803,28 @@ html, body { height: 100%; font-family: 'Be Vietnam Pro', sans-serif; overflow: 
    ============================ */
 body.focus-mode #search-wrap,
 body.focus-mode #xa-dd,
-body.focus-mode #top-right,
 body.focus-mode #left-bar,
 body.focus-mode #right-panel,
 body.focus-mode #right-panel-bg,
 body.focus-mode #panel-toggle,
 body.focus-mode #bottom-bar,
 body.focus-mode #sheet,
-body.focus-mode #layer-popup {
+body.focus-mode #layer-popup,
+body.focus-mode #mobile-panel-btn,
+body.focus-mode #mobile-more-btn {
+  opacity: 0; pointer-events: none;
+  transition: opacity .25s ease;
+}
+/* Trong focus-mode, ẩn các nút khác trong #top-right NHƯNG GIỮ #hide-ui-btn
+   để người dùng có thể tắt focus-mode. */
+body.focus-mode #top-right > .ticon:not(#hide-ui-btn) {
   opacity: 0; pointer-events: none;
   transition: opacity .25s ease;
 }
 /* các phần tử KHÔNG có animation riêng: chỉ cần fade opacity */
 #search-wrap, #xa-dd, #top-right,
-#left-bar, #bottom-bar {
+#left-bar, #bottom-bar,
+#mobile-panel-btn, #mobile-more-btn {
   transition: opacity .25s ease;
 }
 /* (#right-panel, #sheet, #layer-popup, #panel-toggle ĐÃ có transition riêng — KHÔNG override ở đây) */
@@ -806,18 +866,35 @@ body.mode-3d #vr-viewer { opacity: 1; pointer-events: auto; }
 }
 .pnlm-container { background: #000 !important; }
 
-/* ===== 16. 3D MODE – ẩn 2D UI ===== */
-body.mode-3d #topbar,
+/* ===== 16. 3D MODE – ẩn 2D UI =====
+   Lưu ý: KHÔNG ẩn cả #topbar nữa vì #top-right được dùng chung 2D/3D.
+   Chỉ ẩn các phần inner (search, xa-dd) và các container khác. */
+body.mode-3d #topbar { background: transparent !important; box-shadow: none !important; z-index: 2200 !important; }
+/* Ẩn topbar khi UI VR bị ẩn (đồng bộ với #vr-ui.ui-hidden) */
+body.mode-3d.vr-ui-hidden #topbar { opacity: 0 !important; pointer-events: none !important; transition: opacity .3s ease !important; }
 body.mode-3d #left-bar,
-body.mode-3d #right-panel,
-body.mode-3d #right-panel-bg,
-body.mode-3d #panel-toggle,
-body.mode-3d #bottom-bar,
+body.mode-3d #vr-hd,
 body.mode-3d #layer-popup,
 body.mode-3d .leaflet-control-zoom {
   opacity: 0 !important;
   pointer-events: none !important;
   transition: opacity .2s ease !important;
+}
+
+/* Right panel + toggle + bottom-bar vẫn dùng ở 3D — nâng z-index lên trên #vr-viewer (2000) */
+body.mode-3d #right-panel,
+body.mode-3d #right-panel-bg { z-index: 2210 !important; }
+body.mode-3d #panel-toggle    { z-index: 2210 !important; }
+body.mode-3d #bottom-bar      { z-index: 2210 !important; }
+/* Khi UI VR ẩn thì panel + toggle + bottom-bar cũng ẩn theo */
+body.mode-3d.vr-ui-hidden #right-panel,
+body.mode-3d.vr-ui-hidden #right-panel-bg,
+body.mode-3d.vr-ui-hidden #panel-toggle,
+body.mode-3d.vr-ui-hidden #bottom-bar,
+body.mode-3d.vr-ui-hidden #search-wrap,
+body.mode-3d.vr-ui-hidden #xa-dd {
+  opacity: 0 !important; pointer-events: none !important;
+  transition: opacity .3s ease !important;
 }
 
 /* ===== 17. VR OVERLAY UI ===== */
@@ -996,10 +1073,11 @@ body.mode-3d #vr-ui > * { pointer-events: auto; }
   transition: opacity .3s ease .85s;
 }
 
-/* --- INFO PANEL – bottom-left, nền trắng glass + text xanh, đồng bộ với 2D --- */
+/* --- INFO PANEL – bottom-left, nền trắng glass + text xanh, đồng bộ với 2D.
+   bottom = 16 (margin) + 64 (#bottom-bar) + 16 (gap) = 96 → đẩy lên trên bottom-bar */
 #vr-info {
   position: absolute;
-  bottom: 22px; left: 20px;
+  bottom: 96px; left: 20px;
   width: 340px;
   background: rgba(255,255,255,.88);
   border: 1px solid rgba(255,255,255,.6);
@@ -1416,6 +1494,16 @@ body.mobile-menu-open #mobile-more-btn {
   background: var(--icon-blue-dark);
   transform: rotate(90deg);
 }
+/* Ở 3D mode: nâng nút "more" + cụm #top-right lên trên #vr-viewer (z-index 2000) */
+body.mode-3d #mobile-more-btn,
+body.mode-3d #mobile-panel-btn { z-index: 2210; }
+body.mode-3d #top-right        { z-index: 2210 !important; }
+body.mode-3d.vr-ui-hidden #mobile-more-btn,
+body.mode-3d.vr-ui-hidden #mobile-panel-btn,
+body.mode-3d.vr-ui-hidden #top-right {
+  opacity: 0 !important; pointer-events: none !important;
+  transition: opacity .3s ease !important;
+}
 
 /* Nút mở right-panel full screen trên mobile (dưới #menu-btn) */
 #mobile-panel-btn {
@@ -1456,19 +1544,15 @@ body.mobile-menu-open #mobile-more-btn {
   #topbar * { touch-action: manipulation; pointer-events: auto; }
   #search-bar input { -webkit-appearance: none; appearance: none; }
 
-  /* === ĐỒNG BỘ TẤT CẢ NÚT TRONG CỘT MOBILE ===
-     - Cùng kích thước var(--pill-h)
-     - Cùng dạng tròn, cùng màu xanh đặc, icon trắng
-     - lang-btn (pill) ép về tròn; ẩn tooltip Layers tránh phá hàng */
-  #top-right .ticon,
-  #left-bar .lbtn {
+  /* === ĐỒNG BỘ KÍCH THƯỚC NÚT TRONG CỘT MOBILE ===
+     - Tròn, xanh đặc, icon trắng cho cụm top-right cột dọc
+     - Giữ riêng .mode-toggle-btn (3D/2D) và #help-btn (trắng) đúng style desktop */
+  #top-right .ticon {
     width: var(--pill-h) !important;
     height: var(--pill-h) !important;
     min-width: 0 !important;
     padding: 0 !important;
     border-radius: 50% !important;
-    background: var(--icon-blue) !important;
-    color: #fff !important;
     box-shadow: var(--pill-shadow) !important;
   }
   /* Lang-btn: ẩn label "VI/EN" trên mobile, chỉ giữ icon globe cho gọn */
@@ -1476,24 +1560,14 @@ body.mobile-menu-open #mobile-more-btn {
   #top-right #lang-btn { gap: 0; }
   /* Tooltip "Layers" dưới nút Layers ẩn trên mobile */
   #top-right #layers-btn::after { display: none; }
-  /* Hover/active đồng bộ */
-  #top-right .ticon:hover,
-  #left-bar .lbtn:hover {
-    background: var(--icon-blue-dark) !important;
-    color: #fff !important;
-  }
-  #left-bar .lbtn.active { background: var(--icon-blue-dark) !important; color: #fff !important; }
 
   /* Topbar 1 hàng trên mobile:
-       menu-btn + search-wrap (co giãn) + xa-dd (compact)
-       Cấp phát chiều rộng theo tỷ lệ cố định để không bao giờ chèn ra ngoài.
+       search-wrap (co giãn) + xa-dd (compact)
        Khoảng hở 16px tới mobile-more-btn. */
   #topbar {
     right: calc(12px + var(--pill-h) + 16px);
     gap: 6px;
     flex-wrap: nowrap;
-    /* KHÔNG dùng overflow:hidden — sẽ cắt dropdown popup của xa-dd
-       và search-results khi sổ xuống. Sizing cứng bên dưới đã đủ. */
   }
   /* search-wrap: ưu tiên co giãn, chiếm phần lớn khoảng trống */
   #search-wrap {
@@ -1547,33 +1621,14 @@ body.mobile-menu-open #mobile-more-btn {
     transition: opacity .25s ease, transform .3s cubic-bezier(.4,0,.2,1);
   }
 
-  /* LEFT-BAR: dời xuống dưới cụm top-right (cùng cột bên phải) */
-  #left-bar {
-    /* 6 ticons * (44+8) = 312, + topbar offset (12 + 44 + 8) = 64 → top ~ 376 */
-    top: calc(12px + (var(--pill-h) + 8px) * 7);
-    right: 12px; left: auto;
-    transform: none;
-    flex-direction: column; gap: 8px;
-    z-index: 1090;
-    transform-origin: top right;
-    opacity: 0; pointer-events: none;
-    transition: opacity .25s ease, transform .3s cubic-bezier(.4,0,.2,1);
-  }
-  /* Khi đóng menu: dùng cùng transform với top-right cho đồng bộ */
-  body:not(.mobile-menu-open) #left-bar {
-    transform: translateY(-10px) scale(.85);
-  }
-
-  /* Mở menu: hiện cả hai cột */
-  body.mobile-menu-open #top-right,
-  body.mobile-menu-open #left-bar {
+  /* Mở menu: hiện cụm */
+  body.mobile-menu-open #top-right {
     opacity: 1; pointer-events: auto;
     transform: translateY(0) scale(1);
   }
 
-  /* Stagger nhẹ cho từng nút – tăng delay theo thứ tự */
-  body.mobile-menu-open #top-right .ticon,
-  body.mobile-menu-open #left-bar .lbtn {
+  /* Stagger pop-in cho từng nút theo thứ tự xuất hiện */
+  body.mobile-menu-open #top-right .ticon {
     animation: mob-pop .32s cubic-bezier(.4, 1.4, .55, 1) backwards;
   }
   body.mobile-menu-open #top-right .ticon:nth-child(1) { animation-delay: .02s; }
@@ -1582,9 +1637,19 @@ body.mobile-menu-open #mobile-more-btn {
   body.mobile-menu-open #top-right .ticon:nth-child(4) { animation-delay: .11s; }
   body.mobile-menu-open #top-right .ticon:nth-child(5) { animation-delay: .14s; }
   body.mobile-menu-open #top-right .ticon:nth-child(6) { animation-delay: .17s; }
-  body.mobile-menu-open #left-bar .lbtn:nth-child(1) { animation-delay: .20s; }
-  body.mobile-menu-open #left-bar .lbtn:nth-child(2) { animation-delay: .23s; }
-  body.mobile-menu-open #left-bar .lbtn:nth-child(3) { animation-delay: .26s; }
+  body.mobile-menu-open #top-right .ticon:nth-child(7) { animation-delay: .20s; }
+  body.mobile-menu-open #top-right .ticon:nth-child(8) { animation-delay: .23s; }
+  body.mobile-menu-open #top-right .ticon:nth-child(9) { animation-delay: .26s; }
+  body.mobile-menu-open #top-right .ticon:nth-child(10){ animation-delay: .29s; }
+
+  /* Khi nút bị ẩn (only-2d ở 3D / only-3d ở 2D): collapse hoàn toàn theo trục Y
+     để các nút bên dưới tự dồn lên — animation đồng bộ trục dọc thay vì ngang */
+  body.mode-3d #top-right .only-2d,
+  body:not(.mode-3d) #top-right .only-3d {
+    height: 0 !important;
+    margin-top: -8px !important;
+    margin-bottom: 0 !important;
+  }
 
   @keyframes mob-pop {
     from { opacity: 0; transform: translateY(-12px) scale(.7); }
@@ -1670,21 +1735,8 @@ body.mobile-menu-open #mobile-more-btn {
     gap: 6px;
   }
 
-  /* --- LEFT-BAR: cột dọc bên trái, mid-height (như desktop) --- */
-  #left-bar {
-    top: 50%; left: 12px; right: auto;
-    transform: translateY(-50%);
-    flex-direction: column;
-    gap: 8px;
-    opacity: 1; pointer-events: auto;
-    z-index: 900;
-  }
-  /* Đảo rule portrait dùng selector `body:not(.mobile-menu-open)` */
-  body:not(.mobile-menu-open) #left-bar { transform: translateY(-50%); }
-
   /* Tắt animation stagger pop-in (chỉ dùng khi có hamburger) */
-  body.mobile-menu-open #top-right .ticon,
-  body.mobile-menu-open #left-bar .lbtn { animation: none; }
+  body.mobile-menu-open #top-right .ticon { animation: none; }
 
   /* --- BOTTOM-BAR: thu nhỏ chiều cao + label nhỏ để né chiều cao thấp --- */
   #bottom-bar {
@@ -1738,198 +1790,30 @@ body.mobile-menu-open #mobile-more-btn {
 }
 
 /* ===== 18b. VR / 3D MOBILE LAYOUT =====
-   Bố cục theo ảnh tham khảo:
-   - Header hàng 1: logo (trái) + cụm icon (phải): VI/EN, vol, share, help, back-2D
-   - Header hàng 2: dropdown "Đà Lạt" full-width
-   - Bottom-center: related carousel + controls toolbar (icon-only)
-   - Right: minimap thu nhỏ, dời lên dưới header để không chồng controls
-   - Info panel: nằm trên related, thu gọn padding/font */
+   Header 3D mobile chỉ còn LOGO ở trái — toàn bộ nút điều khiển dùng
+   chung cụm #top-right (đã định nghĩa trong @media 768px ở trên).
+   Bố cục:
+   - Header: logo nhỏ chiếm trái, không đè lên #top-right
+   - Info panel: full-width đáy, ngay trên minimap/right-panel toggle
+   - Minimap: thu nhỏ, dời lên dưới header */
 @media (max-width: 768px) {
-  /* Header cho phép wrap để loc-dropdown xuống hàng 2 */
   #vr-hd {
-    flex-wrap: wrap;
     padding: 10px 12px;
     gap: 8px;
-    row-gap: 10px;
     background: linear-gradient(to bottom, rgba(0,0,0,.7) 0%, transparent 100%);
   }
-
-  /* Logo nhỏ hơn — chiếm trọn hàng 1, đẩy mọi thứ khác xuống hàng 2 */
-  #vr-logo { gap: 8px; flex: 0 0 100%; }
+  #vr-logo { gap: 8px; }
   #vr-logo > svg { width: 38px; height: 38px; }
   .vr-logo-title { font-size: 13px; letter-spacing: .03em; }
   .vr-logo-sub { font-size: 8px; letter-spacing: .1em; }
 
-  /* Cụm nút phải: gap nhỏ, sát mép */
-  #vr-hd-right { gap: 6px; }
-
-  /* Lang pill: chỉ icon globe, ẩn label "VI/EN" — đồng nhất với 2D mode */
-  #vr-lang-btn {
-    width: var(--pill-h);
-    min-width: var(--pill-h);
-    padding: 0;
-    gap: 0;
-  }
-  #vr-lang-label { display: none; }
-
-  /* Back-2D pill: giữ nguyên dạng pill có chữ "2D" trên mobile dọc */
-  .vr-back-btn svg { width: 14px; height: 14px; }
-
-  /* === Dropdown địa điểm trên mobile portrait ===
-     - Mặc định: nút TRÒN cố định ở góc trên-trái (đè lên/cạnh logo)
-     - .expanded: dịch xuống hàng 2 và nở thành pill full-width
-     Animation: dùng position fixed + transform/width/left/top px → mượt */
-  #vr-loc-dd {
-    order: 3;
-    flex: 1 1 100%;
-    margin-top: 2px;
-    /* dùng max-width=0 + opacity=0 để placeholder hàng 2 không chiếm chỗ
-       khi chưa expanded (giúp header chỉ 1 hàng) */
-    max-width: 0;
-    overflow: visible;
-    margin: 0;
-  }
-  /* Pill trigger: position fixed ở GÓC TRÊN-TRÁI, ngang bằng với #vr-hd-right.
-     Logo bị ẩn trên mobile để nhường chỗ cho nút tròn này. */
-  #vr-loc-trigger {
-    position: fixed;
-    z-index: 60;
-    top: 58px;
-    left: 12px;
-    right: auto;
-    width: var(--pill-h);
-    height: var(--pill-h);
-    min-width: 0;
-    max-width: none;
-    padding: 0;
-    /* dùng px (999px ~ capsule) thay 50% để border-radius nội suy được
-       với 24px expanded → bo góc giảm/tăng mượt theo width */
-    border-radius: 999px;
-    overflow: hidden;
-    font-size: 13.5px;
-    display: block;             /* dùng block + pin absolute để pin KHÔNG bị xê dịch */
-    transition:
-      width .4s cubic-bezier(.4,0,.2,1) 0s,
-      border-radius .4s cubic-bezier(.4,0,.2,1) 0s,
-      padding .4s cubic-bezier(.4,0,.2,1) 0s,
-      top .4s cubic-bezier(.4,0,.2,1) .42s,
-      left .4s cubic-bezier(.4,0,.2,1) .42s,
-      right .4s cubic-bezier(.4,0,.2,1) .42s;
-  }
-  /* Pin icon: position absolute → giữ NGUYÊN vị trí xuyên suốt 2 trạng thái */
-  .vr-loc-pin {
-    display: block;
-    position: absolute;
-    top: 50%;
-    left: calc(var(--pill-h) / 2);
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-  }
-  #vr-loc-current,
-  .vr-loc-caret { display: none; }
-  #vr-loc-dd.expanded #vr-loc-current {
-    display: flex;
-    align-items: center;
-    position: absolute;
-    top: 0; bottom: 0;
-    left: calc(var(--pill-h) / 2 + 18px);
-    right: 32px;
-    text-align: left;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    line-height: 1;
-    animation: locFadeIn .35s ease .55s both;
-  }
-  #vr-loc-dd.expanded .vr-loc-caret {
-    display: block;
-    position: absolute;
-    top: 50%;
-    right: 14px;
-    transform: translateY(-50%);
-    animation: locFadeOnly .35s ease .6s both;
-  }
-  @keyframes locFadeOnly {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-  }
-  @keyframes locFadeIn {
-    from { opacity: 0; transform: translateX(-6px); }
-    to   { opacity: 1; transform: translateX(0); }
-  }
-  /* Nút collapse (×) — chỉ hiện khi expanded */
-  #vr-loc-collapse {
-    position: fixed;
-    top: calc(58px + var(--pill-h) + 10px);
-    right: 12px;
-    width: var(--pill-h);
-    height: var(--pill-h);
-    border-radius: 50%;
-    border: none;
-    background: rgba(255,255,255,.95);
-    color: var(--icon-blue-dark);
-    cursor: pointer;
-    z-index: 61;
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,.18);
-    opacity: 0;
-    pointer-events: none;
-    transform: scale(.6);
-    transition:
-      opacity .3s ease,
-      transform .45s cubic-bezier(.4,1.5,.5,1);
-  }
-
-  /* === EXPANDED state === */
-  #vr-loc-dd.expanded #vr-loc-trigger {
-    /* Hàng 3 (dưới hàng round-dd + right cluster): 58 + pill-h + 10 */
-    top: calc(58px + var(--pill-h) + 10px);
-    left: 12px;
-    right: auto;
-    width: calc(100vw - 12px - 12px - var(--pill-h) - 10px);
-    border-radius: var(--pill-radius);
-    padding: 0;
-    /* Pha MỞ: di chuyển xuống TRƯỚC, sau đó mới nở rộng ngang */
-    transition:
-      top .4s cubic-bezier(.4,0,.2,1) 0s,
-      left .4s cubic-bezier(.4,0,.2,1) 0s,
-      right .4s cubic-bezier(.4,0,.2,1) 0s,
-      width .4s cubic-bezier(.4,0,.2,1) .42s,
-      border-radius .4s cubic-bezier(.4,0,.2,1) .42s,
-      padding .4s cubic-bezier(.4,0,.2,1) .42s;
-  }
-  #vr-loc-dd.expanded #vr-loc-current,
-  #vr-loc-dd.expanded .vr-loc-caret {
-    opacity: 1;
-    transition: opacity .35s ease .25s;
-  }
-  #vr-loc-dd.expanded #vr-loc-collapse {
-    opacity: 1;
-    pointer-events: auto;
-    transform: scale(1);
-    transition:
-      opacity .3s ease .25s,
-      transform .55s cubic-bezier(.34,1.7,.5,1) .2s;
-  }
-  /* Popup list cũng cần fixed để khớp với pill expanded */
-  #vr-loc-dd.expanded #vr-loc-popup {
-    position: fixed;
-    top: calc(58px + var(--pill-h) * 2 + 18px);
-    left: 12px;
-    right: calc(12px + var(--pill-h) + 10px);
-    min-width: 0;
-    width: auto;
-  }
-
-  /* Info panel: anchor góc dưới-trái (left+bottom). Dùng height (px)
-     thay max-height để shrink nội suy đều, không bị "khựng" giai đoạn
-     đầu (max-height phía trên content height không tạo thay đổi thị giác). */
+  /* Info panel: full-width, anchor đáy, trên #bottom-bar (~80px). */
   #vr-info {
     left: 12px;
     right: auto;
     width: calc(100vw - 24px);
     max-width: none;
-    bottom: 188px;
+    bottom: 110px;
     padding: 12px 14px;
     border-radius: 14px;
     height: 200px;
@@ -1986,53 +1870,21 @@ body.mobile-menu-open #mobile-more-btn {
   /* Hiện FAB trên mobile portrait — căn theo góc dưới-trái của #vr-info */
   #vr-info-fab {
     display: flex;
-    bottom: 188px;          /* khớp với #vr-info bottom */
+    bottom: 110px;           /* khớp với #vr-info bottom */
     left: 12px;
   }
 
-  /* Bottom cụm: full-width, sát đáy */
-  #vr-bottom {
-    left: 12px;
-    right: 12px;
-    bottom: 14px;
-    transform: none;
-    width: auto;
-    max-width: none;
-    gap: 8px;
-  }
-
-  /* Controls toolbar: icon-only, full-width trên mobile portrait */
-  #vr-ctrl {
-    padding: 6px 8px;
-    gap: 2px;
-    border-radius: 999px;
-    width: 100%;
-    justify-content: space-between;
-  }
-  .vr-ctrl-btn {
-    flex: 1;
-    min-width: 0;
-    padding: 8px 10px;
-    border-radius: 999px;
-  }
-  .vr-ctrl-btn span { display: none; }
-  .vr-ctrl-btn svg { width: 20px; height: 20px; }
-
-  /* Minimap: thu nhỏ, dời lên dưới header (mép phải) — tránh đè bottom cluster
-     Mobile: z-index thấp để không đè lên dropdown/popup/header */
+  /* Minimap mobile: dời sang góc trên-TRÁI để không đè cụm #top-right (đang
+     là cột dọc bên phải khi mở mobile menu). */
   #minimap {
     bottom: auto;
-    /* Header mobile wrap 2 dòng (logo+nút | dropdown) → cần đủ chỗ né dropdown */
-    top: calc(var(--pill-h) * 2 + 56px);
-    right: 12px;
+    top: calc(var(--pill-h) + 24px);
+    left: 12px;
+    right: auto;
     z-index: 800;
   }
   #mm-title { font-size: 8.5px; margin-bottom: 3px; }
-  #mm-circle {
-    width: 118px;
-    height: 118px;
-    border-width: 2px;
-  }
+  #mm-circle { width: 118px; height: 118px; border-width: 2px; }
 
   /* Reveal-UI button: né khỏi header */
   #vr-reveal-btn { top: 12px; right: 12px; }
@@ -2043,25 +1895,14 @@ body.mobile-menu-open #mobile-more-btn {
   #vr-logo > svg { width: 34px; height: 34px; }
   .vr-logo-title { font-size: 12px; }
   .vr-logo-sub { font-size: 7.5px; }
-  #vr-hd-right { gap: 5px; }
 
   #mm-circle { width: 100px; height: 100px; }
-  #minimap { top: calc(var(--pill-h) * 2 + 50px); right: 10px; }
+  #minimap { top: calc(var(--pill-h) + 20px); left: 10px; right: auto; }
 
-  #vr-info { bottom: 176px; padding: 10px 12px; }
-  #vr-info-fab { bottom: 176px; }
-
-  /* Dropdown round Y khớp với #vr-hd-right ở 480px:
-     padding-top(9) + logo svg(34) + row-gap(10) = 53 */
-  #vr-loc-trigger { top: 49px; }
-  #vr-loc-dd.expanded #vr-loc-trigger { top: calc(53px + var(--pill-h) + 10px); }
-  #vr-loc-collapse { top: calc(53px + var(--pill-h) + 10px); }
-  #vr-loc-dd.expanded #vr-loc-popup { top: calc(53px + var(--pill-h) * 2 + 18px); }
+  #vr-info { padding: 10px 12px; }
+  /* #vr-info-fab { bottom: 80px; } */
   #vr-place-name { font-size: 16px; }
   #vr-place-desc { font-size: 12.5px; }
-
-  .vr-ctrl-btn { padding: 7px 8px; }
-  .vr-ctrl-btn svg { width: 18px; height: 18px; }
 }
 
 /* ===== 18c. VR / 3D MOBILE LANDSCAPE =====
@@ -2082,24 +1923,6 @@ body.mobile-menu-open #mobile-more-btn {
   #vr-logo > svg { width: 32px; height: 32px; }
   .vr-logo-title { font-size: 12px; }
   .vr-logo-sub { display: none; }
-
-  /* Location dropdown trở lại inline: không chiếm full-width nữa */
-  #vr-loc-dd {
-    order: 0;
-    flex: 0 1 auto;
-    margin-top: 0;
-    min-width: 0;
-  }
-  #vr-loc-trigger {
-    width: auto;
-    max-width: 160px;
-    padding: 0 12px;
-    font-size: 12.5px;
-  }
-  #vr-loc-current { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-  /* Cụm nút phải: gap nhỏ hơn, đẩy về mép */
-  #vr-hd-right { gap: 5px; margin-left: auto; }
 
   /* Pill height co lại để header chỉ ~ 44–48px */
   :root { --pill-h: 38px; }
@@ -2165,28 +1988,6 @@ body.mobile-menu-open #mobile-more-btn {
   .vr-meta-row svg { width: 12px; height: 12px; }
   .vr-info-tag { font-size: 8.5px; }
 
-  /* Bottom cluster: chiếm phần GIỮA — sát info-trái (240+12) và minimap-phải (92+12).
-     Không center nữa để tránh đè info panel trên viewport landscape hẹp. */
-  #vr-bottom {
-    left: calc(240px + 24px);     /* info width + gap*2 */
-    right: calc(92px + 24px);     /* minimap width + gap*2 */
-    transform: none;
-    bottom: 10px;
-    width: auto;
-    max-width: none;
-    gap: 6px;
-    transition: left .55s cubic-bezier(.4,0,.2,1);
-  }
-  /* Khi info thu lại thành icon tròn → bottom cluster được "kéo lại" giữa
-     (chỉ né minimap bên phải, không cần né info nữa) */
-  #vr-info.collapsed ~ #vr-bottom {
-    left: calc(48px + 24px);      /* chỉ né cái nút tròn ~48px */
-  }
-  /* Controls toolbar: gọn hơn nữa */
-  #vr-ctrl { padding: 5px 6px; }
-  .vr-ctrl-btn { padding: 6px 8px; }
-  .vr-ctrl-btn svg { width: 17px; height: 17px; }
-
   /* Minimap: trở về góc phải-dưới (giống desktop) nhưng nhỏ */
   #minimap {
     top: auto;
@@ -2221,13 +2022,6 @@ body.mobile-menu-open #mobile-more-btn {
   #vr-place-name { font-size: 14px; }
   #vr-place-desc { -webkit-line-clamp: 1; line-clamp: 1; }
 
-  #vr-bottom {
-    left: calc(210px + 20px);
-    right: calc(78px + 20px);
-    width: auto;
-    bottom: 8px;
-  }
-  #vr-info.collapsed ~ #vr-bottom { left: calc(48px + 20px); }
   #mm-circle { width: 78px; height: 78px; }
   #minimap { bottom: 10px; right: 10px; }
 }
@@ -2349,7 +2143,6 @@ body.mobile-menu-open #mobile-more-btn {
      riêng trong shell).
    ============================== */
 body.view-guide #topbar,
-body.view-invest #topbar,
 body.view-guide #xa-dd,
 body.view-guide #three-d-btn,
 body.view-guide #zoom-in-btn,
@@ -2361,91 +2154,7 @@ body.view-guide #right-panel-bg,
 body.view-guide #panel-toggle,
 body.view-guide #news-panel,
 body.view-guide #mobile-more-btn,
-body.view-guide #mobile-panel-btn,
-body.view-invest #xa-dd,
-body.view-invest #three-d-btn,
-body.view-invest #zoom-in-btn,
-body.view-invest #zoom-out-btn,
-body.view-invest #layers-btn,
-body.view-invest #left-bar,
-body.view-invest #right-panel,
-body.view-invest #right-panel-bg,
-body.view-invest #panel-toggle,
-body.view-invest #news-panel,
-body.view-invest #mobile-more-btn,
-body.view-invest #mobile-panel-btn { display: none !important; }
-
-/* ===== 15. INVEST LAYER (Sprint 5) =====
-   - Toggle button trong topbar (#invest-layer-btn).
-   - Marker dự án (.iv-mmarker) – tròn màu theo status.
-   - Popup (.iv-mpop) trong leaflet-popup-content.
-   ============================== */
-/* Invest layer button: invert state để dễ nhận biết
-   - Default (off): nền trắng, icon xanh
-   - Active (on)  : nền xanh, icon trắng (kế thừa .ticon mặc định) */
-#invest-layer-btn {
-  background: #fff;
-  color: var(--icon-blue);
-}
-#invest-layer-btn:hover {
-  background: #f4faff;
-  color: var(--icon-blue-dark);
-}
-#invest-layer-btn.active {
-  background: var(--icon-blue);
-  color: #fff;
-}
-#invest-layer-btn.active:hover {
-  background: var(--icon-blue-dark);
-  color: #fff;
-}
-.iv-mmarker {
-  width: 30px; height: 30px;
-  border-radius: 50%;
-  border: 2.5px solid #fff;
-  box-shadow: 0 2px 6px rgba(0,0,0,.3);
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer;
-  transition: transform .15s;
-}
-.iv-mmarker svg { width: 14px; height: 14px; }
-.iv-mmarker:hover { transform: scale(1.1); }
-
-/* Leaflet popup override cho invest */
-.leaflet-popup.iv-mpop-wrap .leaflet-popup-content-wrapper {
-  border-radius: 12px;
-  padding: 0;
-  overflow: hidden;
-  box-shadow: 0 10px 28px rgba(0,0,0,.2);
-}
-.leaflet-popup.iv-mpop-wrap .leaflet-popup-content {
-  margin: 0;
-  font-family: 'Be Vietnam Pro', sans-serif;
-}
-.iv-mpop { width: 240px; }
-.iv-mpop-img { height: 110px; background: #e9eef3 center/cover no-repeat; }
-.iv-mpop-body { padding: 12px 14px; }
-.iv-mpop-title { font-size: 13.5px; font-weight: 800; color: #1a1a1a; line-height: 1.3; }
-.iv-mpop-meta { display: flex; gap: 10px; font-size: 11.5px; color: #888; margin-top: 6px; }
-.iv-mpop-badge {
-  display: inline-block;
-  padding: 3px 9px;
-  border-radius: 9px;
-  background: color-mix(in srgb, var(--c) 12%, transparent);
-  color: var(--c);
-  font-size: 10.5px; font-weight: 700;
-  margin-top: 8px;
-}
-.iv-mpop-cta {
-  display: block; margin-top: 10px;
-  background: var(--icon-blue); color: #fff !important;
-  padding: 7px 12px;
-  border-radius: 8px;
-  font-size: 12px; font-weight: 700;
-  text-align: center; text-decoration: none;
-  transition: background .15s;
-}
-.iv-mpop-cta:hover { background: var(--icon-blue-dark); color: #fff; }
+body.view-guide #mobile-panel-btn { display: none !important; }
 
 /* ===== 16. AI PANEL (Sprint 5) =====
    Floating panel góc dưới phải, bật bằng nút bb-ai.

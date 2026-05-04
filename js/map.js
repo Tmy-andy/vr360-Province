@@ -295,6 +295,9 @@ window.MapModule = (() => {
 
   return {
     initMap, setLayer, addMarker, flyTo, flyToCoords, onMapClick, markers,
+    zoomIn:  () => map?.zoomIn?.(),
+    zoomOut: () => map?.zoomOut?.(),
+    get map() { return map; },
     /* Sprint 5 */
     showInvestLayer, hideInvestLayer, toggleInvestLayer, isInvestVisible,
     setInvestSectorFilter, flyToProject, clearHighlight

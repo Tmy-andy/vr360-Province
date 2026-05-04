@@ -49,6 +49,23 @@ body.view-invest #iv-shell {
   transform: translateY(0);
 }
 
+/* Cẩm nang nằm trên cả #vr-viewer (z-index 2000) khi đang ở 3D */
+body.mode-3d.view-guide  #gv-shell,
+body.mode-3d.view-invest #iv-shell { z-index: 2300; }
+/* Ẩn các overlay 3D khi đang xem cẩm nang/đầu tư để không lộ ra phía sau */
+body.view-guide  #vr-info,
+body.view-invest #vr-info,
+body.view-guide  #vr-info-fab,
+body.view-invest #vr-info-fab,
+body.view-guide  #minimap,
+body.view-invest #minimap,
+body.view-guide  #vr-reveal-btn,
+body.view-invest #vr-reveal-btn {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity .25s ease !important;
+}
+
 /* ===== VIEW TOPBAR (logo + search + lang/fs) – dùng chung ===== */
 .view-topbar {
   flex-shrink: 0;
