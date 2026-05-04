@@ -324,6 +324,42 @@ body.mode-3d .mode-toggle-btn:hover { background: #e8f7fd; color: var(--icon-blu
   z-index: 1000;
 }
 
+/* === SIDE BUTTONS (VR headset bên trái + Chat AI bên phải) ===
+   Ngoài cụm tab .bbt, hai nút này nằm sát mép pill, vuông bo tròn
+   để dễ phân biệt với các tab tròn ở giữa. */
+.bb-side {
+  flex-shrink: 0;
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0; overflow: hidden;
+  transition: background .14s, transform .12s;
+}
+.bb-vr-btn {
+  background: var(--icon-blue); color: #fff;
+}
+.bb-vr-btn:hover { background: var(--icon-blue-dark); transform: translateY(-1px); }
+.bb-vr-btn svg { width: 22px; height: 22px; }
+
+.bb-chat-btn {
+  background: var(--icon-blue);
+  position: relative;
+}
+.bb-chat-btn img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.bb-chat-btn:hover { transform: translateY(-1px); }
+.bb-chat-btn::after {
+  /* Dot nhỏ báo trạng thái — luôn hiện để gợi ý có nội dung mới */
+  content: '';
+  position: absolute; top: 4px; right: 4px;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #16d472; border: 2px solid #fff;
+}
+
 /* Bubble xanh nổi trên bar – ONE element duy nhất, JS dịch chuyển bằng translateX */
 #bb-indicator {
   position: absolute;
@@ -588,7 +624,7 @@ body.mode-3d .mode-toggle-btn:hover { background: #e8f7fd; color: var(--icon-blu
 }
 #right-panel-bg {
   background: #fff;
-  box-shadow: 0 8px 28px rgba(0,0,0,.18);
+  /* box-shadow: 0 8px 28px rgba(0,0,0,.18); */
   z-index: 920;
 }
 #right-panel {
@@ -1715,25 +1751,35 @@ body.mode-3d.vr-ui-hidden #top-right {
   #xa-dd { flex: 0 0 auto; }
   #xa-dd .xa-trigger { width: auto; padding: 0 14px; font-size: 13px; }
 
-  /* --- TOP-RIGHT: trở về hàng ngang trong topbar, KHÔNG còn cột floating --- */
+  /* --- TOP-RIGHT: hàng ngang trong topbar, đồng bộ HOÀN TOÀN với desktop --- */
   #top-right {
-    position: static;
+    position: static !important;
     margin-left: auto;
-    flex-direction: row;
-    gap: 8px;
-    opacity: 1; pointer-events: auto;
-    transform: none;
-    z-index: auto;
+    flex-direction: row !important;
+    gap: 8px !important;
+    opacity: 1 !important; pointer-events: auto !important;
+    transform: none !important;
+    z-index: auto !important;
   }
-  /* Lang-btn: hiển thị label "VI/EN" lại như desktop (đảo rule portrait) */
-  #top-right #lang-btn #lang-label { display: inline; }
+  /* Reset mọi override portrait cho .ticon → đúng style desktop */
+  #top-right .ticon {
+    width: var(--pill-h) !important;
+    height: var(--pill-h) !important;
+    border-radius: 50% !important;
+  }
+  /* Lang-btn pill có chữ "VI/EN" như desktop */
+  #top-right #lang-btn #lang-label { display: inline !important; }
   #top-right #lang-btn {
     width: auto !important;
     min-width: var(--pill-h) !important;
     padding: 0 12px !important;
     border-radius: var(--pill-radius) !important;
-    gap: 6px;
+    gap: 6px !important;
   }
+  /* Mode-toggle giữ tròn có chữ "3D"/"2D" */
+  #top-right #three-d-btn { width: var(--pill-h) !important; }
+  /* Layers tooltip hiện lại như desktop */
+  #top-right #layers-btn::after { display: block !important; }
 
   /* Tắt animation stagger pop-in (chỉ dùng khi có hamburger) */
   body.mobile-menu-open #top-right .ticon { animation: none; }
@@ -1782,6 +1828,15 @@ body.mode-3d.vr-ui-hidden #top-right {
   #right-panel-bg:not(.open),
   #right-panel:not(.open),
   #news-panel:not(.open) { pointer-events: none !important; }
+
+  /* Khi right-panel mở (full-screen ở landscape): ẩn bottom-bar + nút mở panel
+     để panel chiếm trọn màn hình, không bị bar dưới che */
+  body.panel-open #bottom-bar,
+  body.panel-open #mobile-panel-btn {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s ease;
+  }
 
   /* Header panel: hiện nút back giống portrait */
   #ph-close { display: flex; }
@@ -2280,4 +2335,10 @@ body.view-guide #mobile-panel-btn { display: none !important; }
 @keyframes iv-ring-pulse {
   0%, 100% { opacity: 0.7; stroke-width: 2.5; }
   50%      { opacity: 1;   stroke-width: 4; }
+}
+
+@media (min-width: 1000px) {
+  #vr-info {
+    bottom: 16px;
+  }
 }

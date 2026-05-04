@@ -43,6 +43,7 @@ window.UI = (() => {
     $('right-panel-bg').classList.add('open');
     $('map').classList.add('panel-open');
     $('bottom-bar').classList.add('panel-open');
+    document.body.classList.add('panel-open');
     $('panel-toggle').classList.remove('closed');
     const mb = $('mobile-panel-btn'); if (mb) mb.classList.add('active');
   }
@@ -52,6 +53,7 @@ window.UI = (() => {
     $('right-panel-bg').classList.remove('open');
     $('map').classList.remove('panel-open');
     $('bottom-bar').classList.remove('panel-open');
+    document.body.classList.remove('panel-open');
     $('panel-toggle').classList.add('closed');
     const mb = $('mobile-panel-btn'); if (mb) mb.classList.remove('active');
   }
@@ -795,14 +797,27 @@ window.UI = (() => {
     document.querySelectorAll('.bbt').forEach(btn => {
       btn.addEventListener('click', function () {
         if (this.classList.contains('bb-ai')) {
+          /* AI mic: chỉ toggle trạng thái listening, KHÔNG mở ai-panel */
           this.classList.toggle('listening');
-          if (window.AiPanel) window.AiPanel.toggle();   // Sprint 5: mở panel FAQ
           return;
         }
         document.querySelectorAll('.bbt').forEach(b => b.classList.remove('active'));
         this.classList.add('active');
         moveBubble();
       });
+    });
+    /* Nút chat AI bên phải bottom-bar: mở ai-panel */
+    const _chatBtn = $('bb-chat-btn');
+    if (_chatBtn) _chatBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      if (window.AiPanel) window.AiPanel.toggle();
+    });
+    /* Nút VR headset bên trái bottom-bar: enter VR cho place đầu tiên */
+    const _vrBtn = $('bb-vr-btn');
+    if (_vrBtn) _vrBtn.addEventListener('click', () => {
+      if (vrMode) return;
+      const first = window.APP_DATA.places[0];
+      if (first) enterVRMode(first);
     });
     /* Click ngoài để tắt listening AI */
     document.addEventListener('click', e => {

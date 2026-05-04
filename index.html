@@ -187,6 +187,11 @@
 
 <!-- BOTTOM BAR -->
 <nav id="bottom-bar">
+  <!-- TRÁI: VR headset – xem qua kính VR -->
+  <button class="bb-side bb-vr-btn" id="bb-vr-btn" title="Xem bằng kính VR 360">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-4.5l-2.5-3h-4l-2.5 3H3a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z"/><circle cx="7.5" cy="12" r="1.5"/><circle cx="16.5" cy="12" r="1.5"/></svg>
+  </button>
+
   <span id="bb-indicator"></span>
   <button class="bbt active" data-view="map">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -214,6 +219,11 @@
   <button class="bbt">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
     <span class="bb-label">VR Tour</span>
+  </button>
+
+  <!-- PHẢI: chat AI – mở ai-panel -->
+  <button class="bb-side bb-chat-btn" id="bb-chat-btn" title="Chat với trợ lý AI">
+    <img src="assets/img/2.png" alt="AI" />
   </button>
 </nav>
 
