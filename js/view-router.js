@@ -94,7 +94,9 @@ window.ViewRouter = (() => {
     }
     if (view === 'invest') {
       if (parts[1] === 'project' && parts[2]) return { view: 'invest', sub: 'project', slug: parts[2] };
-      return { view: 'invest', sub: parts[1], param: parts[2] };
+      if (parts[1] === 'projects')             return { view: 'invest', sub: 'projects' };
+      if (parts[1] === 'contact')              return { view: 'invest', sub: 'contact' };
+      return { view: 'invest' };
     }
     return { view: 'map' };
   }
@@ -129,11 +131,10 @@ window.ViewRouter = (() => {
         loadPartial('tpl-invest-view', 'invest-mount', 'iv-main');
         if (window.I18n) window.I18n.apply(document.getElementById('invest-mount'));
         await window.InvestUI.init();
-        if (route.sub === 'project' && route.slug) {
-          window.InvestUI.showProject(route.slug);
-        } else {
-          window.InvestUI.showLanding();
-        }
+        if (route.sub === 'project' && route.slug) window.InvestUI.showProject(route.slug);
+        else if (route.sub === 'projects')          window.InvestUI.showProjects();
+        else if (route.sub === 'contact')           window.InvestUI.showContact();
+        else                                        window.InvestUI.showLanding();
       } catch (err) { console.error('[router] Invest load fail:', err); }
     }
   }

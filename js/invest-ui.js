@@ -14,6 +14,7 @@
 window.InvestUI = (() => {
   let initialized = false;
   let activeSector = 'all';   // 'all' = không filter
+  let activeStatus = 'all';   // 'all' | 'ready' | 'planned' | 'calling'
   let currentProject = null;
   let currentMode = 'landing';
 
@@ -377,6 +378,247 @@ window.InvestUI = (() => {
   }
 
   /* =========================================================
+     PROJECTS LIST PAGE  (#invest/projects)
+     ========================================================= */
+  function renderProjectsList(filterText) {
+    const data = window.INVEST_DATA;
+    const c = ensureContent();
+    if (!c) return;
+    const sectorMap = Object.fromEntries(data.sectors.map(s => [s.id, t(s.titleKey)]));
+
+    let list = data.projects.slice();
+    if (activeSector !== 'all')  list = list.filter(p => p.sector === activeSector);
+    if (activeStatus !== 'all')  list = list.filter(p => p.status === activeStatus);
+    if (filterText) {
+      const q = filterText.toLowerCase();
+      list = list.filter(p =>
+        p.name.toLowerCase().includes(q) ||
+        p.district.toLowerCase().includes(q) ||
+        (p.description || '').toLowerCase().includes(q)
+      );
+    }
+
+    const sectorChips = ['all'].concat(data.sectors.filter(s => s.id !== 'all').map(s => s.id))
+      .map(id => {
+        const label = id === 'all' ? 'Tất cả' : sectorMap[id];
+        return `<button type="button" class="iv-chip${id === activeSector ? ' active' : ''}" data-chip-sector="${id}">${escapeHtml(label)}</button>`;
+      }).join('');
+    const statusChips = [
+      ['all', 'Tất cả trạng thái'],
+      ['ready', 'Sẵn sàng mặt bằng'],
+      ['planned', 'Đã có quy hoạch 1/500'],
+      ['calling', 'Đang kêu gọi']
+    ].map(([id, label]) => `<button type="button" class="iv-chip${id === activeStatus ? ' active' : ''}" data-chip-status="${id}">${escapeHtml(label)}</button>`).join('');
+
+    c.innerHTML = `
+      <nav class="iv-breadcrumb">
+        <a href="#map" class="iv-bc-home">${ic('home')}</a>
+        <span class="iv-bc-sep">${ic('chevron')}</span>
+        <a href="#invest">Đầu tư</a>
+        <span class="iv-bc-sep">${ic('chevron')}</span>
+        <span class="iv-bc-current">Tất cả dự án</span>
+      </nav>
+
+      <header class="iv-page-header">
+        <h1>
+          <span>Tất cả</span>
+          <span class="hl">dự án kêu gọi đầu tư</span>
+        </h1>
+        <p class="iv-sub">${list.length} dự án — lọc theo lĩnh vực, trạng thái hoặc tìm kiếm theo tên / địa điểm.</p>
+      </header>
+
+      <div class="iv-filterbar">
+        <div class="iv-chip-row" data-chip-group="sector">${sectorChips}</div>
+        <div class="iv-chip-row" data-chip-group="status">${statusChips}</div>
+      </div>
+
+      ${list.length === 0
+        ? `<div class="iv-empty">Không có dự án phù hợp với bộ lọc.</div>`
+        : `<div class="iv-projects-grid iv-projects-grid-full">
+            ${list.map(p => `
+              <article class="iv-pcard" data-slug="${p.slug}">
+                <a class="iv-pcard-img" href="#invest/project/${p.slug}" style="background-image:url('${p.image}')">
+                  <span class="iv-pcard-tag">${escapeHtml(sectorMap[p.sector] || p.sector)}</span>
+                  <button class="iv-pcard-bookmark" type="button" aria-label="Lưu" onclick="event.preventDefault();event.stopPropagation();">${ic('bookmark')}</button>
+                </a>
+                <div class="iv-pcard-body">
+                  <a class="iv-pcard-title" href="#invest/project/${p.slug}">${escapeHtml(p.name)}</a>
+                  <div class="iv-pcard-loc">${ic('pin')}<span>${escapeHtml(p.district)}</span></div>
+                  <div class="iv-pcard-meta">
+                    <div><span class="iv-pcard-k">Quy mô:</span> <b>${escapeHtml(fmtArea(p))}</b></div>
+                    <div><span class="iv-pcard-k">Tổng vốn:</span> <b>${escapeHtml(fmtMoney(p.capital_billion_vnd))}</b></div>
+                  </div>
+                  ${statusBadge(p.status)}
+                </div>
+              </article>
+            `).join('')}
+          </div>`
+      }
+    `;
+    c.classList.remove('mode-landing', 'mode-project', 'mode-contact');
+    c.classList.add('mode-projects');
+    currentMode = 'projects';
+    document.getElementById('iv-main').scrollTop = 0;
+
+    /* Bind chip click delegation */
+    c.querySelector('[data-chip-group="sector"]')?.addEventListener('click', e => {
+      const btn = e.target.closest('[data-chip-sector]');
+      if (!btn) return;
+      activeSector = btn.dataset.chipSector;
+      renderSidebar();
+      renderProjectsList(document.getElementById('iv-search')?.value.trim() || '');
+    });
+    c.querySelector('[data-chip-group="status"]')?.addEventListener('click', e => {
+      const btn = e.target.closest('[data-chip-status]');
+      if (!btn) return;
+      activeStatus = btn.dataset.chipStatus;
+      renderProjectsList(document.getElementById('iv-search')?.value.trim() || '');
+    });
+  }
+
+  /* =========================================================
+     CONTACT PAGE  (#invest/contact)
+     ========================================================= */
+  function renderContact() {
+    const data = window.INVEST_DATA;
+    const c = ensureContent();
+    if (!c) return;
+    const sectors = data.sectors.filter(s => s.id !== 'all');
+
+    c.innerHTML = `
+      <nav class="iv-breadcrumb">
+        <a href="#map" class="iv-bc-home">${ic('home')}</a>
+        <span class="iv-bc-sep">${ic('chevron')}</span>
+        <a href="#invest">Đầu tư</a>
+        <span class="iv-bc-sep">${ic('chevron')}</span>
+        <span class="iv-bc-current">Đăng ký quan tâm</span>
+      </nav>
+
+      <header class="iv-page-header">
+        <h1>
+          <span>Đăng ký</span>
+          <span class="hl">quan tâm đầu tư</span>
+        </h1>
+        <p class="iv-sub">Để lại thông tin – Trung tâm Xúc tiến Đầu tư Lâm Đồng sẽ liên hệ trong vòng 24 giờ làm việc.</p>
+      </header>
+
+      <div class="iv-contact-box">
+        <form class="iv-form" id="iv-form" novalidate>
+          <div class="iv-form-row">
+            <label class="iv-field">
+              <span>Họ và tên *</span>
+              <input type="text" name="name" required>
+            </label>
+            <label class="iv-field">
+              <span>Doanh nghiệp *</span>
+              <input type="text" name="company" required>
+            </label>
+          </div>
+          <div class="iv-form-row">
+            <label class="iv-field">
+              <span>Quốc gia</span>
+              <select name="country">
+                <option>Việt Nam</option><option>Hàn Quốc</option><option>Nhật Bản</option>
+                <option>Trung Quốc</option><option>Singapore</option><option>Khác</option>
+              </select>
+            </label>
+            <label class="iv-field">
+              <span>Email *</span>
+              <input type="email" name="email" required>
+            </label>
+          </div>
+          <div class="iv-form-row">
+            <label class="iv-field">
+              <span>Số điện thoại *</span>
+              <input type="tel" name="phone" required>
+            </label>
+            <label class="iv-field">
+              <span>Quy mô vốn dự kiến</span>
+              <select name="budget">
+                <option>Dưới 100 tỷ</option>
+                <option>100 – 500 tỷ</option>
+                <option>500 – 1.000 tỷ</option>
+                <option>1.000 – 5.000 tỷ</option>
+                <option>Trên 5.000 tỷ</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="iv-field">
+            <span>Lĩnh vực quan tâm</span>
+            <div class="iv-chip-pick">
+              ${sectors.map(s => `<label class="iv-pick"><input type="checkbox" name="sectors" value="${s.id}"><span>${escapeHtml(t(s.titleKey))}</span></label>`).join('')}
+            </div>
+          </div>
+
+          <div class="iv-field">
+            <span>Nhu cầu hỗ trợ</span>
+            <div class="iv-chip-pick">
+              ${[
+                ['survey', 'Khảo sát thực địa'],
+                ['legal',  'Tư vấn pháp lý'],
+                ['partner','Kết nối đối tác'],
+                ['docs',   'Tài liệu chi tiết']
+              ].map(([id, label]) => `<label class="iv-pick"><input type="checkbox" name="needs" value="${id}"><span>${escapeHtml(label)}</span></label>`).join('')}
+            </div>
+          </div>
+
+          <label class="iv-field">
+            <span>Lời nhắn</span>
+            <textarea name="message" rows="4" placeholder="Mô tả ngắn về dự án/lĩnh vực bạn quan tâm…"></textarea>
+          </label>
+
+          <button type="submit" class="iv-form-submit">
+            ${ic('briefcase')}<span>Gửi đăng ký</span>
+          </button>
+          <p class="iv-form-note">Thông tin được bảo mật theo quy định và chỉ phục vụ mục đích kết nối đầu tư.</p>
+        </form>
+
+        <aside class="iv-contact-side">
+          <div class="iv-contact-card">
+            <div class="iv-contact-h">${escapeHtml(data.contact.name)}</div>
+            <div class="iv-contact-row">${ic('pin')}<span>${escapeHtml(data.contact.address)}</span></div>
+            <div class="iv-contact-row">${ic('phone')}<a href="tel:${escapeHtml(data.contact.hotline.replace(/\s/g,''))}">${escapeHtml(data.contact.hotline)}</a></div>
+            <div class="iv-contact-row">${ic('briefcase')}<a href="mailto:${escapeHtml(data.contact.email)}">${escapeHtml(data.contact.email)}</a></div>
+          </div>
+          <a class="iv-contact-channel zalo" href="${escapeHtml(data.contact.zalo)}" target="_blank">
+            <span class="iv-contact-channel-icon" style="background:#0068ff">Z</span>
+            <span>Liên hệ qua Zalo OA</span>
+            ${ic('chevron')}
+          </a>
+          <a class="iv-contact-channel wa" href="https://wa.me/${escapeHtml(data.contact.whatsapp.replace(/[^\d]/g,''))}" target="_blank">
+            <span class="iv-contact-channel-icon" style="background:#25d366">W</span>
+            <span>WhatsApp (FDI)</span>
+            ${ic('chevron')}
+          </a>
+        </aside>
+      </div>
+    `;
+    c.classList.remove('mode-landing', 'mode-project', 'mode-projects');
+    c.classList.add('mode-contact');
+    currentMode = 'contact';
+    document.getElementById('iv-main').scrollTop = 0;
+
+    /* Submit handler — Sprint 4: stub log + alert */
+    const form = c.querySelector('#iv-form');
+    form?.addEventListener('submit', e => {
+      e.preventDefault();
+      const fd = new FormData(form);
+      const payload = {};
+      fd.forEach((v, k) => {
+        if (payload[k] !== undefined) {
+          payload[k] = [].concat(payload[k], v);
+        } else {
+          payload[k] = v;
+        }
+      });
+      console.log('[invest-ui] form submit payload:', payload);
+      alert('Cảm ơn bạn đã đăng ký quan tâm. Trung tâm XTĐT Lâm Đồng sẽ liên hệ lại trong 24 giờ làm việc.');
+      form.reset();
+    });
+  }
+
+  /* =========================================================
      EVENTS
      ========================================================= */
   function bindEvents() {
@@ -387,18 +629,19 @@ window.InvestUI = (() => {
         if (!btn) return;
         activeSector = btn.dataset.sector;
         renderSidebar();
-        if (currentMode === 'landing') {
-          renderLanding(document.getElementById('iv-search')?.value.trim() || '');
-        } else if (window.ViewRouter) {
-          window.ViewRouter.navigate('#invest');
-        }
+        const q = document.getElementById('iv-search')?.value.trim() || '';
+        if (currentMode === 'landing')       renderLanding(q);
+        else if (currentMode === 'projects') renderProjectsList(q);
+        else if (window.ViewRouter)          window.ViewRouter.navigate('#invest');
       });
     }
 
     const pdfBtn = document.getElementById('iv-pdf-btn');
     if (pdfBtn) pdfBtn.addEventListener('click', () => alert('Tải PDF — sẽ tích hợp ở Sprint sau.'));
     const contactBtn = document.getElementById('iv-contact-btn');
-    if (contactBtn) contactBtn.addEventListener('click', () => alert('Liên hệ Trung tâm XTĐT — form sẽ tích hợp ở Sprint sau.'));
+    if (contactBtn) contactBtn.addEventListener('click', () => {
+      if (window.ViewRouter) window.ViewRouter.navigate('#invest/contact', contactBtn);
+    });
 
     const search = document.getElementById('iv-search');
     if (search) {
@@ -406,7 +649,9 @@ window.InvestUI = (() => {
       search.addEventListener('input', () => {
         clearTimeout(timer);
         timer = setTimeout(() => {
-          if (currentMode === 'landing') renderLanding(search.value.trim());
+          const q = search.value.trim();
+          if (currentMode === 'landing')       renderLanding(q);
+          else if (currentMode === 'projects') renderProjectsList(q);
         }, 150);
       });
     }
@@ -423,8 +668,11 @@ window.InvestUI = (() => {
       const langLabel = document.getElementById('iv-lang-label');
       if (langLabel) langLabel.textContent = window.I18n.lang.toUpperCase();
       renderSidebar();
+      const q = document.getElementById('iv-search')?.value.trim() || '';
       if (currentMode === 'project' && currentProject) renderProject(currentProject.slug);
-      else renderLanding(document.getElementById('iv-search')?.value.trim() || '');
+      else if (currentMode === 'projects') renderProjectsList(q);
+      else if (currentMode === 'contact')  renderContact();
+      else renderLanding(q);
     });
   }
 
@@ -438,6 +686,14 @@ window.InvestUI = (() => {
   function showProject(slug) {
     renderProject(slug);
   }
+  function showProjects() {
+    currentProject = null;
+    renderProjectsList(document.getElementById('iv-search')?.value.trim() || '');
+  }
+  function showContact() {
+    currentProject = null;
+    renderContact();
+  }
 
   async function init() {
     if (initialized) return;
@@ -450,5 +706,5 @@ window.InvestUI = (() => {
     initialized = true;
   }
 
-  return { init, showLanding, showProject };
+  return { init, showLanding, showProject, showProjects, showContact };
 })();
