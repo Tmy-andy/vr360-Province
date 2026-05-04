@@ -97,7 +97,19 @@ window.UI = (() => {
       });
     });
     document.querySelectorAll('.btn-go').forEach(el =>
-      el.addEventListener('click', e => { e.stopPropagation(); window.MapModule.flyTo(+el.dataset.id); })
+      el.addEventListener('click', e => {
+        e.stopPropagation();
+        const id = +el.dataset.id;
+        const place = window.APP_DATA.places.find(x => x.id === id);
+        if (!place) return;
+        /* 3D: chuyển cảnh VR ngay; 2D: flyTo bản đồ rồi mở VR */
+        if (vrMode) {
+          switchVRPlace(place);
+        } else {
+          window.MapModule.flyTo(id);
+          enterVRMode(place);
+        }
+      })
     );
   }
 
@@ -473,9 +485,10 @@ window.UI = (() => {
     tourItems = items;
     tourActive = true;
     tourIdx = fromIndex;
-    // Mobile: mở cột nút phải ra để spotlight chỉ đúng vị trí (đợi animation xong)
+    // Mobile: mở cột nút phải ra để spotlight chỉ đúng vị trí (đợi animation xong).
+    // Cả 2D + 3D đều cần vì #top-right dùng chung. Ở 3D, panel + bottom-bar cũng dùng chung.
     const isMobile = window.matchMedia('(max-width: 768px)').matches;
-    if (isMobile && items === HELP_ITEMS_2D) {
+    if (isMobile) {
       document.body.classList.add('mobile-menu-open');
       $('tour-overlay').classList.add('open');
       setTimeout(showTourStep, 350);
@@ -732,11 +745,32 @@ window.UI = (() => {
       }
     });
 
-    /* lang */
-    $('lang-btn').addEventListener('click', async () => {
-      const next = window.I18n.lang === 'vi' ? 'en' : 'vi';
-      await window.I18n.setLang(next);
-      $('lang-label').textContent = next.toUpperCase();
+    /* lang dropdown — toggle popup, chọn ngôn ngữ trong list */
+    $('lang-btn').addEventListener('click', e => {
+      e.stopPropagation();
+      $('lang-dd').classList.toggle('open');
+    });
+    document.querySelectorAll('.lang-opt').forEach(opt => {
+      opt.addEventListener('click', async e => {
+        e.stopPropagation();
+        const next = opt.dataset.lang;
+        if (!next || next === window.I18n.lang) {
+          $('lang-dd').classList.remove('open');
+          return;
+        }
+        await window.I18n.setLang(next);
+        $('lang-label').textContent = next.toUpperCase();
+        document.querySelectorAll('.lang-opt').forEach(o =>
+          o.classList.toggle('selected', o.dataset.lang === next));
+        $('lang-dd').classList.remove('open');
+      });
+    });
+    /* Đánh dấu lựa chọn hiện tại lúc khởi tạo */
+    document.querySelectorAll('.lang-opt').forEach(o =>
+      o.classList.toggle('selected', o.dataset.lang === window.I18n.lang));
+    /* Click ngoài → đóng */
+    document.addEventListener('click', e => {
+      if (!$('lang-dd').contains(e.target)) $('lang-dd').classList.remove('open');
     });
 
     /* 3D: minimap click → exit VR */
@@ -797,9 +831,27 @@ window.UI = (() => {
     document.querySelectorAll('.bbt').forEach(btn => {
       btn.addEventListener('click', function () {
         if (this.classList.contains('bb-ai')) {
-          /* AI mic: chỉ toggle trạng thái listening, KHÔNG mở ai-panel */
-          this.classList.toggle('listening');
+          /* AI mic: chỉ toggle trạng thái listening, KHÔNG mở ai-panel.
+             Khi BẬT listening: deactivate tất cả tab khác + ẩn bubble.
+             Khi TẮT listening: re-activate Home (tab đầu tiên data-view="map"). */
+          const turningOn = !this.classList.contains('listening');
+          this.classList.toggle('listening', turningOn);
+          if (turningOn) {
+            document.querySelectorAll('.bbt').forEach(b => b.classList.remove('active'));
+            document.body.classList.add('ai-listening');
+          } else {
+            document.body.classList.remove('ai-listening');
+            const home = document.querySelector('.bbt[data-view="map"]');
+            if (home) home.classList.add('active');
+            moveBubble();
+          }
           return;
+        }
+        /* Tắt AI listening nếu đang bật khi user chọn tab khác */
+        const ai = $('bb-ai-btn');
+        if (ai && ai.classList.contains('listening')) {
+          ai.classList.remove('listening');
+          document.body.classList.remove('ai-listening');
         }
         document.querySelectorAll('.bbt').forEach(b => b.classList.remove('active'));
         this.classList.add('active');
@@ -819,11 +871,15 @@ window.UI = (() => {
       const first = window.APP_DATA.places[0];
       if (first) enterVRMode(first);
     });
-    /* Click ngoài để tắt listening AI */
+    /* Click ngoài để tắt listening AI → re-activate Home */
     document.addEventListener('click', e => {
       const ai = document.getElementById('bb-ai-btn');
       if (ai && ai.classList.contains('listening') && !ai.contains(e.target)) {
         ai.classList.remove('listening');
+        document.body.classList.remove('ai-listening');
+        const home = document.querySelector('.bbt[data-view="map"]');
+        if (home) home.classList.add('active');
+        moveBubble();
       }
     });
     requestAnimationFrame(moveBubble);
@@ -937,6 +993,12 @@ window.UI = (() => {
     const ar = active.getBoundingClientRect();
     const br = bar.getBoundingClientRect();
     indicator.style.transform = `translateX(${ar.left - br.left + (ar.width - indicator.offsetWidth) / 2}px)`;
+    /* Vị trí .bb-float: bám sát 2 mép #bottom-bar (cách 12px) */
+    const root = document.documentElement;
+    const gap = 12;
+    const btnSize = 64; /* var(--bb-h) */
+    root.style.setProperty('--bb-edge-left',  Math.max(8, br.left - gap - btnSize) + 'px');
+    root.style.setProperty('--bb-edge-right', Math.max(8, window.innerWidth - br.right - gap - btnSize) + 'px');
   }
 
   /* compat stubs */

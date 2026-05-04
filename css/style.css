@@ -234,6 +234,7 @@ body.mode-3d .mode-toggle-btn:hover { background: #e8f7fd; color: var(--icon-blu
 /* hide-ui-btn ở 3D: khi UI ẩn thì sẽ thuộc #vr-reveal-btn xử lý – ở đây chỉ giữ icon */
 
 /* Nút Lang: icon globe + text mã ngôn ngữ ("VI"/"EN") */
+#lang-dd { position: relative; display: inline-flex; }
 #lang-btn {
   width: auto; min-width: var(--pill-h);
   padding: 0 14px; gap: 6px;
@@ -242,6 +243,30 @@ body.mode-3d .mode-toggle-btn:hover { background: #e8f7fd; color: var(--icon-blu
 }
 #lang-btn svg { width: 16px; height: 16px; }
 #lang-label { letter-spacing: .5px; }
+
+/* Lang popup – list ngôn ngữ, animation đổ xuống giống layer-popup */
+#lang-popup {
+  position: absolute; top: calc(100% + 6px); right: 0;
+  min-width: 180px; background: #fff; border-radius: 12px;
+  box-shadow: 0 8px 28px rgba(0,0,0,.18);
+  z-index: 2000; overflow: hidden; padding: 6px;
+  opacity: 0; pointer-events: none;
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path .3s cubic-bezier(.4,0,.2,1), opacity .22s ease;
+}
+#lang-dd.open #lang-popup {
+  opacity: 1; pointer-events: auto;
+  clip-path: inset(0);
+}
+.lang-opt {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px; border-radius: 8px;
+  cursor: pointer; font-size: 13px; color: #333;
+  transition: background .12s;
+}
+.lang-opt:hover { background: #f4faff; }
+.lang-opt.selected { background: var(--icon-blue); color: #fff; font-weight: 600; }
+.lang-flag { font-size: 18px; line-height: 1; }
 
 /* tooltip "Layers" hiển thị dưới nút Layers (giống ảnh mẫu) */
 #layers-btn::after {
@@ -316,7 +341,8 @@ body.mode-3d .mode-toggle-btn:hover { background: #e8f7fd; color: var(--icon-blu
 
 #bottom-bar {
   position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
-  height: var(--bb-h); width: auto; max-width: calc(100% - 28px);
+  height: var(--bb-h); width: auto;
+  max-width: calc(100% - (var(--bb-h) + 12px) * 2 - 28px);
   background: #fff; border-radius: 36px;
   box-shadow: 0 6px 22px rgba(0,0,0,.18);
   display: flex; align-items: center; justify-content: center;
@@ -324,41 +350,49 @@ body.mode-3d .mode-toggle-btn:hover { background: #e8f7fd; color: var(--icon-blu
   z-index: 1000;
 }
 
-/* === SIDE BUTTONS (VR headset bên trái + Chat AI bên phải) ===
-   Ngoài cụm tab .bbt, hai nút này nằm sát mép pill, vuông bo tròn
-   để dễ phân biệt với các tab tròn ở giữa. */
-.bb-side {
-  flex-shrink: 0;
-  width: 44px; height: 44px;
-  border-radius: 12px;
+/* === FLOAT BUTTONS (VR headset trái + Chat AI phải) ===
+   Nằm sát 2 bên #bottom-bar (không cố định mép màn hình). JS đo vị trí
+   #bottom-bar và set left/right qua biến --bb-edge-left / --bb-edge-right. */
+.bb-float {
+  position: fixed; bottom: 16px;
+  width: var(--bb-h); height: var(--bb-h);
+  border-radius: 50%;
   border: none; cursor: pointer;
+  background: #fff;
+  box-shadow: 0 6px 22px rgba(0,0,0,.18);
   display: flex; align-items: center; justify-content: center;
   padding: 0; overflow: hidden;
-  transition: background .14s, transform .12s;
+  z-index: 1000;
+  transition: background .14s, transform .12s, opacity .25s ease, left .3s ease, right .3s ease;
 }
-.bb-vr-btn {
-  background: var(--icon-blue); color: #fff;
-}
+.bb-vr-btn   { left: var(--bb-edge-left, 16px); background: var(--icon-blue); color: #fff; }
+.bb-chat-btn { right: var(--bb-edge-right, 16px); }
 .bb-vr-btn:hover { background: var(--icon-blue-dark); transform: translateY(-1px); }
-.bb-vr-btn svg { width: 22px; height: 22px; }
-
-.bb-chat-btn {
-  background: var(--icon-blue);
-  position: relative;
-}
-.bb-chat-btn img {
-  width: 100%; height: 100%;
-  object-fit: cover;
-  display: block;
-}
 .bb-chat-btn:hover { transform: translateY(-1px); }
+.bb-vr-btn svg { width: 26px; height: 26px; }
+.bb-chat-btn img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .bb-chat-btn::after {
-  /* Dot nhỏ báo trạng thái — luôn hiện để gợi ý có nội dung mới */
   content: '';
-  position: absolute; top: 4px; right: 4px;
-  width: 8px; height: 8px; border-radius: 50%;
+  position: absolute; top: 6px; right: 6px;
+  width: 10px; height: 10px; border-radius: 50%;
   background: #16d472; border: 2px solid #fff;
 }
+/* AI mic đang listening: ẩn bubble indicator (không có tab nào active) */
+body.ai-listening #bb-indicator {
+  opacity: 0;
+  transition: opacity .25s ease;
+}
+
+/* Đồng bộ ẩn .bb-float cùng nhịp với #bottom-bar */
+body.focus-mode .bb-float,
+body.view-guide .bb-float,
+body.mode-3d.vr-ui-hidden .bb-float {
+  opacity: 0; pointer-events: none;
+}
+/* 3D mode: nâng float lên trên #vr-viewer */
+body.mode-3d .bb-float { z-index: 2210; }
+/* Đang ở chế độ VR thì không cần nút bb-vr-btn nữa */
+body.mode-3d .bb-vr-btn { opacity: 0; pointer-events: none; }
 
 /* Bubble xanh nổi trên bar – ONE element duy nhất, JS dịch chuyển bằng translateX */
 #bb-indicator {
@@ -1726,6 +1760,16 @@ body.mode-3d.vr-ui-hidden #top-right {
 
   /* Mobile dọc: icon bottom-bar nhảy lên cao hơn (-25px) */
   .bbt.active svg { transform: translateY(-27px); }
+
+  /* Mobile (cả dọc lẫn ngang): mở right-panel full-screen → ẩn cả bottom-bar
+     + .bb-float (vr/chat) + nút mở panel để panel chiếm trọn màn hình. */
+  body.panel-open #bottom-bar,
+  body.panel-open .bb-float,
+  body.panel-open #mobile-panel-btn {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s ease;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1829,15 +1873,6 @@ body.mode-3d.vr-ui-hidden #top-right {
   #right-panel:not(.open),
   #news-panel:not(.open) { pointer-events: none !important; }
 
-  /* Khi right-panel mở (full-screen ở landscape): ẩn bottom-bar + nút mở panel
-     để panel chiếm trọn màn hình, không bị bar dưới che */
-  body.panel-open #bottom-bar,
-  body.panel-open #mobile-panel-btn {
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity .25s ease;
-  }
-
   /* Header panel: hiện nút back giống portrait */
   #ph-close { display: flex; }
   #ph { padding: 14px 14px 10px; }
@@ -1929,17 +1964,8 @@ body.mode-3d.vr-ui-hidden #top-right {
     left: 12px;
   }
 
-  /* Minimap mobile: dời sang góc trên-TRÁI để không đè cụm #top-right (đang
-     là cột dọc bên phải khi mở mobile menu). */
-  #minimap {
-    bottom: auto;
-    top: calc(var(--pill-h) + 24px);
-    left: 12px;
-    right: auto;
-    z-index: 800;
-  }
-  #mm-title { font-size: 8.5px; margin-bottom: 3px; }
-  #mm-circle { width: 118px; height: 118px; border-width: 2px; }
+  /* Mobile 3D: ẩn hoàn toàn minimap (không đủ chỗ + chồng lấn với UI) */
+  #minimap { display: none !important; }
 
   /* Reveal-UI button: né khỏi header */
   #vr-reveal-btn { top: 12px; right: 12px; }
@@ -1951,8 +1977,6 @@ body.mode-3d.vr-ui-hidden #top-right {
   .vr-logo-title { font-size: 12px; }
   .vr-logo-sub { font-size: 7.5px; }
 
-  #mm-circle { width: 100px; height: 100px; }
-  #minimap { top: calc(var(--pill-h) + 20px); left: 10px; right: auto; }
 
   #vr-info { padding: 10px 12px; }
   /* #vr-info-fab { bottom: 80px; } */
