@@ -154,5 +154,149 @@ window.MapModule = (() => {
     map.on('click', handler);
   }
 
-  return { initMap, setLayer, addMarker, flyTo, flyToCoords, onMapClick, markers };
+  /* =========================================================
+     INVEST LAYER (Sprint 5) – marker dự án + polygon KCN
+     ========================================================= */
+  let investLayer = null;
+  let investData = null;
+  let investSectorFilter = 'all';
+  let investMarkerMap = {};   // slug -> marker
+
+  /* Màu badge theo status (đồng bộ invest.css) */
+  const STATUS_COLOR = {
+    ready:   '#22b46e',
+    planned: '#2bb6e6',
+    calling: '#f4a73b'
+  };
+
+  async function ensureInvestData() {
+    if (investData) return investData;
+    const [proj, kcn] = await Promise.all([
+      fetch('data/invest-projects.json').then(r => r.ok ? r.json() : null).catch(() => null),
+      fetch('data/kcn-lamdong.geojson').then(r => r.ok ? r.json() : null).catch(() => null)
+    ]);
+    investData = { projects: proj?.projects || [], kcn };
+    return investData;
+  }
+
+  function buildInvestPopupHtml(p) {
+    const statusLabel = ({ ready: 'Sẵn sàng mặt bằng', planned: 'Đã có quy hoạch', calling: 'Đang kêu gọi' })[p.status] || p.status;
+    const cap = (p.capital_billion_vnd || 0).toLocaleString('vi-VN');
+    return `
+      <div class="iv-mpop">
+        <div class="iv-mpop-img" style="background-image:url('${p.image}')"></div>
+        <div class="iv-mpop-body">
+          <div class="iv-mpop-title">${p.name}</div>
+          <div class="iv-mpop-meta">
+            <span>📍 ${p.district}</span>
+            <span>💰 ${cap} tỷ</span>
+          </div>
+          <span class="iv-mpop-badge" style="--c:${STATUS_COLOR[p.status] || '#888'}">${statusLabel}</span>
+          <a class="iv-mpop-cta" href="#invest/project/${p.slug}">Xem chi tiết →</a>
+        </div>
+      </div>
+    `;
+  }
+
+  function makeInvestIcon(status) {
+    const color = STATUS_COLOR[status] || '#2bb6e6';
+    const html = `<div class="iv-mmarker" style="background:${color}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.4" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+    </div>`;
+    return L.divIcon({ html, className: '', iconSize: [30, 30], iconAnchor: [15, 15] });
+  }
+
+  function applySectorFilter() {
+    if (!investLayer) return;
+    Object.entries(investMarkerMap).forEach(([slug, m]) => {
+      const p = investData.projects.find(x => x.slug === slug);
+      const visible = investSectorFilter === 'all' || p.sector === investSectorFilter;
+      if (visible) { if (!investLayer.hasLayer(m)) m.addTo(investLayer); }
+      else { investLayer.removeLayer(m); }
+    });
+  }
+
+  async function showInvestLayer() {
+    const d = await ensureInvestData();
+    if (!investLayer) {
+      investLayer = L.featureGroup();
+      /* Markers dự án */
+      d.projects.forEach(p => {
+        if (typeof p.lat !== 'number') return;
+        const m = L.marker([p.lat, p.lng], { icon: makeInvestIcon(p.status), riseOnHover: true });
+        m.bindPopup(buildInvestPopupHtml(p), { className: 'iv-mpop-wrap', maxWidth: 280, minWidth: 240 });
+        m.addTo(investLayer);
+        investMarkerMap[p.slug] = m;
+      });
+      /* KCN polygons */
+      if (d.kcn) {
+        L.geoJSON(d.kcn, {
+          style: () => ({ color: '#2bb6e6', weight: 2, fillColor: '#2bb6e6', fillOpacity: 0.18, dashArray: '4 4' }),
+          onEachFeature: (feat, layer) => {
+            const pr = feat.properties || {};
+            layer.bindTooltip(`<b>${pr.name}</b><br/>${pr.district || ''} · ${pr.area_ha || '?'} ha · lấp đầy ${pr.fill_rate || 0}%`, { sticky: true });
+          }
+        }).addTo(investLayer);
+      }
+    }
+    investLayer.addTo(map);
+    applySectorFilter();
+  }
+
+  function hideInvestLayer() {
+    if (investLayer && map.hasLayer(investLayer)) map.removeLayer(investLayer);
+  }
+
+  function isInvestVisible() {
+    return !!(investLayer && map.hasLayer(investLayer));
+  }
+
+  async function toggleInvestLayer() {
+    if (isInvestVisible()) hideInvestLayer();
+    else await showInvestLayer();
+    return isInvestVisible();
+  }
+
+  function setInvestSectorFilter(sectorId) {
+    investSectorFilter = sectorId || 'all';
+    if (isInvestVisible()) applySectorFilter();
+  }
+
+  let highlightCircle = null;
+  let highlightTimer = null;
+
+  async function flyToProject(slug) {
+    if (!isInvestVisible()) await showInvestLayer();
+    const m = investMarkerMap[slug];
+    if (!m) return;
+    const ll = m.getLatLng();
+    map.flyTo(ll, 13, { duration: 1.2 });
+    /* Vòng tròn highlight pulse — xoá sau 6s hoặc khi click chỗ khác */
+    if (highlightCircle) map.removeLayer(highlightCircle);
+    clearTimeout(highlightTimer);
+    highlightCircle = L.circle(ll, {
+      radius: 1200,
+      color: '#2bb6e6',
+      weight: 2.5,
+      fillColor: '#2bb6e6',
+      fillOpacity: 0.12,
+      className: 'iv-highlight-ring'
+    }).addTo(map);
+    highlightTimer = setTimeout(() => {
+      if (highlightCircle) { map.removeLayer(highlightCircle); highlightCircle = null; }
+    }, 6000);
+    setTimeout(() => m.openPopup(), 1100);
+  }
+
+  function clearHighlight() {
+    if (highlightCircle) { map.removeLayer(highlightCircle); highlightCircle = null; }
+    clearTimeout(highlightTimer);
+  }
+
+  return {
+    initMap, setLayer, addMarker, flyTo, flyToCoords, onMapClick, markers,
+    /* Sprint 5 */
+    showInvestLayer, hideInvestLayer, toggleInvestLayer, isInvestVisible,
+    setInvestSectorFilter, flyToProject, clearHighlight
+  };
 })();

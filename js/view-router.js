@@ -88,6 +88,10 @@ window.ViewRouter = (() => {
     if (!hash || hash === 'map') return { view: 'map' };
     const parts = hash.split('/');
     const view = parts[0];
+    if (view === 'map') {
+      if (parts[1] === 'project' && parts[2]) return { view: 'map', sub: 'project', slug: parts[2] };
+      return { view: 'map' };
+    }
     if (view === 'guide') {
       if (parts[1] === 'article' && parts[2]) return { view: 'guide', sub: 'article', slug: parts[2] };
       return { view: 'guide' };
@@ -96,6 +100,7 @@ window.ViewRouter = (() => {
       if (parts[1] === 'project' && parts[2]) return { view: 'invest', sub: 'project', slug: parts[2] };
       if (parts[1] === 'projects')             return { view: 'invest', sub: 'projects' };
       if (parts[1] === 'contact')              return { view: 'invest', sub: 'contact' };
+      if (parts[1] === 'dashboard')            return { view: 'invest', sub: 'dashboard' };
       return { view: 'invest' };
     }
     return { view: 'map' };
@@ -113,6 +118,13 @@ window.ViewRouter = (() => {
       body.classList.add('view-' + view);
       currentView = view;
       setBottomBarActive(view);
+    }
+
+    if (view === 'map' && route.sub === 'project' && route.slug) {
+      /* Kích hoạt invest layer + bay tới project + highlight ring */
+      if (window.MapModule?.flyToProject) {
+        setTimeout(() => window.MapModule.flyToProject(route.slug), 100);
+      }
     }
 
     if (view === 'guide') {
@@ -134,6 +146,7 @@ window.ViewRouter = (() => {
         if (route.sub === 'project' && route.slug) window.InvestUI.showProject(route.slug);
         else if (route.sub === 'projects')          window.InvestUI.showProjects();
         else if (route.sub === 'contact')           window.InvestUI.showContact();
+        else if (route.sub === 'dashboard')         window.InvestUI.showDashboard();
         else                                        window.InvestUI.showLanding();
       } catch (err) { console.error('[router] Invest load fail:', err); }
     }

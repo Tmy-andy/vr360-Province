@@ -260,7 +260,7 @@ window.InvestUI = (() => {
       </section>
     `;
 
-    /* CTA banner */
+    /* CTA banner + dashboard link */
     const ctaHtml = `
       <section class="iv-cta-banner">
         <div class="iv-cta-icon">${ic('briefcase')}</div>
@@ -268,10 +268,15 @@ window.InvestUI = (() => {
           <div class="iv-cta-title">${escapeHtml(data.ctaBanner.title)}</div>
           <div class="iv-cta-sub">${escapeHtml(data.ctaBanner.sub)}</div>
         </div>
-        <a class="iv-cta-btn" href="${data.ctaBanner.ctaHref}">
-          <span>${escapeHtml(data.ctaBanner.cta)}</span>
-          ${ic('chevron')}
-        </a>
+        <div class="iv-cta-actions">
+          <a class="iv-cta-btn iv-cta-btn-ghost" href="#invest/dashboard">
+            ${ic('target')}<span>Dashboard số liệu</span>
+          </a>
+          <a class="iv-cta-btn" href="${data.ctaBanner.ctaHref}">
+            <span>${escapeHtml(data.ctaBanner.cta)}</span>
+            ${ic('chevron')}
+          </a>
+        </div>
       </section>
     `;
 
@@ -366,7 +371,7 @@ window.InvestUI = (() => {
           <div class="iv-proj-actions">
             <button class="iv-proj-btn primary" type="button">${ic('briefcase')}<span>Đăng ký quan tâm</span></button>
             <button class="iv-proj-btn" type="button">${ic('download')}<span>Tải hồ sơ PDF</span></button>
-            <a class="iv-proj-btn" href="#map">${ic('map')}<span>Xem trên bản đồ</span></a>
+            <a class="iv-proj-btn" href="#map/project/${p.slug}">${ic('map')}<span>Xem trên bản đồ</span></a>
           </div>
         </aside>
       </div>
@@ -642,6 +647,10 @@ window.InvestUI = (() => {
     if (contactBtn) contactBtn.addEventListener('click', () => {
       if (window.ViewRouter) window.ViewRouter.navigate('#invest/contact', contactBtn);
     });
+    const dashBtn = document.getElementById('iv-dashboard-btn');
+    if (dashBtn) dashBtn.addEventListener('click', () => {
+      if (window.ViewRouter) window.ViewRouter.navigate('#invest/dashboard', dashBtn);
+    });
 
     const search = document.getElementById('iv-search');
     if (search) {
@@ -694,6 +703,32 @@ window.InvestUI = (() => {
     currentProject = null;
     renderContact();
   }
+  function showDashboard() {
+    const c = ensureContent();
+    if (!c) return;
+    c.classList.remove('mode-landing', 'mode-project', 'mode-projects', 'mode-contact');
+    c.classList.add('mode-dashboard');
+    currentMode = 'dashboard';
+    currentProject = null;
+    c.innerHTML = `
+      <nav class="iv-breadcrumb">
+        <a href="#map" class="iv-bc-home">${ic('home')}</a>
+        <span class="iv-bc-sep">${ic('chevron')}</span>
+        <a href="#invest">Đầu tư</a>
+        <span class="iv-bc-sep">${ic('chevron')}</span>
+        <span class="iv-bc-current">Dashboard số liệu</span>
+      </nav>
+      <header class="iv-page-header">
+        <h1><span>Dashboard</span> <span class="hl">đầu tư Lâm Đồng</span></h1>
+        <p class="iv-sub">Tổng quan vốn – lĩnh vực – địa bàn – tiến độ. Dữ liệu tổng hợp từ ${window.INVEST_DATA.projects.length} dự án mẫu.</p>
+      </header>
+      <div id="iv-dash-host"></div>
+    `;
+    document.getElementById('iv-main').scrollTop = 0;
+    if (window.InvestDashboard) {
+      window.InvestDashboard.render(document.getElementById('iv-dash-host'));
+    }
+  }
 
   async function init() {
     if (initialized) return;
@@ -706,5 +741,5 @@ window.InvestUI = (() => {
     initialized = true;
   }
 
-  return { init, showLanding, showProject, showProjects, showContact };
+  return { init, showLanding, showProject, showProjects, showContact, showDashboard };
 })();

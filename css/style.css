@@ -2374,3 +2374,201 @@ body.view-invest #panel-toggle,
 body.view-invest #news-panel,
 body.view-invest #mobile-more-btn,
 body.view-invest #mobile-panel-btn { display: none !important; }
+
+/* ===== 15. INVEST LAYER (Sprint 5) =====
+   - Toggle button trong topbar (#invest-layer-btn).
+   - Marker dự án (.iv-mmarker) – tròn màu theo status.
+   - Popup (.iv-mpop) trong leaflet-popup-content.
+   ============================== */
+/* Invest layer button: invert state để dễ nhận biết
+   - Default (off): nền trắng, icon xanh
+   - Active (on)  : nền xanh, icon trắng (kế thừa .ticon mặc định) */
+#invest-layer-btn {
+  background: #fff;
+  color: var(--icon-blue);
+}
+#invest-layer-btn:hover {
+  background: #f4faff;
+  color: var(--icon-blue-dark);
+}
+#invest-layer-btn.active {
+  background: var(--icon-blue);
+  color: #fff;
+}
+#invest-layer-btn.active:hover {
+  background: var(--icon-blue-dark);
+  color: #fff;
+}
+.iv-mmarker {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  border: 2.5px solid #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,.3);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: transform .15s;
+}
+.iv-mmarker svg { width: 14px; height: 14px; }
+.iv-mmarker:hover { transform: scale(1.1); }
+
+/* Leaflet popup override cho invest */
+.leaflet-popup.iv-mpop-wrap .leaflet-popup-content-wrapper {
+  border-radius: 12px;
+  padding: 0;
+  overflow: hidden;
+  box-shadow: 0 10px 28px rgba(0,0,0,.2);
+}
+.leaflet-popup.iv-mpop-wrap .leaflet-popup-content {
+  margin: 0;
+  font-family: 'Be Vietnam Pro', sans-serif;
+}
+.iv-mpop { width: 240px; }
+.iv-mpop-img { height: 110px; background: #e9eef3 center/cover no-repeat; }
+.iv-mpop-body { padding: 12px 14px; }
+.iv-mpop-title { font-size: 13.5px; font-weight: 800; color: #1a1a1a; line-height: 1.3; }
+.iv-mpop-meta { display: flex; gap: 10px; font-size: 11.5px; color: #888; margin-top: 6px; }
+.iv-mpop-badge {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--c) 12%, transparent);
+  color: var(--c);
+  font-size: 10.5px; font-weight: 700;
+  margin-top: 8px;
+}
+.iv-mpop-cta {
+  display: block; margin-top: 10px;
+  background: var(--icon-blue); color: #fff !important;
+  padding: 7px 12px;
+  border-radius: 8px;
+  font-size: 12px; font-weight: 700;
+  text-align: center; text-decoration: none;
+  transition: background .15s;
+}
+.iv-mpop-cta:hover { background: var(--icon-blue-dark); color: #fff; }
+
+/* ===== 16. AI PANEL (Sprint 5) =====
+   Floating panel góc dưới phải, bật bằng nút bb-ai.
+   ============================== */
+#ai-panel {
+  position: fixed;
+  right: 16px; bottom: calc(var(--bottom-h) + 28px);
+  width: 360px; max-width: calc(100vw - 32px);
+  max-height: 70vh;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 14px 36px rgba(0,0,0,.22);
+  z-index: 2500;
+  display: flex; flex-direction: column;
+  opacity: 0;
+  transform: translateY(20px) scale(.96);
+  transition: opacity .22s ease, transform .22s ease;
+  pointer-events: none;
+  overflow: hidden;
+}
+#ai-panel.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+
+.ai-pn-head {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #eef0f2;
+}
+.ai-pn-orb {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #16d472, #2bb6e6);
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.ai-pn-h { flex: 1; min-width: 0; }
+.ai-pn-title { font-size: 14px; font-weight: 800; color: #1a1a1a; }
+.ai-pn-sub   { font-size: 11.5px; color: #888; margin-top: 2px; }
+.ai-pn-x {
+  width: 28px; height: 28px;
+  border: none; background: #f4f6f8;
+  border-radius: 50%; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: #555;
+  flex-shrink: 0;
+}
+.ai-pn-x:hover { background: #e8f6fc; color: var(--icon-blue); }
+
+.ai-pn-tabs {
+  display: flex; gap: 6px;
+  padding: 10px 16px 0;
+}
+.ai-pn-tab {
+  height: 30px; padding: 0 14px;
+  border: 1.5px solid #e4e8ec;
+  background: #fff;
+  border-radius: 15px;
+  font-family: inherit; font-size: 12px; font-weight: 700;
+  cursor: pointer; color: #555;
+  transition: border-color .15s, background .15s, color .15s;
+}
+.ai-pn-tab:hover { border-color: var(--icon-blue); color: var(--icon-blue); }
+.ai-pn-tab.active { background: var(--icon-blue); border-color: var(--icon-blue); color: #fff; }
+
+.ai-pn-body {
+  flex: 1; overflow-y: auto;
+  padding: 12px 16px;
+}
+.ai-pn-prompts { display: flex; flex-direction: column; gap: 6px; }
+.ai-pn-q {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid #eef0f2;
+  background: #f4faff;
+  border-radius: 10px;
+  font-family: inherit; font-size: 12.5px; font-weight: 600;
+  color: #1a1a1a; text-align: left;
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+}
+.ai-pn-q:hover { border-color: var(--icon-blue); background: #e8f6fc; }
+.ai-pn-q svg { color: var(--icon-blue); flex-shrink: 0; }
+
+.ai-pn-answer { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+.ai-pn-bubble {
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.ai-pn-bubble.user { background: #e8f6fc; color: #1a1a1a; align-self: flex-end; max-width: 90%; }
+.ai-pn-bubble.bot  { background: #f4f6f8; color: #333;    align-self: flex-start; max-width: 95%; }
+.ai-pn-bubble b    { color: var(--icon-blue); }
+.ai-pn-bubble.bot b { color: var(--green); }
+.ai-pn-back {
+  align-self: flex-start;
+  margin-top: 4px;
+  border: none; background: none;
+  color: var(--icon-blue);
+  font-family: inherit; font-size: 12px; font-weight: 700;
+  cursor: pointer; padding: 4px 0;
+}
+.ai-pn-back:hover { text-decoration: underline; }
+
+.ai-pn-foot {
+  padding: 8px 16px 12px;
+  border-top: 1px solid #eef0f2;
+  background: #fafbfc;
+}
+.ai-pn-stub {
+  font-size: 10.5px; color: #aaa; font-style: italic;
+}
+
+@media (max-width: 480px) {
+  #ai-panel { right: 8px; left: 8px; width: auto; bottom: calc(var(--bottom-h) + 12px); }
+}
+
+/* ===== 17. INVEST PROJECT HIGHLIGHT RING (Sprint 5) ===== */
+.iv-highlight-ring {
+  animation: iv-ring-pulse 1.6s ease-in-out infinite;
+  transform-origin: center;
+}
+@keyframes iv-ring-pulse {
+  0%, 100% { opacity: 0.7; stroke-width: 2.5; }
+  50%      { opacity: 1;   stroke-width: 4; }
+}

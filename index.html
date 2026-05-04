@@ -66,6 +66,9 @@
     <button class="ticon" id="layers-btn" title="Layers">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
     </button>
+    <button class="ticon" id="invest-layer-btn" title="Hiện/ẩn dự án đầu tư + KCN">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+    </button>
   </div>
 </header>
 
@@ -302,6 +305,10 @@
         <div class="iv-side-title" data-i18n="invest.sidebar.title">LĨNH VỰC ƯU TIÊN</div>
         <div id="iv-side-list"></div>
         <div class="iv-side-actions">
+          <button id="iv-dashboard-btn" class="iv-side-btn" type="button">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+            <span>Dashboard số liệu</span>
+          </button>
           <button id="iv-pdf-btn" class="iv-side-btn" type="button">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
             <span data-i18n="invest.cta.download">Tải Cẩm nang Đầu tư</span>
@@ -474,6 +481,7 @@
 <!-- VIEW TRANSITION RIPPLE -->
 <div id="view-transition"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="js/data.js"></script>
 <script src="js/i18n.js"></script>
 <script src="js/map.js"></script>
@@ -482,6 +490,8 @@
 <script src="js/invest-data.js"></script>
 <script src="js/guide-ui.js"></script>
 <script src="js/invest-ui.js"></script>
+<script src="js/invest-dashboard.js"></script>
+<script src="js/ai-panel.js"></script>
 <script src="js/view-router.js"></script>
 <script src="js/main.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>

@@ -1,0 +1,90 @@
+{
+  "_note": "Ranh giới 4 KCN trọng điểm Lâm Đồng – tọa độ APPROX cho demo, KHÔNG phải dữ liệu chính xác. Khi có data thật, replace polygon trực tiếp.",
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "loc-son",
+        "name": "KCN Lộc Sơn",
+        "district": "TP. Bảo Lộc",
+        "area_ha": 185,
+        "fill_rate": 78,
+        "sectors": ["Chế biến nông sản", "Dệt may", "Cơ khí"]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [107.795, 11.535],
+          [107.815, 11.535],
+          [107.815, 11.555],
+          [107.795, 11.555],
+          [107.795, 11.535]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "phu-hoi",
+        "name": "KCN Phú Hội",
+        "district": "H. Đức Trọng",
+        "area_ha": 174,
+        "fill_rate": 65,
+        "sectors": ["Cơ khí chính xác", "Điện tử", "Chế biến"]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [108.260, 11.755],
+          [108.282, 11.755],
+          [108.282, 11.775],
+          [108.260, 11.775],
+          [108.260, 11.755]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "tan-phu",
+        "name": "KCN Tân Phú",
+        "district": "H. Đức Trọng",
+        "area_ha": 320,
+        "fill_rate": 42,
+        "sectors": ["Logistics", "Chế biến nông sản", "Sản xuất"]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [108.298, 11.770],
+          [108.325, 11.770],
+          [108.325, 11.795],
+          [108.298, 11.795],
+          [108.298, 11.770]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "loc-phat",
+        "name": "KCN Lộc Phát",
+        "district": "TP. Bảo Lộc",
+        "area_ha": 96,
+        "fill_rate": 88,
+        "sectors": ["Chế biến cà phê", "Trà", "Dược liệu"]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [107.825, 11.575],
+          [107.842, 11.575],
+          [107.842, 11.590],
+          [107.825, 11.590],
+          [107.825, 11.575]
+        ]]
+      }
+    }
+  ]
+}

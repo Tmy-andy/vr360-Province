@@ -688,3 +688,58 @@
   .iv-contact-box { grid-template-columns: 1fr; padding: 20px; }
   .iv-form-row { grid-template-columns: 1fr; }
 }
+
+/* =========================================================
+   CTA ACTIONS (multi-button) – Sprint 5
+   ========================================================= */
+.iv-cta-actions { display: flex; gap: 10px; flex-shrink: 0; flex-wrap: wrap; }
+.iv-cta-btn-ghost {
+  background: #fff;
+  color: var(--icon-blue);
+  border: 1.5px solid var(--icon-blue);
+}
+.iv-cta-btn-ghost:hover {
+  background: var(--view-bg-hover);
+  color: var(--icon-blue);
+  transform: translateY(-1px);
+}
+@media (max-width: 767px) {
+  .iv-cta-actions { width: 100%; flex-direction: column; }
+  .iv-cta-btn { width: 100%; justify-content: center; }
+}
+
+/* =========================================================
+   DASHBOARD (#invest/dashboard) – Sprint 5
+   ========================================================= */
+.iv-dash-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+.iv-dash-card {
+  background: #fff;
+  border: 1px solid var(--view-border);
+  border-radius: 14px;
+  padding: 18px 20px 20px;
+  display: flex; flex-direction: column;
+  box-shadow: 0 2px 6px rgba(0,0,0,.04);
+}
+.iv-dash-h {
+  font-size: 12px; font-weight: 800;
+  color: var(--view-text);
+  letter-spacing: .8px; text-transform: uppercase;
+}
+.iv-dash-sub {
+  font-size: 11.5px; color: var(--view-muted);
+  margin: 4px 0 14px;
+}
+.iv-dash-canvas {
+  position: relative;
+  height: 260px;
+}
+.iv-dash-canvas canvas { max-height: 100%; }
+
+@media (max-width: 1023px) {
+  .iv-dash-grid { grid-template-columns: 1fr; }
+  .iv-dash-canvas { height: 240px; }
+}

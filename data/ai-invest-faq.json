@@ -1,0 +1,51 @@
+{
+  "_note": "FAQ stub cho AI assistant – Sprint 5. Câu trả lời pre-canned, không gọi LLM. Khi có endpoint thật, swap sang fetch API.",
+  "categories": [
+    {
+      "id": "invest",
+      "label": "Đầu tư",
+      "icon": "briefcase",
+      "questions": [
+        {
+          "q": "Lâm Đồng có những lĩnh vực nào ưu tiên thu hút đầu tư?",
+          "a": "Lâm Đồng ưu tiên 6 lĩnh vực: Du lịch – Dịch vụ, Nông nghiệp công nghệ cao, Công nghiệp chế biến, Năng lượng tái tạo, Hạ tầng – Đô thị, Thương mại – Logistics. Bạn có thể xem chi tiết từng lĩnh vực ở sidebar phải hoặc trang Đầu tư."
+        },
+        {
+          "q": "Chính sách ưu đãi thuế cho dự án đầu tư mới?",
+          "a": "Thuế TNDN 10% trong 15 năm đầu, miễn 4 năm đầu kể từ khi có thu nhập chịu thuế, giảm 50% trong 9 năm tiếp theo. Miễn thuế nhập khẩu thiết bị tạo tài sản cố định. Chi tiết xem mục Chính sách ưu đãi ở trang Đầu tư."
+        },
+        {
+          "q": "Quy trình đăng ký đầu tư bao lâu?",
+          "a": "Quy trình một cửa 5 bước: Quan tâm (trong ngày) → Khảo sát (3–5 ngày) → Đăng ký (7 ngày) → Cấp phép (15–30 ngày) → Triển khai. Tổng thời gian dao động 25–45 ngày tùy quy mô."
+        },
+        {
+          "q": "Liên hệ Trung tâm Xúc tiến Đầu tư ở đâu?",
+          "a": "Trung tâm Xúc tiến Đầu tư Lâm Đồng — 12 Trần Hưng Đạo, P.3, TP. Đà Lạt. Hotline 0263 3 822 555. Email xtdt@lamdong.gov.vn. Hoặc dùng form đăng ký quan tâm tại #invest/contact."
+        },
+        {
+          "q": "Có dự án nào sẵn sàng mặt bằng để đầu tư ngay?",
+          "a": "Hiện có các dự án trạng thái 'Sẵn sàng mặt bằng' như: Khu du lịch hồ Tuyền Lâm, Resort cao cấp ven hồ Tuyền Lâm, Nhà máy chế biến nông sản Lâm Hà, Trung tâm thương mại Bảo Lộc. Lọc theo trạng thái ở trang #invest/projects."
+        }
+      ]
+    },
+    {
+      "id": "guide",
+      "label": "Du lịch",
+      "icon": "book",
+      "questions": [
+        {
+          "q": "Thời điểm nào đẹp nhất để du lịch Đà Lạt?",
+          "a": "Tháng 11 đến tháng 4 năm sau là khoảng khô ráo, hoa nở rộ. Đặc biệt mùa hoa mai anh đào (tháng 1–2) và lễ hội hoa Đà Lạt cuối năm. Tránh tháng 7–9 vì mưa kéo dài."
+        },
+        {
+          "q": "Đến Đà Lạt bằng cách nào?",
+          "a": "Sân bay Liên Khương (cách trung tâm 30 km), xe khách giường nằm từ TP.HCM/Nha Trang (~7–8 tiếng), hoặc tự lái QL20. Trong thành phố nên thuê xe máy."
+        },
+        {
+          "q": "Ăn gì ở Đà Lạt?",
+          "a": "Bánh tráng nướng, lẩu gà lá é, bánh ướt lòng gà, sữa đậu nành nóng, atiso hầm giò heo, dâu tây. Chợ đêm Đà Lạt sau 19h là điểm khởi đầu lý tưởng."
+        }
+      ]
+    }
+  ]
+}
