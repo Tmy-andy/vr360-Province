@@ -41,6 +41,7 @@
     "empty": "No matching articles.",
     "notFound": "Article not found.",
     "topics": {
+      "all":        { "title": "All",           "sub": "All topics" },
       "overview":   { "title": "Overview",      "sub": "About Lam Dong" },
       "when":       { "title": "When to visit", "sub": "Best season" },
       "transport":  { "title": "Getting around", "sub": "Travel & transit" },
@@ -58,7 +59,12 @@
     "title_hl": "Lam Dong",
     "sub": "Attractive investment opportunities — Sustainable partnerships",
     "sidebar": { "title": "PRIORITY SECTORS" },
-    "search": { "placeholder": "Search projects, sectors…" },
+    "search": { "placeholder": "Search projects, sectors, policies…" },
+    "viewAllProjects": "View all projects",
+    "viewMap": "View on map",
+    "registerInterest": "Register interest",
+    "downloadPdf": "Download project PDF",
+    "empty": "No matching projects.",
     "cta": {
       "download": "Download Investment Guide",
       "contact":  "Contact Investment Promotion Center"

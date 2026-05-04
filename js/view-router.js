@@ -28,56 +28,25 @@ window.ViewRouter = (() => {
     if (rpb) rpb.classList.remove('show');
   }
 
-  async function loadPartial(url, mountId, expectId) {
+  /* Nạp partial từ <template id="..."> trong index.html.
+     KHÔNG fetch nữa: VS Code Live Server inject script live-reload sai
+     chỗ vào response của file partial (giữa SVG, truncate body) →
+     không thể tin cậy. Template trong file chính không bị inject vì
+     Live Server chỉ inject 1 lần ở cuối <body>. */
+  function loadPartial(templateId, mountId, expectId) {
     const mount = document.getElementById(mountId);
     if (!mount) throw new Error(`Mount #${mountId} không có trong index.html`);
     if (mount.dataset.loaded === '1' && (!expectId || mount.querySelector('#' + expectId))) {
       return;
     }
-    const res = await fetch(url, { cache: 'no-cache' });
-    if (!res.ok) throw new Error(`Không tải được ${url} (HTTP ${res.status})`);
-    let text = await res.text();
-    const _origLen = text.length;
-    const _origTail = text.slice(-300);
-
-    /* VS Code Live Server inject `<script>` reload vào BÊN TRONG
-       các thẻ </svg> của partial (sai chỗ) → phá HTML parser.
-       Partial không có script thật nên cứ strip mọi <script>…</script>
-       + comment marker của Live Server. Dùng strip nguyên-tử (mỗi
-       lần một block) thay vì regex /g để tránh match-overlap.       */
-    function stripBlock(s, openRe, closeStr) {
-      let out = '', i = 0;
-      while (i < s.length) {
-        openRe.lastIndex = i;
-        const m = openRe.exec(s);
-        if (!m) { out += s.slice(i); break; }
-        out += s.slice(i, m.index);
-        const closeAt = s.indexOf(closeStr, openRe.lastIndex);
-        if (closeAt === -1) { out += s.slice(i); break; }
-        i = closeAt + closeStr.length;
-        while (i < s.length && /\s/.test(s[i])) i++;
-      }
-      return out;
+    const tpl = document.getElementById(templateId);
+    if (!tpl || !('content' in tpl)) {
+      throw new Error(`Template #${templateId} không có trong index.html`);
     }
-    text = stripBlock(text, /<script\b[^>]*>/gi, '</script>');
-    text = text.replace(/<!--\s*Code injected by live-server\s*-->\s*/gi, '');
-
-    /* Dùng <template> để parse fragment — không bị quirk html/head/body. */
-    const tpl = document.createElement('template');
-    tpl.innerHTML = text;
     mount.innerHTML = '';
     mount.appendChild(tpl.content.cloneNode(true));
-
     if (expectId && !mount.querySelector('#' + expectId)) {
-      const ids = Array.from(mount.querySelectorAll('[id]')).map(e => e.tagName + '#' + e.id);
-      const tags = Array.from(mount.querySelectorAll('*')).map(e => e.tagName.toLowerCase()).join(',');
-      console.error('[loadPartial] BEFORE-strip length:', _origLen, 'AFTER-strip length:', text.length, 'mount innerHTML length:', mount.innerHTML.length);
-      console.error('[loadPartial] BEFORE-strip cuối 300:\n' + _origTail);
-      console.error('[loadPartial] AFTER-strip cuối 300:\n' + text.slice(-300));
-      console.error('[loadPartial] ALL IDs in mount:', ids);
-      console.error('[loadPartial] ALL tags in mount (đầu 50):', tags.split(',').slice(0, 50).join(','));
-      console.error('[loadPartial] mount.innerHTML cuối 600:', mount.innerHTML.slice(-600));
-      throw new Error(`Partial ${url} không có #${expectId}.`);
+      throw new Error(`Template #${templateId} không chứa #${expectId} — kiểm tra markup trong index.html.`);
     }
     mount.dataset.loaded = '1';
   }
@@ -124,7 +93,7 @@ window.ViewRouter = (() => {
       return { view: 'guide' };
     }
     if (view === 'invest') {
-      // Sprint 3 sẽ parse thêm; hiện tại trả landing
+      if (parts[1] === 'project' && parts[2]) return { view: 'invest', sub: 'project', slug: parts[2] };
       return { view: 'invest', sub: parts[1], param: parts[2] };
     }
     return { view: 'map' };
@@ -146,7 +115,7 @@ window.ViewRouter = (() => {
 
     if (view === 'guide') {
       try {
-        await loadPartial('pages/guide.html', 'guide-mount', 'gv-main');
+        loadPartial('tpl-guide-view', 'guide-mount', 'gv-main');
         if (window.I18n) window.I18n.apply(document.getElementById('guide-mount'));
         await window.GuideUI.init();
         if (route.sub === 'article' && route.slug) {
@@ -157,10 +126,14 @@ window.ViewRouter = (() => {
       } catch (err) { console.error('[router] Guide load fail:', err); }
     } else if (view === 'invest') {
       try {
-        await loadPartial('pages/invest.html', 'invest-mount', 'iv-main');
+        loadPartial('tpl-invest-view', 'invest-mount', 'iv-main');
         if (window.I18n) window.I18n.apply(document.getElementById('invest-mount'));
         await window.InvestUI.init();
-        // Sprint 3: dispatch sub-route → InvestUI
+        if (route.sub === 'project' && route.slug) {
+          window.InvestUI.showProject(route.slug);
+        } else {
+          window.InvestUI.showLanding();
+        }
       } catch (err) { console.error('[router] Invest load fail:', err); }
     }
   }

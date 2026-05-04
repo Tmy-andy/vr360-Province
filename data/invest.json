@@ -1,0 +1,95 @@
+{
+  "_note": "Đầu tư Lâm Đồng – meta cho landing. Dự án tách riêng ở data/invest-projects.json. Hero ảnh dùng picsum để dễ replace.",
+
+  "hero": {
+    "tag": "ĐẦU TƯ & PHÁT TRIỂN",
+    "title": "Đầu tư & Phát triển Lâm Đồng",
+    "sub": "Cơ hội đầu tư hấp dẫn – Đồng hành phát triển bền vững",
+    "image": "https://picsum.photos/seed/lamdong-invest/1400/600",
+    "stats": [
+      { "icon": "wallet",  "label": "TỔNG VỐN ĐẦU TƯ", "value": "220.000+", "unit": "tỷ đồng" },
+      { "icon": "list",    "label": "DỰ ÁN KÊU GỌI",    "value": "128",      "unit": "dự án" },
+      { "icon": "target",  "label": "LĨNH VỰC",         "value": "6",        "unit": "lĩnh vực" }
+    ],
+    "source": "Nguồn: Sở KH&ĐT Lâm Đồng – cập nhật 2025"
+  },
+
+  "reasonsTitle": "VÌ SAO NÊN ĐẦU TƯ TẠI LÂM ĐỒNG?",
+  "reasons": [
+    { "icon": "pin",       "title": "Vị trí chiến lược",          "desc": "Cửa ngõ kết nối Tây Nguyên với các trung tâm kinh tế lớn." },
+    { "icon": "leaf",      "title": "Tiềm năng phát triển lớn",    "desc": "Quỹ đất rộng, khí hậu ôn hòa, tài nguyên phong phú." },
+    { "icon": "gift",      "title": "Chính sách ưu đãi hấp dẫn",   "desc": "Nhiều ưu đãi về thuế, đất đai, hỗ trợ đầu tư." },
+    { "icon": "shield",    "title": "Môi trường đầu tư thuận lợi", "desc": "Minh bạch, đồng hành cùng nhà đầu tư." },
+    { "icon": "building",  "title": "Hạ tầng ngày càng hoàn thiện","desc": "Giao thông kết nối, hạ tầng đồng bộ." }
+  ],
+
+  "featured": ["khu-du-lich-tuyen-lam", "nong-nghiep-duc-trong", "dien-gio-lac-duong", "do-thi-nam-da-lat", "che-bien-lam-ha"],
+
+  "policyTitle": "CHÍNH SÁCH ƯU ĐÃI ĐẦU TƯ",
+  "policy": [
+    {
+      "icon": "tax",
+      "title": "Ưu đãi về thuế",
+      "items": [
+        "Thuế TNDN 10% trong 15 năm đầu",
+        "Miễn 4 năm đầu kể từ khi có thu nhập chịu thuế",
+        "Giảm 50% trong 9 năm tiếp theo",
+        "Miễn thuế nhập khẩu thiết bị, máy móc"
+      ]
+    },
+    {
+      "icon": "land",
+      "title": "Ưu đãi về đất đai",
+      "items": [
+        "Miễn tiền thuê đất 11–15 năm",
+        "Hỗ trợ giải phóng mặt bằng",
+        "Cho thuê đất dài hạn 50–70 năm",
+        "Quy hoạch 1/500 sẵn sàng tại các KCN"
+      ]
+    },
+    {
+      "icon": "support",
+      "title": "Hỗ trợ khác",
+      "items": [
+        "Hỗ trợ đào tạo nhân lực",
+        "Hỗ trợ xúc tiến thương mại",
+        "Đầu mối một cửa, rút ngắn thời gian",
+        "Hỗ trợ kết nối đối tác, tín dụng"
+      ]
+    }
+  ],
+
+  "processTitle": "QUY TRÌNH ĐẦU TƯ – HỖ TRỢ MỘT CỬA",
+  "process": [
+    { "step": 1, "title": "Quan tâm",   "sub": "Gửi yêu cầu sơ bộ",            "duration": "Trong ngày" },
+    { "step": 2, "title": "Khảo sát",   "sub": "Bố trí khảo sát thực địa",      "duration": "3 – 5 ngày" },
+    { "step": 3, "title": "Đăng ký",    "sub": "Nộp hồ sơ chính thức",         "duration": "7 ngày" },
+    { "step": 4, "title": "Cấp phép",   "sub": "Thẩm định, ra quyết định",      "duration": "15 – 30 ngày" },
+    { "step": 5, "title": "Triển khai", "sub": "Bàn giao mặt bằng, hỗ trợ",    "duration": "Liên tục" }
+  ],
+
+  "resourcesTitle": "TÀI LIỆU & BROCHURE",
+  "resources": [
+    { "icon": "pdf", "title": "Cẩm nang đầu tư Lâm Đồng 2026 (VI)", "size": "4.2 MB", "url": "#" },
+    { "icon": "pdf", "title": "Lam Dong Investment Guide (EN)",     "size": "4.1 MB", "url": "#" },
+    { "icon": "pdf", "title": "Quy hoạch tỉnh đến 2030",             "size": "8.7 MB", "url": "#" },
+    { "icon": "pdf", "title": "Danh mục dự án kêu gọi đầu tư",        "size": "1.5 MB", "url": "#" }
+  ],
+
+  "ctaBanner": {
+    "title": "Bạn cần hỗ trợ thông tin đầu tư?",
+    "sub":   "Chúng tôi luôn sẵn sàng đồng hành cùng nhà đầu tư",
+    "cta":   "Liên hệ ngay",
+    "ctaHref": "#invest/contact"
+  },
+
+  "contact": {
+    "title": "ĐĂNG KÝ QUAN TÂM ĐẦU TƯ",
+    "name":     "Trung tâm Xúc tiến Đầu tư Lâm Đồng",
+    "address":  "12 Trần Hưng Đạo, P.3, TP. Đà Lạt, Lâm Đồng",
+    "hotline":  "0263 3 822 555",
+    "email":    "xtdt@lamdong.gov.vn",
+    "zalo":     "https://zalo.me/lamdongxtdt",
+    "whatsapp": "+84 263 3822555"
+  }
+}

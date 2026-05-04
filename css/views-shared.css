@@ -32,7 +32,7 @@ body.view-invest #invest-view { display: block; }
 /* ===== SHELL CHUNG (full-page, chỉ chừa bottom-bar) ===== */
 #gv-shell, #iv-shell {
   position: fixed;
-  inset: 0 0 calc(var(--bottom-h) + 16px) 0;
+  inset: 0 0 calc(var(--bottom-h) + 50px) 0;
   background: #fff;
   display: flex;
   flex-direction: column;
@@ -82,8 +82,9 @@ body.view-invest #iv-shell {
 .vt-brand-sub  { font-size: 9.5px; font-weight: 600; color: var(--view-muted); letter-spacing: 1.2px; text-transform: uppercase; margin-top: 2px; }
 
 .vt-search {
-  flex: 1;
-  max-width: 720px;
+  flex: 0 1 380px;
+  width: 380px;
+  margin-left: auto;     /* đẩy search + lang về sát góc phải */
   height: 44px;
   background: var(--view-bg-soft);
   border: 1px solid transparent;
@@ -104,7 +105,6 @@ body.view-invest #iv-shell {
 }
 .vt-search input::placeholder { color: var(--view-muted-2); }
 
-.vt-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
 .vt-icon-btn {
   height: 40px; padding: 0 14px;
   border: 1px solid var(--view-border);
@@ -113,22 +113,10 @@ body.view-invest #iv-shell {
   cursor: pointer; color: var(--view-text);
   font-family: inherit; font-size: 13px; font-weight: 600;
   transition: border-color .15s, background .15s;
-}
-.vt-icon-btn:hover { border-color: var(--icon-blue); background: var(--view-bg-hover); }
-.vt-icon-btn.icon-only { width: 40px; padding: 0; justify-content: center; }
-.vt-icon-btn svg { width: 16px; height: 16px; }
-
-.vt-close {
-  width: 40px; height: 40px; border-radius: 50%;
-  border: 1px solid var(--view-border);
-  background: #fff; cursor: pointer;
-  display: inline-flex; align-items: center; justify-content: center;
-  color: var(--view-text);
-  transition: background .15s, border-color .15s;
   flex-shrink: 0;
 }
-.vt-close:hover { background: var(--view-bg-hover); border-color: var(--icon-blue); }
-.vt-close svg { width: 16px; height: 16px; }
+.vt-icon-btn:hover { border-color: var(--icon-blue); background: var(--view-bg-hover); }
+.vt-icon-btn svg { width: 16px; height: 16px; }
 
 /* ===== BODY: sidebar + main – flex row dưới topbar ===== */
 .view-body {
@@ -193,7 +181,10 @@ body.view-invest #iv-shell {
   color: var(--icon-blue);
 }
 .gv-side-icon svg, .iv-side-icon svg { width: 20px; height: 20px; }
-.gv-side-text, .iv-side-text { min-width: 0; }
+.gv-side-text, .iv-side-text {
+  min-width: 0;
+  display: flex; flex-direction: column;     /* desktop: name trên / sub dưới */
+}
 .gv-side-name, .iv-side-name {
   font-size: 13.5px; font-weight: 700;
   color: var(--view-text); line-height: 1.3;
@@ -274,9 +265,7 @@ body.view-invest #iv-shell {
   .view-topbar { padding: 0 12px; gap: 8px; }
   .vt-search { height: 38px; padding: 0 14px; }
   .vt-search input { font-size: 12.5px; }
-  .vt-icon-btn, .vt-close { height: 36px; }
-  .vt-icon-btn { padding: 0 10px; }
-  .vt-icon-btn span { display: none; }
+  .vt-icon-btn { height: 36px; padding: 0 12px; }
 
   .view-body { flex-direction: column; }
   #gv-sidebar, #iv-sidebar {
@@ -320,7 +309,7 @@ body.view-invest #iv-shell {
 /* ===== Focus visible ===== */
 .gv-side-item:focus-visible, .iv-side-item:focus-visible,
 .gv-pdf:focus-visible, .iv-side-btn:focus-visible,
-.vt-icon-btn:focus-visible, .vt-close:focus-visible, .vt-brand:focus-visible {
+.vt-icon-btn:focus-visible, .vt-brand:focus-visible {
   outline: 2px solid rgba(43,182,230,.5);
   outline-offset: 2px;
 }

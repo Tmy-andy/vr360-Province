@@ -1,0 +1,187 @@
+{
+  "_note": "Dự án kêu gọi đầu tư – seed mẫu Sprint 3. Body chi tiết hiển thị ở trang detail (#invest/project/:slug). Status: ready (sẵn sàng MB) | planned (đã có QH 1/500) | calling (đang kêu gọi).",
+  "projects": [
+    {
+      "slug": "khu-du-lich-tuyen-lam",
+      "name": "Khu du lịch sinh thái hồ Tuyền Lâm",
+      "sector": "tourism",
+      "district": "TP. Đà Lạt",
+      "lat": 11.89, "lng": 108.43,
+      "area_ha": 350,
+      "capital_billion_vnd": 6500,
+      "status": "ready",
+      "image": "https://picsum.photos/seed/p-tuyenlam/800/500",
+      "description": "Phát triển khu nghỉ dưỡng cao cấp tích hợp resort – sân golf – thể thao mặt nước, ven hồ Tuyền Lâm rộng 350 ha với hệ sinh thái rừng thông nguyên sinh.",
+      "incentives": [
+        "Thuế TNDN 10% trong 15 năm, miễn 4 năm đầu, giảm 50% trong 9 năm tiếp theo",
+        "Miễn tiền thuê đất 15 năm",
+        "Miễn thuế nhập khẩu thiết bị tạo tài sản cố định"
+      ],
+      "contact": { "person": "Ông Nguyễn Văn A", "phone": "0263 3 822 555", "email": "xtdt@lamdong.gov.vn" }
+    },
+    {
+      "slug": "nong-nghiep-duc-trong",
+      "name": "Khu nông nghiệp ứng dụng công nghệ cao Đức Trọng",
+      "sector": "agri",
+      "district": "H. Đức Trọng",
+      "lat": 11.76, "lng": 108.27,
+      "area_ha": 200,
+      "capital_billion_vnd": 1200,
+      "status": "planned",
+      "image": "https://picsum.photos/seed/p-ductrong/800/500",
+      "description": "Khu nông nghiệp công nghệ cao chuyên rau – hoa – dược liệu, ứng dụng tự động hoá nhà kính, tưới nhỏ giọt, hệ thống quản lý IoT.",
+      "incentives": [
+        "Thuế TNDN 10% trong 15 năm",
+        "Miễn tiền thuê đất 11 năm",
+        "Hỗ trợ đào tạo nhân lực địa phương"
+      ],
+      "contact": { "person": "Bà Trần Thị B", "phone": "0263 3 822 666", "email": "xtdt@lamdong.gov.vn" }
+    },
+    {
+      "slug": "dien-gio-lac-duong",
+      "name": "Nhà máy điện gió Lạc Dương",
+      "sector": "energy",
+      "district": "H. Lạc Dương",
+      "lat": 12.02, "lng": 108.45,
+      "area_ha": 0,
+      "capacity_mw": 150,
+      "capital_billion_vnd": 3800,
+      "status": "calling",
+      "image": "https://picsum.photos/seed/p-windmill/800/500",
+      "description": "Nhà máy điện gió công suất 150 MW tại các đỉnh núi cao Lạc Dương, tốc độ gió trung bình 7–8 m/s, hoà lưới điện quốc gia.",
+      "incentives": [
+        "Giá mua điện ưu đãi theo Quyết định Chính phủ",
+        "Miễn thuế nhập khẩu thiết bị",
+        "Miễn tiền thuê đất 15 năm"
+      ],
+      "contact": { "person": "Ông Lê Văn C", "phone": "0263 3 822 777", "email": "xtdt@lamdong.gov.vn" }
+    },
+    {
+      "slug": "do-thi-nam-da-lat",
+      "name": "Khu đô thị mới Nam Đà Lạt",
+      "sector": "infra",
+      "district": "TP. Đà Lạt",
+      "lat": 11.88, "lng": 108.46,
+      "area_ha": 180,
+      "capital_billion_vnd": 4200,
+      "status": "planned",
+      "image": "https://picsum.photos/seed/p-namdalat/800/500",
+      "description": "Khu đô thị sinh thái 180 ha tích hợp nhà ở, thương mại, công viên, trường học – định hướng smart city tại cửa ngõ phía Nam Đà Lạt.",
+      "incentives": [
+        "Quy hoạch 1/500 đã phê duyệt",
+        "Hỗ trợ giải phóng mặt bằng",
+        "Ưu đãi thuê đất theo dự án"
+      ],
+      "contact": { "person": "Bà Phạm Thị D", "phone": "0263 3 822 888", "email": "xtdt@lamdong.gov.vn" }
+    },
+    {
+      "slug": "che-bien-lam-ha",
+      "name": "Nhà máy chế biến nông sản công nghệ cao Lâm Hà",
+      "sector": "industry",
+      "district": "H. Lâm Hà",
+      "lat": 11.83, "lng": 108.18,
+      "area_ha": 15,
+      "capital_billion_vnd": 750,
+      "status": "ready",
+      "image": "https://picsum.photos/seed/p-lamha/800/500",
+      "description": "Nhà máy chế biến cà phê, trái cây sấy, dược liệu công nghệ cao – đầu ra theo chuỗi xuất khẩu EU/Nhật Bản.",
+      "incentives": [
+        "Thuế TNDN 10% trong 15 năm",
+        "Miễn tiền thuê đất 11 năm",
+        "Hỗ trợ kết nối vùng nguyên liệu"
+      ],
+      "contact": { "person": "Ông Hoàng Văn E", "phone": "0263 3 822 999", "email": "xtdt@lamdong.gov.vn" }
+    },
+    {
+      "slug": "logistics-bao-loc",
+      "name": "Trung tâm logistics Bảo Lộc",
+      "sector": "logistics",
+      "district": "TP. Bảo Lộc",
+      "lat": 11.55, "lng": 107.81,
+      "area_ha": 25,
+      "capital_billion_vnd": 950,
+      "status": "calling",
+      "image": "https://picsum.photos/seed/p-baoloc/800/500",
+      "description": "Trung tâm logistics – kho lạnh – phân phối nông sản, kết nối QL20 và đường tránh phía Nam, phục vụ vùng Tây Nguyên.",
+      "incentives": [
+        "Ưu đãi thuê đất 50 năm",
+        "Hỗ trợ kết nối hạ tầng giao thông",
+        "Miễn thuế NK máy móc"
+      ],
+      "contact": { "person": "Ông Đặng Văn F", "phone": "0263 3 823 111", "email": "xtdt@lamdong.gov.vn" }
+    },
+    {
+      "slug": "resort-tuyen-lam-2",
+      "name": "Resort cao cấp ven hồ Tuyền Lâm",
+      "sector": "tourism",
+      "district": "TP. Đà Lạt",
+      "lat": 11.90, "lng": 108.42,
+      "area_ha": 60,
+      "capital_billion_vnd": 1800,
+      "status": "ready",
+      "image": "https://picsum.photos/seed/p-resort/800/500",
+      "description": "Resort 5 sao 200 phòng ven hồ Tuyền Lâm, view rừng thông – hướng tới khách MICE và nghỉ dưỡng cao cấp.",
+      "incentives": [
+        "Thuế TNDN 10% / 15 năm",
+        "Miễn tiền thuê đất 13 năm",
+        "Hỗ trợ thủ tục một cửa"
+      ],
+      "contact": { "person": "Bà Vũ Thị G", "phone": "0263 3 823 222", "email": "xtdt@lamdong.gov.vn" }
+    },
+    {
+      "slug": "duoc-lieu-don-duong",
+      "name": "Vùng dược liệu công nghệ cao Đơn Dương",
+      "sector": "agri",
+      "district": "H. Đơn Dương",
+      "lat": 11.84, "lng": 108.61,
+      "area_ha": 120,
+      "capital_billion_vnd": 600,
+      "status": "calling",
+      "image": "https://picsum.photos/seed/p-duoclieu/800/500",
+      "description": "Vùng trồng và chế biến dược liệu (atiso, đẳng sâm, đương quy) liên kết hợp tác xã địa phương, hướng xuất khẩu.",
+      "incentives": [
+        "Ưu đãi thuế nông nghiệp",
+        "Hỗ trợ giống và kỹ thuật",
+        "Miễn tiền thuê đất 11 năm"
+      ],
+      "contact": { "person": "Ông Bùi Văn H", "phone": "0263 3 823 333", "email": "xtdt@lamdong.gov.vn" }
+    },
+    {
+      "slug": "dien-mat-troi-don-duong",
+      "name": "Nhà máy điện mặt trời Đơn Dương",
+      "sector": "energy",
+      "district": "H. Đơn Dương",
+      "lat": 11.85, "lng": 108.62,
+      "area_ha": 90,
+      "capacity_mw": 80,
+      "capital_billion_vnd": 1500,
+      "status": "planned",
+      "image": "https://picsum.photos/seed/p-solar/800/500",
+      "description": "Dự án điện mặt trời 80 MW trên vùng đất khô cằn, tích hợp pin lưu trữ, hoà lưới quốc gia.",
+      "incentives": [
+        "Giá mua điện ưu đãi",
+        "Miễn thuế NK thiết bị",
+        "Miễn tiền thuê đất 15 năm"
+      ],
+      "contact": { "person": "Bà Lý Thị I", "phone": "0263 3 823 444", "email": "xtdt@lamdong.gov.vn" }
+    },
+    {
+      "slug": "thuong-mai-bao-loc",
+      "name": "Trung tâm thương mại – dịch vụ Bảo Lộc",
+      "sector": "logistics",
+      "district": "TP. Bảo Lộc",
+      "lat": 11.54, "lng": 107.82,
+      "area_ha": 8,
+      "capital_billion_vnd": 480,
+      "status": "ready",
+      "image": "https://picsum.photos/seed/p-tmbaoloc/800/500",
+      "description": "Trung tâm thương mại tổng hợp 5 tầng + khu dịch vụ ăn uống, giải trí ngay trung tâm Bảo Lộc.",
+      "incentives": [
+        "Ưu đãi thuế TNDN",
+        "Cho thuê đất dài hạn",
+        "Hỗ trợ thủ tục đầu tư"
+      ],
+      "contact": { "person": "Ông Tô Văn J", "phone": "0263 3 823 555", "email": "xtdt@lamdong.gov.vn" }
+    }
+  ]
+}

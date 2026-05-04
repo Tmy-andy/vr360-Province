@@ -18,6 +18,7 @@ window.GuideUI = (() => {
 
   /* ----- Bộ icon stroke 2 (Lucide-like) – dùng key trong JSON ----- */
   const ICONS = {
+    grid:      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>',
     book:      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
     calendar:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
     car:       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14l-1.5-7H6.5z"/><circle cx="7.5" cy="17.5" r="1.5"/><circle cx="16.5" cy="17.5" r="1.5"/></svg>',
@@ -85,15 +86,18 @@ window.GuideUI = (() => {
   function renderSidebar() {
     const list = document.getElementById('gv-side-list');
     if (!list || !window.GUIDE_DATA) return;
-    list.innerHTML = window.GUIDE_DATA.topics.map(topic => `
-      <button type="button" class="gv-side-item${topic.id === activeTopic ? ' active' : ''}" data-topic="${topic.id}">
-        <span class="gv-side-icon">${ic(topic.icon)}</span>
-        <span class="gv-side-text">
-          <span class="gv-side-name">${t(topic.titleKey)}</span>
-          <span class="gv-side-sub">${t(topic.subKey)}</span>
-        </span>
-      </button>
-    `).join('');
+    list.innerHTML = window.GUIDE_DATA.topics.map(topic => {
+      const isActive = (topic.id === 'all' && activeTopic === null) || topic.id === activeTopic;
+      return `
+        <button type="button" class="gv-side-item${isActive ? ' active' : ''}" data-topic="${topic.id}">
+          <span class="gv-side-icon">${ic(topic.icon)}</span>
+          <span class="gv-side-text">
+            <span class="gv-side-name">${t(topic.titleKey)}</span>
+            <span class="gv-side-sub">${t(topic.subKey)}</span>
+          </span>
+        </button>
+      `;
+    }).join('');
   }
 
   /* =========================================================
@@ -369,7 +373,8 @@ window.GuideUI = (() => {
         const btn = e.target.closest('.gv-side-item');
         if (!btn) return;
         const next = btn.dataset.topic;
-        activeTopic = (activeTopic === next) ? null : next;
+        if (next === 'all') activeTopic = null;
+        else activeTopic = (activeTopic === next) ? null : next;
         renderSidebar();
         if (currentMode === 'landing') renderLanding(document.getElementById('gv-search').value.trim());
         else if (window.ViewRouter) window.ViewRouter.navigate('#guide');
@@ -399,13 +404,6 @@ window.GuideUI = (() => {
       const next = window.I18n.lang === 'vi' ? 'en' : 'vi';
       await window.I18n.setLang(next);
     });
-    /* Fullscreen */
-    const fsBtn = document.getElementById('gv-fs-btn');
-    if (fsBtn) fsBtn.addEventListener('click', () => {
-      if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
-      else document.exitFullscreen?.();
-    });
-
     /* Đổi ngôn ngữ → re-render label sidebar + view hiện tại */
     window.addEventListener('langchange', () => {
       if (!document.body.classList.contains('view-guide')) return;

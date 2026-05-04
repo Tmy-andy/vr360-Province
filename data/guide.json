@@ -1,6 +1,7 @@
 {
   "_note": "Cẩm nang Du lịch Lâm Đồng – nội dung landing. Bài viết tách riêng ở data/guide-articles.json. Ảnh dùng picsum.photos để Sprint sau dễ replace.",
   "topics": [
+    { "id": "all",        "icon": "grid",      "titleKey": "guide.topics.all.title",        "subKey": "guide.topics.all.sub" },
     { "id": "overview",   "icon": "book",      "titleKey": "guide.topics.overview.title",   "subKey": "guide.topics.overview.sub" },
     { "id": "when",       "icon": "calendar",  "titleKey": "guide.topics.when.title",       "subKey": "guide.topics.when.sub" },
     { "id": "transport",  "icon": "car",       "titleKey": "guide.topics.transport.title",  "subKey": "guide.topics.transport.sub" },

@@ -40,6 +40,7 @@
     "empty": "Không tìm thấy bài viết phù hợp.",
     "notFound": "Bài viết không tồn tại.",
     "topics": {
+      "all":        { "title": "Tất cả",            "sub": "Toàn bộ chủ đề" },
       "overview":   { "title": "Tổng quan",        "sub": "Giới thiệu Lâm Đồng" },
       "when":       { "title": "Thời điểm du lịch", "sub": "Mùa nào đẹp nhất" },
       "transport":  { "title": "Di chuyển",         "sub": "Đến và đi lại trong tỉnh" },
@@ -56,7 +57,12 @@
     "title_hl": "Lâm Đồng",
     "sub": "Cơ hội đầu tư hấp dẫn – Đồng hành phát triển bền vững",
     "sidebar": { "title": "LĨNH VỰC ƯU TIÊN" },
-    "search": { "placeholder": "Tìm dự án, lĩnh vực…" },
+    "search": { "placeholder": "Tìm kiếm dự án, lĩnh vực, chính sách…" },
+    "viewAllProjects": "Xem tất cả dự án",
+    "viewMap": "Xem trên bản đồ",
+    "registerInterest": "Đăng ký quan tâm",
+    "downloadPdf": "Tải hồ sơ PDF",
+    "empty": "Không có dự án phù hợp.",
     "cta": {
       "download": "Tải Cẩm nang Đầu tư",
       "contact":  "Liên hệ Trung tâm XTĐT"
