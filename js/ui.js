@@ -430,20 +430,34 @@ window.UI = (() => {
     document.body.classList.toggle('layers-open', isOpen);
   }
 
-  /* ===== HELP TOUR – DANH SÁCH BƯỚC ===== */
+  /* ===== HELP TOUR – DANH SÁCH BƯỚC =====
+     Trình tự sắp xếp theo cụm UI để tour đi mượt, không nhảy lung tung:
+       1) Top bar trái → phải: search → xã/phường
+       2) Top-right (cụm icon góc phải): help → lang → fs → zoom in/out → layers → hide UI → 3D
+       3) Mobile-only: 2 nút FAB
+       4) Right panel (toggle hoặc panel đang mở)
+       5) Bottom bar trái → phải: home → guide → AI → VR Tour + 2 nút float (VR headset, Chat AI)
+  */
   const HELP_ITEMS_2D = [
-    { target: '#hide-ui-btn',  round: true,  svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>', label: 'Ẩn/hiện giao diện' },
-    { target: '#mobile-panel-btn', round: true, svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>', label: 'Mở danh sách địa điểm (toàn màn hình)' },
-    { target: '#mobile-more-btn', round: true, svg: '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>', label: 'Mở/đóng cột nút bên phải' },
+    /* 1. Top bar (trái → phải) */
     { target: '#search-bar',                 svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>', label: 'Tìm kiếm địa điểm' },
     { target: '#xa-dd',                      svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a7 7 0 017 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 017-7z"/><circle cx="12" cy="9" r="2.5"/></svg>', label: 'Lọc theo Xã/Phường' },
-    { target: '#lang-btn',                   svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg>', label: 'Đổi ngôn ngữ' },
-    { target: '#three-d-btn',  round: true,  txt: '3D', label: 'Chuyển sang bản đồ 3D' },
-    { target: '#fs-btn',       round: true,  svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"/></svg>', label: 'Toàn màn hình' },
+
+    /* 2. Top-right – cụm icon góc phải, theo thứ tự xuất hiện */
+    { target: '#help-btn',     round: true,  txt: '?', label: 'Mở lại hướng dẫn sử dụng' },
+    { target: '#lang-btn',                   svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg>', label: 'Đổi ngôn ngữ (VI / EN)' },
+    { target: '#fs-btn',       round: true,  svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"/></svg>', label: 'Bật/tắt toàn màn hình' },
     { target: '#zoom-in-btn',  round: true,  svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>', label: 'Phóng to bản đồ' },
     { target: '#zoom-out-btn', round: true,  svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/></svg>', label: 'Thu nhỏ bản đồ' },
-    { target: '#layers-btn',   round: true,  svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>', label: 'Thay đổi bản đồ nền' },
-    { target: '#help-btn',     round: true,  txt: '?', label: 'Mở hướng dẫn sử dụng' },
+    { target: '#hide-ui-btn',  round: true,  svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>', label: 'Ẩn toàn bộ giao diện để xem trọn bản đồ' },
+    { target: '#layers-btn',   round: true,  svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>', label: 'Đổi bản đồ nền (Vệ tinh / Đường phố / Địa hình / Tối)' },
+    { target: '#three-d-btn',  round: true,  txt: '3D', label: 'Chuyển sang chế độ VR 360° (3D)' },
+
+    /* 3. Mobile-only – tự skip trên desktop nếu phần tử ẩn (rect 0×0) */
+    { target: '#mobile-more-btn',  round: true, svg: '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>', label: 'Mở/đóng cột nút bên phải (chỉ trên mobile)' },
+    { target: '#mobile-panel-btn', round: true, svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>', label: 'Mở danh sách địa điểm toàn màn hình (chỉ trên mobile)' },
+
+    /* 4. Right panel – click vào tab toggle khi đóng, hoặc cả panel khi đang mở */
     {
       target: () => {
         const tg = document.getElementById('panel-toggle');
@@ -454,26 +468,44 @@ window.UI = (() => {
         const closed = document.getElementById('panel-toggle')?.classList.contains('closed');
         return closed
           ? 'Mở bảng danh sách địa điểm bên phải'
-          : 'Bảng danh sách địa điểm – tìm kiếm, lọc theo Xã/Phường, lọc theo loại địa điểm';
+          : 'Bảng danh sách địa điểm – tìm kiếm, lọc theo Xã/Phường và theo loại địa điểm';
       }
     },
-    { target: '#bottom-bar .bbt:nth-child(2)', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>', label: 'Trang chủ' },
-    { target: '#bottom-bar .bbt:nth-child(3)', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>', label: 'Cẩm nang Du lịch – Mẹo, kinh nghiệm, gợi ý lịch trình' },
-    { target: '#bottom-bar .bbt:nth-child(4)', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><line x1="12" y1="18" x2="12" y2="22"/></svg>', label: 'Trợ lý AI – Câu hỏi nhanh về du lịch' },
-    { target: '#bottom-bar .bbt:nth-child(5)', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>', label: 'Khởi động VR Tour 360°' },
+
+    /* 5. Bottom bar (trái → phải): home → AI → guide + 2 nút float */
+    { target: '#bottom-bar .bbt[data-view="map"]', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>', label: 'Trang chủ – quay về bản đồ chính' },
+    { target: '#bb-ai-btn', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><line x1="12" y1="18" x2="12" y2="22"/></svg>', label: 'AI Hỗ trợ – hỏi nhanh về địa điểm, đầu tư & du lịch' },
+    { target: '#bottom-bar .bbt[data-view="guide"]', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>', label: 'Cẩm nang Du lịch – mẹo, kinh nghiệm, gợi ý lịch trình' },
+    { target: '#bb-vr-btn',   round: true, svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-4.5l-2.5-3h-4l-2.5 3H3a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z"/><circle cx="7.5" cy="12" r="1.5"/><circle cx="16.5" cy="12" r="1.5"/></svg>', label: 'Xem bằng kính VR 360 (ghép trải nghiệm thiết bị thực tế ảo)' },
+    { target: '#bb-chat-btn', round: true, svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8z"/></svg>', label: 'Mở hộp thoại Chat với trợ lý AI' },
   ];
 
+  /* HELP_ITEMS_3D – cùng cụm Top-right (dùng chung), thêm autorot, vr-info, minimap,
+     và các nút mobile/reveal. Bottom-bar vẫn hiện trong 3D nên đưa vào tour luôn. */
   const HELP_ITEMS_3D = [
-    { target: '#help-btn',     round: true, txt: '?',  label: 'Mở hướng dẫn sử dụng chế độ VR' },
-    { target: '#autorot-btn',  round: true,            label: 'Bật/tắt chế độ tự động xoay 360°' },
-    { target: '#lang-btn',                             label: 'Đổi ngôn ngữ giao diện' },
-    { target: '#fs-btn',       round: true,            label: 'Xem VR ở chế độ toàn màn hình' },
-    { target: '#zoom-in-btn',  round: true,            label: 'Phóng to tầm nhìn (zoom in)' },
-    { target: '#zoom-out-btn', round: true,            label: 'Thu nhỏ tầm nhìn (zoom out)' },
-    { target: '#hide-ui-btn',  round: true,            label: 'Ẩn giao diện để xem toàn cảnh VR' },
+    /* Top-right – icon góc phải (3D) */
+    { target: '#help-btn',     round: true, txt: '?',  label: 'Mở lại hướng dẫn chế độ VR' },
+    { target: '#autorot-btn',  round: true, svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>', label: 'Bật/tắt chế độ tự động xoay 360°' },
+    { target: '#lang-btn',                  svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg>', label: 'Đổi ngôn ngữ giao diện' },
+    { target: '#fs-btn',       round: true, svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"/></svg>', label: 'Xem VR ở chế độ toàn màn hình' },
+    { target: '#zoom-in-btn',  round: true, svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>', label: 'Phóng to tầm nhìn (zoom in)' },
+    { target: '#zoom-out-btn', round: true, svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/></svg>', label: 'Thu nhỏ tầm nhìn (zoom out)' },
+    { target: '#hide-ui-btn',  round: true, svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>', label: 'Ẩn giao diện để xem toàn cảnh VR' },
     { target: '#three-d-btn',  round: true, txt: '2D', label: 'Quay về bản đồ 2D' },
-    { target: '#vr-info',                              label: 'Thông tin điểm đến: tên, giờ mở, đánh giá, vé vào' },
-    { target: '#minimap',                              label: 'Minimap la bàn – click để quay về bản đồ 2D' },
+
+    /* Mobile-only (skip trên desktop nếu phần tử ẩn) */
+    { target: '#mobile-more-btn', round: true, svg: '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>', label: 'Mở/đóng cột nút bên phải (chỉ mobile)' },
+
+    /* VR overlay UI */
+    { target: '#vr-info',                              label: 'Thông tin điểm đến: tên, giờ mở, đánh giá, giá vé' },
+    { target: '#vr-info-fab',  round: true, txt: 'i',  label: 'Mở lại bảng thông tin khi đã thu gọn (mobile)' },
+    { target: '#vr-reveal-btn', round: true, svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>', label: 'Hiện lại giao diện sau khi đã ẩn' },
+    { target: '#minimap',                              label: 'Minimap la bàn – nhấn để quay về bản đồ 2D' },
+
+    /* Bottom bar (vẫn hiện trong 3D) */
+    { target: '#bottom-bar .bbt[data-view="map"]', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>', label: 'Trang chủ – quay về bản đồ 2D' },
+    { target: '#bb-ai-btn', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><line x1="12" y1="18" x2="12" y2="22"/></svg>', label: 'AI Hỗ trợ – hỏi về điểm VR đang xem' },
+    { target: '#bottom-bar .bbt[data-view="guide"]', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>', label: 'Cẩm nang Du lịch' },
   ];
 
   /* ===== HELP TOUR (spotlight) ===== */
@@ -832,15 +864,22 @@ window.UI = (() => {
       btn.addEventListener('click', function () {
         if (this.classList.contains('bb-ai')) {
           /* AI mic: chỉ toggle trạng thái listening, KHÔNG mở ai-panel.
-             Khi BẬT listening: deactivate tất cả tab khác + ẩn bubble.
-             Khi TẮT listening: re-activate Home (tab đầu tiên data-view="map"). */
+             Khi BẬT listening: deactivate các tab khác, ẩn bubble, và
+             nếu đang ở view khác (vd Guide) thì quay về Map – tránh tình
+             huống nút Guide đã un-active mà trang Guide vẫn hiển thị.
+             Khi TẮT listening: quay về Home (Map). */
           const turningOn = !this.classList.contains('listening');
           this.classList.toggle('listening', turningOn);
           if (turningOn) {
             document.querySelectorAll('.bbt').forEach(b => b.classList.remove('active'));
             document.body.classList.add('ai-listening');
+            if (window.ViewRouter) window.ViewRouter.navigate('#');
           } else {
             document.body.classList.remove('ai-listening');
+            if (window.ViewRouter) window.ViewRouter.navigate('#');
+            /* Luôn active Home khi tắt mic — kể cả đang ở Map (router không
+               re-apply nếu cùng view) */
+            document.querySelectorAll('.bbt').forEach(b => b.classList.remove('active'));
             const home = document.querySelector('.bbt[data-view="map"]');
             if (home) home.classList.add('active');
             moveBubble();
@@ -871,12 +910,14 @@ window.UI = (() => {
       const first = window.APP_DATA.places[0];
       if (first) enterVRMode(first);
     });
-    /* Click ngoài để tắt listening AI → re-activate Home */
+    /* Click ngoài để tắt listening AI → quay về Home (Map), Home active */
     document.addEventListener('click', e => {
       const ai = document.getElementById('bb-ai-btn');
       if (ai && ai.classList.contains('listening') && !ai.contains(e.target)) {
         ai.classList.remove('listening');
         document.body.classList.remove('ai-listening');
+        if (window.ViewRouter) window.ViewRouter.navigate('#');
+        document.querySelectorAll('.bbt').forEach(b => b.classList.remove('active'));
         const home = document.querySelector('.bbt[data-view="map"]');
         if (home) home.classList.add('active');
         moveBubble();

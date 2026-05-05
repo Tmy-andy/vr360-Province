@@ -391,8 +391,6 @@ body.mode-3d.vr-ui-hidden .bb-float {
 }
 /* 3D mode: nâng float lên trên #vr-viewer */
 body.mode-3d .bb-float { z-index: 2210; }
-/* Đang ở chế độ VR thì không cần nút bb-vr-btn nữa */
-body.mode-3d .bb-vr-btn { opacity: 0; pointer-events: none; }
 
 /* Bubble xanh nổi trên bar – ONE element duy nhất, JS dịch chuyển bằng translateX */
 #bb-indicator {
@@ -872,6 +870,7 @@ body.mode-3d .bb-vr-btn { opacity: 0; pointer-events: none; }
    chỉ giữ lại #menu-btn để bấm thoát chế độ.
    ============================ */
 body.focus-mode #search-wrap,
+body.focus-mode #search-results,
 body.focus-mode #xa-dd,
 body.focus-mode #left-bar,
 body.focus-mode #right-panel,
@@ -881,16 +880,22 @@ body.focus-mode #bottom-bar,
 body.focus-mode #sheet,
 body.focus-mode #layer-popup,
 body.focus-mode #mobile-panel-btn,
-body.focus-mode #mobile-more-btn {
-  opacity: 0; pointer-events: none;
+body.focus-mode #mobile-more-btn,
+body.focus-mode #ai-panel,
+body.focus-mode #news-panel {
+  opacity: 0 !important; pointer-events: none !important;
   transition: opacity .25s ease;
 }
 /* Trong focus-mode, ẩn các nút khác trong #top-right NHƯNG GIỮ #hide-ui-btn
-   để người dùng có thể tắt focus-mode. */
-body.focus-mode #top-right > .ticon:not(#hide-ui-btn) {
-  opacity: 0; pointer-events: none;
+   để người dùng có thể tắt focus-mode. Dùng !important để override các state
+   .open / .active của nút (vd #lang-btn khi popup đang mở, #layers-btn active). */
+body.focus-mode #top-right > .ticon:not(#hide-ui-btn),
+body.focus-mode #top-right > #lang-dd {
+  opacity: 0 !important; pointer-events: none !important;
   transition: opacity .25s ease;
 }
+/* Ẩn cả popup language nếu đang mở */
+body.focus-mode #lang-popup { opacity: 0 !important; pointer-events: none !important; }
 /* các phần tử KHÔNG có animation riêng: chỉ cần fade opacity */
 #search-wrap, #xa-dd, #top-right,
 #left-bar, #bottom-bar,
@@ -2240,7 +2245,9 @@ body.view-guide #mobile-panel-btn { display: none !important; }
    ============================== */
 #ai-panel {
   position: fixed;
-  right: 16px; bottom: calc(var(--bottom-h) + 28px);
+  /* Bám đúng dưới #bb-chat-btn: cùng mép phải với nút float chat */
+  right: var(--bb-edge-right, 16px);
+  bottom: calc(var(--bb-h) + 16px + 12px);
   width: 360px; max-width: calc(100vw - 32px);
   max-height: 70vh;
   background: #fff;
