@@ -46,7 +46,10 @@
   <div id="top-right">
     <button class="ticon tr-help" id="help-btn" title="Hướng dẫn sử dụng">?</button>
     <button class="ticon tr-autorot only-3d" id="autorot-btn" title="Tự động xoay 360°">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+      <!-- ON: refresh-cw -->
+      <svg class="icon-on" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+      <!-- OFF: refresh-cw-off (có sẵn dấu gạch chéo) -->
+      <svg class="icon-off" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8L18.74 5.74A9.75 9.75 0 0 0 12 3C11 3 10.03 3.16 9.13 3.47"/><path d="M8 16H3v5"/><path d="M3 12C3 9.51 4 7.26 5.64 5.64"/><path d="m3 16 2.26 2.26A9.75 9.75 0 0 0 12 21c2.49 0 4.74-1 6.36-2.64"/><path d="M21 12c0 1-.16 1.97-.47 2.87"/><path d="M21 3v5h-5"/><path d="M22 22 2 2"/></svg>
     </button>
     <div id="lang-dd">
       <button class="ticon" id="lang-btn" title="Đổi ngôn ngữ">
@@ -191,35 +194,29 @@
   <div id="np-list"></div>
 </aside>
 
-<!-- VR headset (trái) + Chat AI (phải) — nút TRÒN rời, cùng hàng với #bottom-bar -->
-<button class="bb-float bb-vr-btn" id="bb-vr-btn" title="Xem bằng kính VR 360">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-4.5l-2.5-3h-4l-2.5 3H3a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z"/><circle cx="7.5" cy="12" r="1.5"/><circle cx="16.5" cy="12" r="1.5"/></svg>
-</button>
-<button class="bb-float bb-chat-btn" id="bb-chat-btn" title="Chat với trợ lý AI">
+<!-- Bot AI gộp (voice + text) — nút TRÒN float ở mép TRÁI #bottom-bar.
+     Avatar tròn assets/img/2.png + mic indicator báo hiệu có voice mode. -->
+<button class="bb-float bb-chat-btn" id="bb-chat-btn" title="Chat với trợ lý AI (voice + text)">
   <img src="assets/img/2.png" alt="AI" />
+  <span class="bb-mic-indicator" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="9" y="3" width="6" height="12" rx="3"/>
+      <path d="M5 11a7 7 0 0 0 14 0"/>
+      <line x1="12" y1="18" x2="12" y2="22"/>
+    </svg>
+  </span>
 </button>
 
-<!-- BOTTOM BAR -->
+<!-- BOTTOM BAR — layout mới: [VR kính] [Home giữa] [Guide] -->
 <nav id="bottom-bar">
   <span id="bb-indicator"></span>
+  <button class="bbt" id="bb-vr-nav" title="Xem bằng kính VR 360">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-4.5l-2.5-3h-4l-2.5 3H3a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z"/><circle cx="7.5" cy="12" r="1.5"/><circle cx="16.5" cy="12" r="1.5"/></svg>
+    <span class="bb-label" data-i18n="nav.vr">VR 360</span>
+  </button>
   <button class="bbt active" data-view="map">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
     <span class="bb-label" data-i18n="nav.home">Trang chủ</span>
-  </button>
-  <button class="bbt bb-ai" id="bb-ai-btn" title="AI Hỗ trợ – Hỏi tôi về địa điểm này">
-    <span class="ai-tip">Hỏi tôi về địa điểm này</span>
-    <span class="ai-waves" aria-hidden="true">
-      <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-    </span>
-    <span class="ai-orb">
-      <svg class="ai-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="9" y="3" width="6" height="12" rx="3"/>
-        <path d="M5 11a7 7 0 0 0 14 0"/>
-        <line x1="12" y1="18" x2="12" y2="22"/>
-        <line x1="8" y1="22" x2="16" y2="22"/>
-      </svg>
-    </span>
-    <span class="bb-label">AI Hỗ trợ</span>
   </button>
   <button class="bbt" data-view="guide">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>

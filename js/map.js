@@ -102,7 +102,9 @@ window.MapModule = (() => {
 
   function initMap() {
     const p = window.APP_DATA.province;
-    map = L.map('map', { center: [p.lat, p.lng], zoom: p.zoom, zoomControl: false });
+    /* doubleClickZoom: false – để dành cử chỉ double-click cho toggle fullscreen
+       (xử lý ở ui.js). User vẫn zoom bằng nút +/- và scroll wheel. */
+    map = L.map('map', { center: [p.lat, p.lng], zoom: p.zoom, zoomControl: false, doubleClickZoom: false });
     L.control.zoom({ position: 'bottomright' }).addTo(map);
     setLayer('satellite');
     window.APP_DATA.places.forEach(addMarker);

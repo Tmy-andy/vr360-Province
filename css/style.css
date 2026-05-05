@@ -190,6 +190,12 @@ html, body { height: 100%; font-family: 'Be Vietnam Pro', sans-serif; overflow: 
 .ticon.active { background: var(--icon-blue); }
 .ticon svg { width: 18px; height: 18px; }
 
+/* Autorot: dùng 2 icon SVG (on / off) — tự đổi qua class .active.
+   Icon-off có sẵn dấu gạch chéo của Lucide rotate-cw-off → đẹp & rõ ý nghĩa. */
+#autorot-btn .icon-on  { display: none; }
+#autorot-btn.active .icon-on  { display: block; }
+#autorot-btn.active .icon-off { display: none; }
+
 /* --- Ẩn/hiện nút theo mode (2D / 3D): collapse width + margin về 0,
    các nút phía bên trái tự "trượt" sang phải nhờ flex – cùng transition. --- */
 body.mode-3d #top-right .only-2d,
@@ -350,9 +356,9 @@ body.mode-3d .mode-toggle-btn:hover { background: #e8f7fd; color: var(--icon-blu
   z-index: 1000;
 }
 
-/* === FLOAT BUTTONS (VR headset trái + Chat AI phải) ===
-   Nằm sát 2 bên #bottom-bar (không cố định mép màn hình). JS đo vị trí
-   #bottom-bar và set left/right qua biến --bb-edge-left / --bb-edge-right. */
+/* === FLOAT BUTTON (Bot AI gộp voice + text) ===
+   Nằm sát mép TRÁI #bottom-bar. JS đo vị trí #bottom-bar và set --bb-edge-left.
+   Chỉ còn 1 nút float — VR đã chuyển vào bottom-bar dạng .bbt. */
 .bb-float {
   position: fixed; bottom: 16px;
   width: var(--bb-h); height: var(--bb-h);
@@ -361,24 +367,44 @@ body.mode-3d .mode-toggle-btn:hover { background: #e8f7fd; color: var(--icon-blu
   background: #fff;
   box-shadow: 0 6px 22px rgba(0,0,0,.18);
   display: flex; align-items: center; justify-content: center;
-  padding: 0; overflow: hidden;
+  padding: 0; overflow: visible; /* visible để mic indicator tràn ra ngoài viền tròn */
   z-index: 1000;
   transition: background .14s, transform .12s, opacity .25s ease, left .3s ease, right .3s ease;
 }
-.bb-vr-btn   { left: var(--bb-edge-left, 16px); background: var(--icon-blue); color: #fff; }
-.bb-chat-btn { right: var(--bb-edge-right, 16px); }
-.bb-vr-btn:hover { background: var(--icon-blue-dark); transform: translateY(-1px); }
+.bb-chat-btn { left: var(--bb-edge-left, 16px); }
 .bb-chat-btn:hover { transform: translateY(-1px); }
-.bb-vr-btn svg { width: 26px; height: 26px; }
-.bb-chat-btn img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.bb-chat-btn::after {
-  content: '';
-  position: absolute; top: 6px; right: 6px;
-  width: 10px; height: 10px; border-radius: 50%;
-  background: #16d472; border: 2px solid #fff;
+.bb-chat-btn img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  border-radius: 50%; /* clip avatar trong viền tròn dù overflow:visible */
 }
-/* AI mic đang listening: ẩn bubble indicator (không có tab nào active) */
-body.ai-listening #bb-indicator {
+
+/* Mic indicator — báo nút này có voice mode (ChatGPT/Gemini style) */
+.bb-mic-indicator {
+  position: absolute;
+  bottom: -2px; right: -2px;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--ai-neon, #16d472);
+  color: #fff;
+  border: 2.5px solid #fff;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 6px rgba(22,212,114,.45);
+  pointer-events: none;
+  transition: transform .25s cubic-bezier(.4,1.4,.55,1), background .2s ease, box-shadow .2s ease;
+}
+.bb-mic-indicator svg { width: 11px; height: 11px; }
+.bb-chat-btn:hover .bb-mic-indicator { transform: scale(1.1); }
+/* Khi voice mode đang active (panel mở + listening) → indicator pulse + glow */
+body.ai-voice-active .bb-mic-indicator {
+  animation: bbMicPulse 1.2s ease-in-out infinite;
+  box-shadow: 0 0 0 4px rgba(22,212,114,.22), 0 0 14px rgba(22,212,114,.6);
+}
+@keyframes bbMicPulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.15); }
+}
+/* Panel AI đang mở: ẩn bubble indicator (không có tab nào active) */
+body.ai-panel-open #bb-indicator {
   opacity: 0;
   transition: opacity .25s ease;
 }
@@ -448,153 +474,16 @@ body.mode-3d .bb-float { z-index: 2210; }
   transform: translate(-50%, 0);
 }
 
-/* ===== AI ASSISTANT BUTTON (bottom-bar, thay thế "Đóng góp") =====
-   - Orb tròn xanh lá nổi cao hơn các nút khác
-   - Idle: glow breathing nhẹ thu hút mắt
-   - Listening (.listening): vòng tròn pulse mở rộng + sóng âm hai bên + tooltip
-   ============================================================ */
-/* Token màu xanh neon cho AI button */
+/* Token màu xanh neon — vẫn dùng cho mic-indicator + ai-panel voice button */
 :root {
   --ai-neon: #16d472;
   --ai-neon-soft: rgba(22,212,114,.18);
   --ai-neon-strong: rgba(22,212,114,.55);
 }
-.bb-ai { width: 60px; overflow: visible; }
-/* Idle: trông giống .bbt khác – icon mic xám/blue, không nổi, không glow */
-.bb-ai .ai-orb {
-  position: relative;
-  width: 22px; height: 22px;
-  border-radius: 50%;
-  background: transparent;
-  border: 0;
-  box-shadow: none;
-  display: flex; align-items: center; justify-content: center;
-  transform: translateY(0);
-  transition: transform .35s cubic-bezier(.45,1.4,.55,1),
-              width .3s ease, height .3s ease,
-              background .3s ease, border-color .3s ease, box-shadow .3s ease;
-  z-index: 4;
-}
-.bb-ai .ai-mic {
-  width: 22px; height: 22px;
-  color: inherit;
-  position: relative; z-index: 4;
-  transform: none !important;
-  transition: color .3s ease, filter .3s ease, width .3s ease, height .3s ease;
-}
-.bb-ai .bb-label {
-  /* mặc định ẩn như các .bbt khác (chỉ hiện khi active/listening) */
-  color: var(--ai-neon);
-  font-weight: 700;
-  letter-spacing: .2px;
-}
-.bb-ai.listening .bb-label {
-  opacity: 1;
-  transform: translate(-50%, 0);
-  text-shadow: 0 0 6px rgba(22,212,114,.25);
-}
 
-/* Listening: orb phồng to, nổi lên, viền neon, glow, mic to và xanh */
-.bb-ai.listening .ai-orb {
-  width: 52px; height: 52px;
-  background: #fff;
-  border: 2.5px solid var(--ai-neon);
-  transform: translateY(-22px);
-  box-shadow:
-    0 0 0 4px var(--ai-neon-soft),
-    0 0 28px var(--ai-neon),
-    0 6px 18px rgba(22,212,114,.35);
-}
-.bb-ai.listening .ai-mic {
-  width: 24px; height: 24px;
-  color: var(--ai-neon);
-  filter: drop-shadow(0 0 4px var(--ai-neon-strong));
-}
-
-.bb-ai.listening .ai-orb {
-  animation: none;
-  border-color: var(--ai-neon);
-  box-shadow:
-    0 0 0 4px var(--ai-neon-soft),
-    0 0 28px var(--ai-neon),
-    0 6px 18px rgba(22,212,114,.35);
-}
-
-/* Sóng âm hai bên orb – dày đặc, nổi bật khi listening */
-.bb-ai .ai-waves {
-  position: absolute;
-  top: -22px; left: 50%;
-  transform: translateX(-50%) scaleX(.6);
-  width: 200px; height: 52px;
-  display: flex; align-items: center; justify-content: space-between;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity .25s ease, transform .35s cubic-bezier(.45,1.4,.55,1);
-  z-index: 2;
-  padding: 0 6px;
-  box-sizing: border-box;
-}
-.bb-ai.listening .ai-waves {
-  opacity: 1;
-  transform: translateX(-50%) scaleX(1);
-}
-.bb-ai .ai-waves > span {
-  width: 3px; border-radius: 2px;
-  background: var(--ai-neon);
-  box-shadow: 0 0 6px var(--ai-neon), 0 0 12px var(--ai-neon-strong);
-  transform-origin: center;
-}
-.bb-ai.listening .ai-waves > span { animation: aiWave 1s ease-in-out infinite; }
-.bb-ai .ai-waves > span:nth-child(1)  { height: 18%; animation-delay: 0s;   }
-.bb-ai .ai-waves > span:nth-child(2)  { height: 32%; animation-delay: .06s; }
-.bb-ai .ai-waves > span:nth-child(3)  { height: 48%; animation-delay: .12s; }
-.bb-ai .ai-waves > span:nth-child(4)  { height: 64%; animation-delay: .18s; }
-.bb-ai .ai-waves > span:nth-child(5)  { height: 78%; animation-delay: .24s; }
-.bb-ai .ai-waves > span:nth-child(6)  { height: 90%; animation-delay: .30s; }
-.bb-ai .ai-waves > span:nth-child(7)  { height: 95%; animation-delay: .36s; }
-.bb-ai .ai-waves > span:nth-child(8)  { height: 95%; animation-delay: .42s; }
-.bb-ai .ai-waves > span:nth-child(9)  { height: 90%; animation-delay: .48s; }
-.bb-ai .ai-waves > span:nth-child(10) { height: 78%; animation-delay: .54s; }
-.bb-ai .ai-waves > span:nth-child(11) { height: 64%; animation-delay: .60s; }
-.bb-ai .ai-waves > span:nth-child(12) { height: 48%; animation-delay: .66s; }
-.bb-ai .ai-waves > span:nth-child(13) { height: 32%; animation-delay: .72s; }
-.bb-ai .ai-waves > span:nth-child(14) { height: 18%; animation-delay: .78s; }
-@keyframes aiWave {
-  0%, 100% { transform: scaleY(.3); opacity: .5; }
-  50%      { transform: scaleY(1.5); opacity: 1; }
-}
-
-/* Tooltip "Hỏi tôi về địa điểm này" – nổi phía trên khi listening */
-.bb-ai .ai-tip {
-  position: absolute;
-  bottom: calc(100% + 30px);
-  left: 50%;
-  transform: translateX(-50%) translateY(8px);
-  background: #fff;
-  color: var(--ai-neon);
-  padding: 7px 14px;
-  border-radius: 999px;
-  border: 1.5px solid var(--ai-neon);
-  font-size: 12px; font-weight: 700;
-  white-space: nowrap;
-  opacity: 0; pointer-events: none;
-  box-shadow: 0 0 14px var(--ai-neon-strong), 0 6px 16px rgba(0,0,0,.12);
-  transition: opacity .25s ease, transform .25s ease;
-  z-index: 5;
-}
-.bb-ai .ai-tip::after {
-  content: ""; position: absolute;
-  top: 100%; left: 50%; transform: translateX(-50%);
-  border: 6px solid transparent;
-  border-top-color: var(--ai-neon);
-}
-.bb-ai.listening .ai-tip {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
-
-/* AI button không dùng .active state (orb tự nổi sẵn) */
-.bb-ai.active svg.ai-mic { transform: none !important; }
+/* ===== (legacy) AI ASSISTANT BUTTON (.bb-ai) trong bottom-bar đã bị gỡ.
+   Voice mode giờ tích hợp trong #ai-panel (mở từ #bb-chat-btn). ===== */
+.bb-ai { display: none !important; }
 
 /* ===== 7. PANEL (floating card style) =====
    - Panel KHÔNG dính cạnh phải nữa: bo tròn, có shadow, cách lề.
@@ -1137,7 +1026,7 @@ body.mode-3d #vr-ui > * { pointer-events: auto; }
   opacity: 0;
   pointer-events: none;
   transition: opacity .3s ease;
-  box-shadow: 0 4px 14px rgba(0,0,0,.15);
+  /* box-shadow: 0 4px 14px rgba(0,0,0,.15); */
   align-items: center;
   justify-content: center;
 }
@@ -1154,7 +1043,7 @@ body.mode-3d #vr-ui > * { pointer-events: auto; }
   position: absolute;
   bottom: 96px; left: 20px;
   width: 340px;
-  background: rgba(255,255,255,.88);
+  background: rgba(255, 255, 255, .94);
   border: 1px solid rgba(255,255,255,.6);
   border-radius: 16px;
   backdrop-filter: blur(22px);
@@ -1681,6 +1570,14 @@ body.mode-3d.vr-ui-hidden #top-right {
     max-width: calc(100vw - 24px);
   }
 
+  /* Dropdown search mở → ẩn #mobile-panel-btn để không che kết quả tìm kiếm.
+     Xã/phường ở góc phải, không liên quan #mobile-panel-btn (góc trái) → bỏ. */
+  body:has(#search-results.open) #mobile-panel-btn {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .18s ease;
+  }
+
   /* TOP-RIGHT: chuyển thành cột floating dưới nút more */
   #top-right {
     position: fixed;
@@ -1694,6 +1591,11 @@ body.mode-3d.vr-ui-hidden #top-right {
     opacity: 0; pointer-events: none;
     transform: translateY(-10px) scale(.85);
     transition: opacity .25s ease, transform .3s cubic-bezier(.4,0,.2,1);
+  }
+  /* Khi cụm ẩn → ép TẤT CẢ descendants không nhận click (kể cả #lang-popup
+     đã được mở từ trước có pointer-events:auto). */
+  body:not(.mobile-menu-open) #top-right * {
+    pointer-events: none !important;
   }
 
   /* Mở menu: hiện cụm */
@@ -1845,13 +1747,13 @@ body.mode-3d.vr-ui-hidden #top-right {
   .bbt svg { width: 18px; height: 18px; }
   .bbt.active svg { transform: translateY(-22.5px); }
 
-  /* --- NÚT MỞ PANEL: dời mobile-panel-btn ra MÉP PHẢI giữa (như #panel-toggle desktop) --- */
+  /* --- NÚT MỞ PANEL: top-left dưới topbar (giống portrait) --- */
   #mobile-panel-btn {
     display: flex;
-    top: 50%;
-    left: auto; right: 14px;
-    transform: translateY(-50%);
-    width: 44px; height: 44px;
+    top: calc(12px + var(--pill-h) + 8px);
+    left: 12px; right: auto;
+    transform: none;
+    width: var(--pill-h); height: var(--pill-h);
     border-radius: 50%;
   }
   /* #panel-toggle desktop ẩn để mobile-panel-btn thay thế.
@@ -1902,17 +1804,30 @@ body.mode-3d.vr-ui-hidden #top-right {
   .vr-logo-title { font-size: 13px; letter-spacing: .03em; }
   .vr-logo-sub { font-size: 8px; letter-spacing: .1em; }
 
-  /* Info panel: full-width, anchor đáy, trên #bottom-bar (~80px). */
+  /* === #vr-info MOBILE PORTRAIT — vị trí MỚI ===
+     Top-left, bên dưới #mobile-panel-btn. Mở rộng XUỐNG (height) + sang PHẢI (width).
+     Pill thu nhỏ luôn là HÌNH VUÔNG BO TRÒN ĐỀU 4 cạnh — width/height/border-radius
+     chạy CÙNG timing để không bị méo trung gian. */
+  :root { --vr-info-top: calc(12px + var(--pill-h) + 8px + var(--pill-h) + 8px); }
+  /* radius CỐ ĐỊNH = pill-h/2. Khi collapsed (width=height=pill-h) → tròn 100%.
+     Khi expanded → bo đều 22px ở 4 góc. KHÔNG transition radius. */
   #vr-info {
+    top: var(--vr-info-top);
+    bottom: auto;
     left: 12px;
     right: auto;
     width: calc(100vw - 24px);
     max-width: none;
-    bottom: 110px;
     padding: 12px 14px;
-    border-radius: 14px;
+    border-radius: calc(var(--pill-h) / 2);
     height: 200px;
     overflow: hidden;
+    transition:
+      top .32s cubic-bezier(.4,0,.2,1),
+      width .4s cubic-bezier(.4,0,.2,1) 0s,
+      padding .4s cubic-bezier(.4,0,.2,1) 0s,
+      height .4s cubic-bezier(.4,0,.2,1) .42s,
+      background-color .3s ease;
   }
   #vr-place-name { font-size: 18px; margin-bottom: 4px; }
   #vr-info.collapsed #vr-place-name { font-size: 14px; }
@@ -1926,33 +1841,22 @@ body.mode-3d.vr-ui-hidden #top-right {
   .vr-meta-row { font-size: 11.5px; }
   .vr-info-tag { font-size: 9px; }
 
-  /* Pha MỞ (collapsed → expanded): width nở ngang TRƯỚC, height nở dọc SAU. */
-  #vr-info {
-    transition:
-      width .4s cubic-bezier(.4,0,.2,1) 0s,
-      border-radius .4s cubic-bezier(.4,0,.2,1) 0s,
-      padding .4s cubic-bezier(.4,0,.2,1) 0s,
-      height .4s cubic-bezier(.4,0,.2,1) .42s,
-      background-color .3s ease;
-  }
-  /* Pha THU (expanded → collapsed): height co dọc TRƯỚC, width co ngang SAU. */
   #vr-info.collapsed {
-    width: 48px;
-    height: 48px;
+    width: var(--pill-h);
+    height: var(--pill-h);
     padding: 0;
-    border-radius: 999px;
     background: rgba(255,255,255,.94);
     pointer-events: none;
     transition:
+      top .32s cubic-bezier(.4,0,.2,1),
       height .4s cubic-bezier(.4,0,.2,1) 0s,
       width .4s cubic-bezier(.4,0,.2,1) .42s,
-      border-radius .4s cubic-bezier(.4,0,.2,1) .42s,
       padding .4s cubic-bezier(.4,0,.2,1) .42s,
       background-color .3s ease;
   }
   /* Children: fade-in CHẬM (sau khi panel nở xong), fade-out NHANH (trước khi panel thu) */
   #vr-info-hd, #vr-place-name, #vr-place-desc, #vr-place-meta {
-    transition: opacity .3s ease .85s;
+    transition: opacity .3s ease .45s;
   }
   #vr-info.collapsed #vr-info-hd,
   #vr-info.collapsed #vr-place-name,
@@ -1962,11 +1866,27 @@ body.mode-3d.vr-ui-hidden #top-right {
     pointer-events: none;
     transition: opacity .15s ease;
   }
-  /* Hiện FAB trên mobile portrait — căn theo góc dưới-trái của #vr-info */
+  /* FAB: kích thước = --pill-h (đồng bộ với pill collapsed của #vr-info) */
   #vr-info-fab {
     display: flex;
-    bottom: 110px;           /* khớp với #vr-info bottom */
+    top: var(--vr-info-top);
+    bottom: auto;
     left: 12px;
+    width: var(--pill-h);
+    height: var(--pill-h);
+    transition: top .32s cubic-bezier(.4,0,.2,1), opacity .3s ease .45s;
+  }
+
+  /* Chevron: expanded → point UP (thu lên, vì panel mở xuống); collapsed → point DOWN */
+  #vr-info #vr-info-x svg { transition: transform .35s cubic-bezier(.4,0,.2,1); transform: rotate(-180deg); }
+  #vr-info.collapsed #vr-info-x svg { transform: rotate(0deg); }
+
+  /* === DROPDOWN SEARCH MỞ → #vr-info xuống NGAY DƯỚI dropdown ===
+     JS đo bottom thực của #search-results → set --search-dd-bottom.
+     Khoảng cách 8px gap. Chỉ áp dụng cho dropdown SEARCH, không áp dụng xã/phường. */
+  body:has(#search-results.open) #vr-info,
+  body:has(#search-results.open) #vr-info-fab {
+    top: calc(var(--search-dd-bottom, 100px) + 8px);
   }
 
   /* Mobile 3D: ẩn hoàn toàn minimap (không đủ chỗ + chồng lấn với UI) */
@@ -2011,37 +1931,34 @@ body.mode-3d.vr-ui-hidden #top-right {
   /* Pill height co lại để header chỉ ~ 44–48px */
   :root { --pill-h: 38px; }
 
-  /* Info panel landscape: same sequenced animation như portrait */
   #vr-info {
+    top: calc(12px + var(--pill-h) + 8px + var(--pill-h) + 8px);
+    bottom: auto;
     left: 12px;
     right: auto;
-    bottom: 12px;
     width: 240px;
     max-width: 38vw;
     padding: 9px 12px;
-    border-radius: 12px;
+    border-radius: calc(var(--pill-h) / 2);
     overflow: hidden;
     height: 170px;
-    /* Pha MỞ: width nở ngang TRƯỚC, height nở dọc SAU */
     transition:
+      top .32s cubic-bezier(.4,0,.2,1),
       width .4s cubic-bezier(.4,0,.2,1) 0s,
-      border-radius .4s cubic-bezier(.4,0,.2,1) 0s,
       padding .4s cubic-bezier(.4,0,.2,1) 0s,
       height .4s cubic-bezier(.4,0,.2,1) .42s,
       background-color .3s ease;
   }
   #vr-info.collapsed {
-    width: 48px;
-    height: 48px;
+    width: var(--pill-h);
+    height: var(--pill-h);
     padding: 0;
-    border-radius: 999px;
     background: rgba(255,255,255,.94);
     pointer-events: none;
-    /* Pha THU: dọc co TRƯỚC, ngang SAU */
     transition:
+      top .32s cubic-bezier(.4,0,.2,1),
       height .4s cubic-bezier(.4,0,.2,1) 0s,
       width .4s cubic-bezier(.4,0,.2,1) .42s,
-      border-radius .4s cubic-bezier(.4,0,.2,1) .42s,
       padding .4s cubic-bezier(.4,0,.2,1) .42s,
       background-color .3s ease;
   }
@@ -2056,8 +1973,29 @@ body.mode-3d.vr-ui-hidden #top-right {
     pointer-events: none;
     transition: opacity .15s ease;
   }
-  /* Hiện FAB trên mobile landscape */
-  #vr-info-fab { display: flex; align-items: center; justify-content: center; }
+  /* FAB landscape: cùng vị trí với #vr-info collapsed (dưới #mobile-panel-btn) */
+  #vr-info-fab {
+    display: flex; align-items: center; justify-content: center;
+    top: calc(12px + var(--pill-h) + 8px + var(--pill-h) + 8px);
+    bottom: auto;
+    left: 12px;
+    width: var(--pill-h);
+    height: var(--pill-h);
+    transition: top .32s cubic-bezier(.4,0,.2,1), opacity .3s ease .45s;
+  }
+
+  /* Dropdown search mở → #vr-info bám sát dưới dropdown (chỉ search, không xã/phường) */
+  body:has(#search-results.open) #vr-info,
+  body:has(#search-results.open) #vr-info-fab {
+    top: calc(var(--search-dd-bottom, 100px) + 8px);
+  }
+  /* Ẩn #mobile-panel-btn khi dropdown search mở (giống portrait — rule portrait
+     ở @max-width:768 không trùm landscape phone vì width thường > 768) */
+  body:has(#search-results.open) #mobile-panel-btn {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .18s ease;
+  }
   #vr-place-name { font-size: 15px; margin-bottom: 3px; }
   #vr-info.collapsed #vr-place-name { font-size: 13px; }
   #vr-place-desc {
@@ -2245,8 +2183,9 @@ body.view-guide #mobile-panel-btn { display: none !important; }
    ============================== */
 #ai-panel {
   position: fixed;
-  /* Bám đúng dưới #bb-chat-btn: cùng mép phải với nút float chat */
-  right: var(--bb-edge-right, 16px);
+  /* Bám đúng trên #bb-chat-btn: cùng mép TRÁI với nút float chat (đã dời sang trái) */
+  left: var(--bb-edge-left, 16px);
+  right: auto;
   bottom: calc(var(--bb-h) + 16px + 12px);
   width: 360px; max-width: calc(100vw - 32px);
   max-height: 70vh;
@@ -2257,9 +2196,110 @@ body.view-guide #mobile-panel-btn { display: none !important; }
   display: flex; flex-direction: column;
   opacity: 0;
   transform: translateY(20px) scale(.96);
-  transition: opacity .22s ease, transform .22s ease;
+  transition: opacity .22s ease, transform .22s ease, max-height .35s cubic-bezier(.4,0,.2,1);
   pointer-events: none;
   overflow: hidden;
+}
+
+/* === VOICE MODE: panel biến thành capsule ngang, nằm BÊN PHẢI #bb-chat-btn,
+   ngang hàng và che bottom-bar. Capsule CHỈ chứa: [mic dừng] [sóng âm full]. */
+#ai-panel.listening,
+#ai-panel.thinking,
+#ai-panel.speaking {
+  bottom: 16px;
+  left: calc(var(--bb-edge-left, 16px) + var(--bb-h) + 12px);
+  right: 16px;
+  width: auto; 
+  /* max-width: none; */
+  max-width: 270px;
+  height: var(--bb-h);
+  max-height: var(--bb-h);
+  border-radius: calc(var(--bb-h) / 2);
+  z-index: 2300;
+  flex-direction: row; align-items: center;
+  overflow: hidden;
+}
+/* Ẩn TẤT CẢ những phần khác — chỉ giữ composer */
+#ai-panel.listening .ai-pn-head,
+#ai-panel.thinking  .ai-pn-head,
+#ai-panel.speaking  .ai-pn-head,
+#ai-panel.listening .ai-pn-body,
+#ai-panel.thinking  .ai-pn-body,
+#ai-panel.speaking  .ai-pn-body { display: none; }
+
+/* Composer = dải ngang full capsule: [mic compact] [sóng âm flex:1] */
+#ai-panel.listening .ai-pn-composer,
+#ai-panel.thinking  .ai-pn-composer,
+#ai-panel.speaking  .ai-pn-composer {
+  flex: 1; min-width: 0;
+  flex-direction: row !important;
+  align-items: center;
+  padding: 0 16px 0 10px;
+  gap: 12px;
+  background: transparent;
+  border-top: none;
+}
+/* Ẩn input + send trong capsule (trùng pattern composer.listening — đã ẩn,
+   nhưng thinking/speaking thì rule cũ không match → ép luôn ở đây) */
+#ai-panel.listening .ai-pn-input,
+#ai-panel.thinking  .ai-pn-input,
+#ai-panel.speaking  .ai-pn-input,
+#ai-panel.listening .ai-pn-send,
+#ai-panel.thinking  .ai-pn-send,
+#ai-panel.speaking  .ai-pn-send {
+  display: none !important;
+}
+/* Mic compact bên TRÁI capsule — bấm = dừng voice, về text chat */
+#ai-panel.listening .ai-pn-mic,
+#ai-panel.thinking  .ai-pn-mic,
+#ai-panel.speaking  .ai-pn-mic {
+  width: 44px; height: 44px;
+  flex-shrink: 0;
+  align-self: center;
+  position: static;
+  box-shadow: 0 0 0 3px var(--ai-neon-soft), 0 0 14px var(--ai-neon);
+  animation: aiMicPulseSmall 1.4s ease-in-out infinite;
+}
+#ai-panel.listening .ai-pn-mic svg,
+#ai-panel.thinking  .ai-pn-mic svg,
+#ai-panel.speaking  .ai-pn-mic svg { width: 18px; height: 18px; }
+/* Mobile: mic capsule nhỏ hơn 40×40 */
+@media (max-width: 768px) {
+  #ai-panel.listening .ai-pn-mic,
+  #ai-panel.thinking  .ai-pn-mic,
+  #ai-panel.speaking  .ai-pn-mic {
+    width: 40px; height: 40px;
+  }
+  #ai-panel.listening .ai-pn-mic svg,
+  #ai-panel.thinking  .ai-pn-mic svg,
+  #ai-panel.speaking  .ai-pn-mic svg { width: 16px; height: 16px; }
+}
+@keyframes aiMicPulseSmall {
+  0%, 100% { box-shadow: 0 0 0 3px var(--ai-neon-soft), 0 0 14px var(--ai-neon); }
+  50%      { box-shadow: 0 0 0 7px rgba(22,212,114,.10), 0 0 22px var(--ai-neon); }
+}
+/* Sóng âm chiếm phần còn lại của capsule, bars trải đều */
+#ai-panel.listening .ai-pn-waveform,
+#ai-panel.thinking  .ai-pn-waveform,
+#ai-panel.speaking  .ai-pn-waveform {
+  flex: 1 1 0; min-width: 0;
+  height: 36px;
+  width: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0;
+  padding: 0 8px;
+}
+/* Bars trong capsule: width cố định 3px, height max của waveform (36px),
+   scaleY của animation/JS sẽ làm bar cao thấp theo âm lượng. */
+#ai-panel.listening .ai-pn-waveform > span,
+#ai-panel.thinking  .ai-pn-waveform > span,
+#ai-panel.speaking  .ai-pn-waveform > span {
+  width: 3px;
+  flex: 0 0 3px;
+  height: 100% !important;        /* override các rule height: %/% mặc định */
+  border-radius: 2px;
 }
 #ai-panel.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
 
@@ -2271,14 +2311,43 @@ body.view-guide #mobile-panel-btn { display: none !important; }
 .ai-pn-orb {
   width: 38px; height: 38px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #16d472, #2bb6e6);
-  color: #fff;
+  background: #fff;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,.12);
+}
+.ai-pn-orb img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
 }
 .ai-pn-h { flex: 1; min-width: 0; }
 .ai-pn-title { font-size: 14px; font-weight: 800; color: #1a1a1a; }
-.ai-pn-sub   { font-size: 11.5px; color: #888; margin-top: 2px; }
+.ai-pn-sub {
+  font-size: 11.5px; color: #16a35a;
+  margin-top: 3px;
+  display: flex; align-items: center; gap: 6px;
+}
+.ai-pn-status-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--ai-neon, #16d472);
+  box-shadow: 0 0 0 2px rgba(22,212,114,.22);
+  flex-shrink: 0;
+  animation: aiPnStatusPulse 1.6s ease-in-out infinite;
+}
+.ai-pn-status-text { line-height: 1; }
+@keyframes aiPnStatusPulse {
+  0%, 100% { box-shadow: 0 0 0 2px rgba(22,212,114,.22); }
+  50%      { box-shadow: 0 0 0 5px rgba(22,212,114,.10); }
+}
+/* Đổi màu chấm theo state voice */
+#ai-panel.listening .ai-pn-status-dot { background: var(--ai-neon, #16d472); }
+#ai-panel.thinking  .ai-pn-status-dot { background: #f0a020; box-shadow: 0 0 0 2px rgba(240,160,32,.25); }
+#ai-panel.speaking  .ai-pn-status-dot { background: var(--icon-blue, #2bb6e6); box-shadow: 0 0 0 2px rgba(43,182,230,.25); }
+#ai-panel.thinking  .ai-pn-sub { color: #c87a10; }
+#ai-panel.speaking  .ai-pn-sub { color: var(--icon-blue, #2bb6e6); }
 .ai-pn-x {
   width: 28px; height: 28px;
   border: none; background: #f4f6f8;
@@ -2289,73 +2358,195 @@ body.view-guide #mobile-panel-btn { display: none !important; }
 }
 .ai-pn-x:hover { background: #e8f6fc; color: var(--icon-blue); }
 
-.ai-pn-tabs {
-  display: flex; gap: 6px;
-  padding: 10px 16px 0;
-}
-.ai-pn-tab {
-  height: 30px; padding: 0 14px;
-  border: 1.5px solid #e4e8ec;
-  background: #fff;
-  border-radius: 15px;
-  font-family: inherit; font-size: 12px; font-weight: 700;
-  cursor: pointer; color: #555;
-  transition: border-color .15s, background .15s, color .15s;
-}
-.ai-pn-tab:hover { border-color: var(--icon-blue); color: var(--icon-blue); }
-.ai-pn-tab.active { background: var(--icon-blue); border-color: var(--icon-blue); color: #fff; }
-
+/* Body = vùng cuộn lịch sử chat (không còn tabs/prompts/answer) */
 .ai-pn-body {
   flex: 1; overflow-y: auto;
-  padding: 12px 16px;
+  padding: 14px 14px;
+  background: #f7f9fb;
 }
-.ai-pn-prompts { display: flex; flex-direction: column; gap: 6px; }
-.ai-pn-q {
-  display: flex; align-items: center; justify-content: space-between; gap: 8px;
-  padding: 10px 12px;
-  border: 1px solid #eef0f2;
-  background: #f4faff;
-  border-radius: 10px;
-  font-family: inherit; font-size: 12.5px; font-weight: 600;
-  color: #1a1a1a; text-align: left;
-  cursor: pointer;
-  transition: border-color .15s, background .15s;
-}
-.ai-pn-q:hover { border-color: var(--icon-blue); background: #e8f6fc; }
-.ai-pn-q svg { color: var(--icon-blue); flex-shrink: 0; }
+.ai-pn-body::-webkit-scrollbar { width: 4px; }
+.ai-pn-body::-webkit-scrollbar-thumb { background: #d0d5db; border-radius: 4px; }
 
-.ai-pn-answer { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+.ai-pn-chat {
+  display: flex; flex-direction: column;
+  gap: 8px;
+}
 .ai-pn-bubble {
   padding: 10px 14px;
-  border-radius: 12px;
-  font-size: 12.5px;
+  border-radius: 14px;
+  font-size: 13px;
   line-height: 1.5;
+  max-width: 85%;
+  word-wrap: break-word;
+  animation: aiBubbleIn .25s ease-out;
 }
-.ai-pn-bubble.user { background: #e8f6fc; color: #1a1a1a; align-self: flex-end; max-width: 90%; }
-.ai-pn-bubble.bot  { background: #f4f6f8; color: #333;    align-self: flex-start; max-width: 95%; }
-.ai-pn-bubble b    { color: var(--icon-blue); }
-.ai-pn-bubble.bot b { color: var(--green); }
-.ai-pn-back {
+.ai-pn-bubble.user {
+  background: var(--icon-blue);
+  color: #fff;
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}
+.ai-pn-bubble.bot {
+  background: #fff;
+  color: #1a2330;
   align-self: flex-start;
-  margin-top: 4px;
-  border: none; background: none;
-  color: var(--icon-blue);
-  font-family: inherit; font-size: 12px; font-weight: 700;
-  cursor: pointer; padding: 4px 0;
+  border-bottom-left-radius: 4px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
 }
-.ai-pn-back:hover { text-decoration: underline; }
+@keyframes aiBubbleIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
-.ai-pn-foot {
-  padding: 8px 16px 12px;
+/* === Composer (text input + mic) trong footer ===
+   Idle: input + mic + send xếp ngang.
+   Listening: input + send ẩn, mic vào GIỮA, sóng âm full-width nằm dưới mic. */
+.ai-pn-composer {
+  position: relative;
+  display: flex; align-items: center; gap: 8px;
+  width: 100%;
+  padding: 10px 16px 14px;
   border-top: 1px solid #eef0f2;
   background: #fafbfc;
+  transition: padding .25s ease, background .3s ease;
 }
-.ai-pn-stub {
-  font-size: 10.5px; color: #aaa; font-style: italic;
+.ai-pn-input {
+  flex: 1; min-width: 0;
+  height: 36px; padding: 0 14px;
+  border: 1.5px solid #e4e8ec;
+  border-radius: 18px;
+  background: #fff;
+  font-family: inherit; font-size: 13px;
+  color: #1a1a1a;
+  outline: none;
+  transition: border-color .15s, opacity .2s ease, transform .25s ease;
+}
+.ai-pn-input:focus { border-color: var(--icon-blue); }
+.ai-pn-send,
+.ai-pn-mic {
+  width: 36px; height: 36px;
+  border: none; border-radius: 50%;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition:
+    background .2s ease, transform .35s cubic-bezier(.45,1.4,.55,1),
+    box-shadow .25s ease, width .35s ease, height .35s ease,
+    margin .35s ease;
+}
+.ai-pn-send {
+  background: var(--icon-blue); color: #fff;
+}
+.ai-pn-send:hover { background: var(--icon-blue-dark); transform: translateY(-1px); }
+.ai-pn-send:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+.ai-pn-send svg { width: 16px; height: 16px; }
+.ai-pn-mic {
+  background: #fff;
+  color: var(--ai-neon);
+  border: 1.5px solid var(--ai-neon);
+}
+.ai-pn-mic:hover { background: var(--ai-neon-soft); transform: translateY(-1px); }
+.ai-pn-mic svg { width: 16px; height: 16px; transition: width .3s ease, height .3s ease; }
+
+/* === LISTENING STATE ===
+   Class .listening đặt trên #ai-panel khi đang voice mode. */
+#ai-panel.listening .ai-pn-composer {
+  padding: 18px 16px 18px;
+  background: linear-gradient(180deg, #fafbfc 0%, #e8faf0 100%);
+  flex-direction: column;
+  gap: 14px;
+}
+/* Ẩn input + send, để mic chiếm giữa */
+#ai-panel.listening .ai-pn-input,
+#ai-panel.listening .ai-pn-send {
+  opacity: 0;
+  transform: scale(.6);
+  width: 0; height: 0; padding: 0; margin: 0;
+  border: 0;
+  pointer-events: none;
+  position: absolute;
+}
+/* Mic listening — chỉ style màu/glow, kích thước đã set ở rule capsule trên */
+#ai-panel.listening .ai-pn-mic {
+  background: var(--ai-neon);
+  color: #fff;
+  border-color: var(--ai-neon);
+}
+#ai-panel.listening .ai-pn-mic:hover { transform: scale(1.04); }
+
+/* Sóng thu âm — full-width composer, nằm DƯỚI mic */
+.ai-pn-waveform {
+  display: none;
+  width: 100%;
+  height: 48px;
+  align-items: center; justify-content: center;
+  gap: 4px;
+  pointer-events: none;
+}
+#ai-panel.listening .ai-pn-waveform,
+#ai-panel.thinking  .ai-pn-waveform,
+#ai-panel.speaking  .ai-pn-waveform { display: flex; }
+.ai-pn-waveform > span {
+  display: block;
+  width: 4px;
+  flex: 0 0 4px;
+  border-radius: 2px;
+  background: var(--ai-neon);
+  box-shadow: 0 0 6px var(--ai-neon), 0 0 12px var(--ai-neon-strong);
+  transform-origin: center;
+  transform: scaleY(.15);
+  opacity: .4;
+  transition: transform .08s linear, opacity .12s ease;
+  animation: aiWaveBar 1s ease-in-out infinite;
+}
+/* Khi listening: tắt CSS animation để JS analyser điều khiển scaleY theo volume thật */
+#ai-panel.listening .ai-pn-waveform > span { animation: none; }
+/* 24 bars với delay stagger để tạo sóng chạy */
+.ai-pn-waveform > span:nth-child(1)  { height: 18%; animation-delay: 0s; }
+.ai-pn-waveform > span:nth-child(2)  { height: 28%; animation-delay: .04s; }
+.ai-pn-waveform > span:nth-child(3)  { height: 40%; animation-delay: .08s; }
+.ai-pn-waveform > span:nth-child(4)  { height: 55%; animation-delay: .12s; }
+.ai-pn-waveform > span:nth-child(5)  { height: 70%; animation-delay: .16s; }
+.ai-pn-waveform > span:nth-child(6)  { height: 82%; animation-delay: .20s; }
+.ai-pn-waveform > span:nth-child(7)  { height: 92%; animation-delay: .24s; }
+.ai-pn-waveform > span:nth-child(8)  { height: 98%; animation-delay: .28s; }
+.ai-pn-waveform > span:nth-child(9)  { height: 92%; animation-delay: .32s; }
+.ai-pn-waveform > span:nth-child(10) { height: 82%; animation-delay: .36s; }
+.ai-pn-waveform > span:nth-child(11) { height: 70%; animation-delay: .40s; }
+.ai-pn-waveform > span:nth-child(12) { height: 55%; animation-delay: .44s; }
+.ai-pn-waveform > span:nth-child(13) { height: 55%; animation-delay: .48s; }
+.ai-pn-waveform > span:nth-child(14) { height: 70%; animation-delay: .52s; }
+.ai-pn-waveform > span:nth-child(15) { height: 82%; animation-delay: .56s; }
+.ai-pn-waveform > span:nth-child(16) { height: 92%; animation-delay: .60s; }
+.ai-pn-waveform > span:nth-child(17) { height: 98%; animation-delay: .64s; }
+.ai-pn-waveform > span:nth-child(18) { height: 92%; animation-delay: .68s; }
+.ai-pn-waveform > span:nth-child(19) { height: 82%; animation-delay: .72s; }
+.ai-pn-waveform > span:nth-child(20) { height: 70%; animation-delay: .76s; }
+.ai-pn-waveform > span:nth-child(21) { height: 55%; animation-delay: .80s; }
+.ai-pn-waveform > span:nth-child(22) { height: 40%; animation-delay: .84s; }
+.ai-pn-waveform > span:nth-child(23) { height: 28%; animation-delay: .88s; }
+.ai-pn-waveform > span:nth-child(24) { height: 18%; animation-delay: .92s; }
+@keyframes aiWaveBar {
+  0%, 100% { transform: scaleY(.3); opacity: .55; }
+  50%      { transform: scaleY(1.4); opacity: 1; }
 }
 
+/* Thinking / speaking states: đổi màu mic, dùng aiMicPulseSmall (compact capsule) */
+#ai-panel.thinking .ai-pn-mic {
+  animation: none;
+  background: #f0a020; border-color: #f0a020; color: #fff;
+  box-shadow: 0 0 0 3px rgba(240,160,32,.18), 0 0 14px #f0a020;
+}
+#ai-panel.speaking .ai-pn-mic {
+  animation: aiMicPulseSmall 1.8s ease-in-out infinite;
+  background: var(--icon-blue); border-color: var(--icon-blue); color: #fff;
+  box-shadow: 0 0 0 3px rgba(43,182,230,.18), 0 0 14px var(--icon-blue);
+}
+#ai-panel.thinking .ai-pn-waveform > span,
+#ai-panel.speaking .ai-pn-waveform > span { animation-duration: .6s; }
+
 @media (max-width: 480px) {
-  #ai-panel { right: 8px; left: 8px; width: auto; bottom: calc(var(--bottom-h) + 12px); }
+  #ai-panel { left: 8px; right: 8px; width: auto; bottom: calc(var(--bb-h) + 16px + 12px); }
 }
 
 /* ===== 17. INVEST PROJECT HIGHLIGHT RING (Sprint 5) ===== */
