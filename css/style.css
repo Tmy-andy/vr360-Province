@@ -371,7 +371,12 @@ body.mode-3d .mode-toggle-btn:hover { background: #e8f7fd; color: var(--icon-blu
   z-index: 1000;
   transition: background .14s, transform .12s, opacity .25s ease, left .3s ease, right .3s ease;
 }
+/* Default (mobile): bám sát mép trái #bottom-bar via JS-set --bb-edge-left.
+   Desktop ≥769px: dời ra MÉP TRÁI rìa màn hình (chỗ #vr-info cũ ở bottom-left). */
 .bb-chat-btn { left: var(--bb-edge-left, 16px); }
+@media (min-width: 769px) {
+  .bb-chat-btn { left: 20px !important; }
+}
 .bb-chat-btn:hover { transform: translateY(-1px); }
 .bb-chat-btn img {
   width: 100%; height: 100%; object-fit: cover; display: block;
@@ -1037,11 +1042,12 @@ body.mode-3d #vr-ui > * { pointer-events: auto; }
   transition: opacity .3s ease .85s;
 }
 
-/* --- INFO PANEL – bottom-left, nền trắng glass + text xanh, đồng bộ với 2D.
-   bottom = 16 (margin) + 64 (#bottom-bar) + 16 (gap) = 96 → đẩy lên trên bottom-bar */
+/* --- INFO PANEL – DESKTOP: top-left dưới topbar (đã dời từ bottom-left).
+   Animation collapse mở XUỐNG (giống mobile). */
 #vr-info {
   position: absolute;
-  bottom: 96px; left: 20px;
+  top: calc(12px + var(--pill-h) + 16px);
+  left: 20px;
   width: 340px;
   background: rgba(255, 255, 255, .94);
   border: 1px solid rgba(255,255,255,.6);
@@ -1051,9 +1057,14 @@ body.mode-3d #vr-ui > * { pointer-events: auto; }
   padding: 14px 16px;
   color: var(--icon-blue);
   box-shadow: 0 8px 28px rgba(0,0,0,.18);
-  transition: opacity .25s ease, transform .25s ease;
+  transition: opacity .25s ease, transform .25s ease, top .32s cubic-bezier(.4,0,.2,1);
 }
-#vr-info.hidden { opacity: 0; pointer-events: none; transform: translateY(8px); }
+#vr-info.hidden { opacity: 0; pointer-events: none; transform: translateY(-8px); }
+
+/* Dropdown search mở → đẩy #vr-info xuống dưới dropdown (desktop + mọi viewport) */
+body:has(#search-results.open) #vr-info {
+  top: calc(var(--search-dd-bottom, 100px) + 12px);
+}
 
 /* Thu gọn: animate mượt mà – max-height + opacity + margin */
 #vr-info {
@@ -1090,8 +1101,8 @@ body.mode-3d #vr-ui > * { pointer-events: auto; }
 }
 #vr-place-name { transition: font-size .3s ease, margin-bottom .3s ease; }
 #vr-info.collapsed #vr-place-name { margin-bottom: 0; font-size: 16px; }
-#vr-info #vr-info-x svg { transition: transform .35s cubic-bezier(.4,0,.2,1); }
-#vr-info.collapsed #vr-info-x svg { transform: rotate(-180deg); }
+#vr-info #vr-info-x svg { transition: transform .35s cubic-bezier(.4,0,.2,1); transform: rotate(-180deg); }
+#vr-info.collapsed #vr-info-x svg { transform: rotate(0deg); }
 
 #vr-info-hd {
   display: flex; align-items: center; justify-content: space-between;
@@ -2183,7 +2194,7 @@ body.view-guide #mobile-panel-btn { display: none !important; }
    ============================== */
 #ai-panel {
   position: fixed;
-  /* Bám đúng trên #bb-chat-btn: cùng mép TRÁI với nút float chat (đã dời sang trái) */
+  /* Bám đúng trên #bb-chat-btn: cùng mép TRÁI với nút float chat */
   left: var(--bb-edge-left, 16px);
   right: auto;
   bottom: calc(var(--bb-h) + 16px + 12px);
@@ -2200,6 +2211,10 @@ body.view-guide #mobile-panel-btn { display: none !important; }
   pointer-events: none;
   overflow: hidden;
 }
+/* Desktop: ai-panel + capsule cùng neo mép trái 20px như #bb-chat-btn */
+@media (min-width: 769px) {
+  #ai-panel { left: 20px !important; }
+}
 
 /* === VOICE MODE: panel biến thành capsule ngang, nằm BÊN PHẢI #bb-chat-btn,
    ngang hàng và che bottom-bar. Capsule CHỈ chứa: [mic dừng] [sóng âm full]. */
@@ -2209,6 +2224,17 @@ body.view-guide #mobile-panel-btn { display: none !important; }
   bottom: 16px;
   left: calc(var(--bb-edge-left, 16px) + var(--bb-h) + 12px);
   right: 16px;
+}
+@media (min-width: 769px) {
+  #ai-panel.listening,
+  #ai-panel.thinking,
+  #ai-panel.speaking {
+    left: calc(20px + var(--bb-h) + 12px) !important;
+  }
+}
+#ai-panel.listening,
+#ai-panel.thinking,
+#ai-panel.speaking {
   width: auto; 
   /* max-width: none; */
   max-width: 270px;
@@ -2557,10 +2583,4 @@ body.view-guide #mobile-panel-btn { display: none !important; }
 @keyframes iv-ring-pulse {
   0%, 100% { opacity: 0.7; stroke-width: 2.5; }
   50%      { opacity: 1;   stroke-width: 4; }
-}
-
-@media (min-width: 1000px) {
-  #vr-info {
-    bottom: 16px;
-  }
 }
