@@ -2216,20 +2216,21 @@ body.view-guide #mobile-panel-btn { display: none !important; }
   #ai-panel { left: 20px !important; }
 }
 
-/* === VOICE MODE: panel biến thành capsule ngang, nằm BÊN PHẢI #bb-chat-btn,
-   ngang hàng và che bottom-bar. Capsule CHỈ chứa: [mic dừng] [sóng âm full]. */
+/* === VOICE MODE: panel biến thành capsule ngang, nằm BÊN TRÁI #bb-chat-btn,
+   ngang hàng (bottom: 16px). Capsule CHỈ chứa: [mic dừng] [sóng âm full]. */
 #ai-panel.listening,
 #ai-panel.thinking,
 #ai-panel.speaking {
   bottom: 16px;
-  left: calc(var(--bb-edge-left, 16px) + var(--bb-h) + 12px);
-  right: 16px;
+  left: auto;
+  right: calc(var(--bb-edge-right, 16px) + var(--bb-h) + 12px);
 }
 @media (min-width: 769px) {
   #ai-panel.listening,
   #ai-panel.thinking,
   #ai-panel.speaking {
-    left: calc(20px + var(--bb-h) + 12px) !important;
+    right: calc(20px + var(--bb-h) + 12px) !important;
+    left: auto !important;
   }
 }
 #ai-panel.listening,
@@ -2237,7 +2238,8 @@ body.view-guide #mobile-panel-btn { display: none !important; }
 #ai-panel.speaking {
   width: auto; 
   /* max-width: none; */
-  max-width: 270px;
+  min-width: 270px;
+  max-width: 300px;
   height: var(--bb-h);
   max-height: var(--bb-h);
   border-radius: calc(var(--bb-h) / 2);
@@ -2619,23 +2621,6 @@ body.view-guide #mobile-panel-btn { display: none !important; }
 }
 @media (min-width: 769px) {
   #ai-panel { right: 20px !important; left: auto !important; }
-}
-#ai-panel.listening,
-#ai-panel.thinking,
-#ai-panel.speaking {
-  left: 16px;
-  right: calc(var(--bb-edge-right, 16px) + var(--bb-h) + 12px);
-}
-@media (min-width: 769px) {
-  #ai-panel.listening,
-  #ai-panel.thinking,
-  #ai-panel.speaking {
-    left: 16px !important;
-    right: calc(20px + var(--bb-h) + 12px) !important;
-  }
-}
-@media (max-width: 480px) {
-  #ai-panel { left: 8px !important; right: 8px !important; }
 }
 
 /* --- DESKTOP-ONLY swap cho right-panel / vr-info / minimap --- */

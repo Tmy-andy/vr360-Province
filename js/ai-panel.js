@@ -19,6 +19,11 @@ window.AiPanel = (() => {
     { role: 'bot',  k: 'ai.demo.g3' },
   ];
 
+  /* Lịch sử user-generated (text + voice). Bubble do user/bot tạo trong session
+     được lưu ở đây để render lại sau khi đóng/mở panel hoặc đổi ngôn ngữ.
+     Format: { role: 'user'|'bot', text: string } */
+  const sessionHistory = [];
+
   /* Voice state */
   let recognition = null;
   let voiceActive = false;
@@ -97,7 +102,10 @@ window.AiPanel = (() => {
 
   function renderHistory() {
     const chat = panel.querySelector('.ai-pn-chat');
-    chat.innerHTML = DEMO_KEYS.map(m => bubbleHtml(m.role, t(m.k))).join('');
+    /* Demo cố định + bubble user/bot đã ghi trong session */
+    const demoHtml = DEMO_KEYS.map(m => bubbleHtml(m.role, t(m.k))).join('');
+    const sessHtml = sessionHistory.map(m => bubbleHtml(m.role, m.text)).join('');
+    chat.innerHTML = demoHtml + sessHtml;
     scrollChatToEnd();
   }
 
@@ -106,6 +114,7 @@ window.AiPanel = (() => {
   }
 
   function appendBubble(role, text) {
+    sessionHistory.push({ role, text });
     const chat = panel.querySelector('.ai-pn-chat');
     chat.insertAdjacentHTML('beforeend', bubbleHtml(role, text));
     scrollChatToEnd();
