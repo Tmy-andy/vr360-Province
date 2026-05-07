@@ -8,27 +8,27 @@
 <section id="guide-view">
   <div id="gv-shell">
     <header class="view-topbar">
-      <button class="vt-brand" type="button" data-view-home="guide" title="Về Cẩm nang">
+      <button class="vt-brand" type="button" data-view-home="guide" data-i18n-title="view_brand.guide_back" title="Về Cẩm nang">
         <span class="vt-logo">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/><line x1="4.93" y1="4.93" x2="7.05" y2="7.05"/><line x1="16.95" y1="16.95" x2="19.07" y2="19.07"/><line x1="4.93" y1="19.07" x2="7.05" y2="16.95"/><line x1="16.95" y1="7.05" x2="19.07" y2="4.93"/></svg>
         </span>
         <span class="vt-brand-text">
-          <span class="vt-brand-name">LÂM ĐỒNG</span>
-          <span class="vt-brand-sub">TINH HOA CAO NGUYÊN</span>
+          <span class="vt-brand-name" data-i18n="brand.name">LÂM ĐỒNG</span>
+          <span class="vt-brand-sub" data-i18n="brand.sub">TINH HOA CAO NGUYÊN</span>
         </span>
       </button>
       <div class="vt-search">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <input id="gv-search" type="text" data-i18n-placeholder="guide.search.placeholder" placeholder="Tìm kiếm cẩm nang…" autocomplete="off" />
       </div>
-      <button class="vt-icon-btn" id="gv-lang-btn" title="Đổi ngôn ngữ" type="button">
+      <button class="vt-icon-btn" id="gv-lang-btn" data-i18n-title="top.lang" title="Đổi ngôn ngữ" type="button">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg>
         <span id="gv-lang-label">VI</span>
       </button>
     </header>
 
     <div class="view-body">
-      <aside id="gv-sidebar" aria-label="Chủ đề cẩm nang">
+      <aside id="gv-sidebar" data-i18n-aria-label="aria.guide_topics" aria-label="Chủ đề cẩm nang">
         <div class="gv-side-title" data-i18n="guide.sidebar.title">CHỦ ĐỀ CẨM NANG</div>
         <div id="gv-side-list"></div>
         <button id="gv-pdf-btn" class="gv-pdf" type="button">

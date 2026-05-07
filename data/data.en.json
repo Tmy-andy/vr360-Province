@@ -1,0 +1,119 @@
+{
+  "_note": "English version of data.json. Keep IDs/coordinates identical with data.vi.json.",
+
+  "places": [
+    { "id": 1,  "name": "Xuan Huong Lake",        "loc": "Da Lat City", "cat": "ho",       "r": 4.8, "rv": 1240, "hours": "All day",   "entry": "Free",        "lat": 11.9404, "lng": 108.4383, "img": "https://cdn.polyhaven.com/asset_img/primary/qwantani_dusk_2_puresky.png?height=760&quality=95",        "desc": "Xuan Huong Lake is the green jewel of central Da Lat, ringed by pine forests and bright flower beds." },
+    { "id": 2,  "name": "Datanla Falls",           "loc": "Da Lat City", "cat": "thac",     "r": 4.5, "rv": 870,  "hours": "7:00–17:00", "entry": "50,000 VND",  "lat": 11.9038, "lng": 108.4452, "img": "https://cdn.polyhaven.com/asset_img/primary/kloofendal_48d_partly_cloudy_puresky.png?height=760&quality=95",    "desc": "Datanla Falls cascades through old pine forest with a unique alpine coaster, just 7 km from town." },
+    { "id": 3,  "name": "Lang Biang Mountain",    "loc": "Lac Duong",   "cat": "nui",      "r": 4.9, "rv": 2100, "hours": "7:00–17:30", "entry": "100,000 VND", "lat": 12.0714, "lng": 108.4258, "img": "https://cdn.polyhaven.com/asset_img/primary/lakeside_sunrise.png?height=760&quality=95",  "desc": "Standing at 2,167 m, Lang Biang is the symbol of Lam Dong, tied to a tragic love legend of a K'Ho couple." },
+    { "id": 4,  "name": "Truc Lam Zen Monastery", "loc": "Da Lat City", "cat": "di-tich",  "r": 4.7, "rv": 640,  "hours": "6:00–18:00", "entry": "Free",        "lat": 11.8931, "lng": 108.4237, "img": "https://cdn.polyhaven.com/asset_img/primary/cobblestone_street_night.png?height=760&quality=95",      "desc": "Set on Phoenix Hill above Tuyen Lam Lake, Truc Lam is the largest Zen Buddhist monastery in Vietnam." },
+    { "id": 5,  "name": "Tuyen Lam Lake",         "loc": "Da Lat City", "cat": "ho",       "r": 4.6, "rv": 920,  "hours": "All day",   "entry": "Free",        "lat": 11.8785, "lng": 108.4155, "img": "https://cdn.polyhaven.com/asset_img/primary/newman_lobby.png?height=760&quality=95",      "desc": "The 320-hectare Tuyen Lam Lake is a UNESCO biosphere reserve surrounded by ancient pine forest." },
+    { "id": 6,  "name": "Elephant Falls",          "loc": "Lam Ha",      "cat": "thac",     "r": 4.4, "rv": 380,  "hours": "7:00–17:00", "entry": "30,000 VND",  "lat": 11.7845, "lng": 108.2931, "img": "https://cdn.polyhaven.com/asset_img/primary/church_meeting_room.png?height=760&quality=95",        "desc": "Elephant Falls plunges 30 m with a thunderous roar through the Lam Ha primeval forest." },
+    { "id": 7,  "name": "Cau Dat Tea Hill",       "loc": "Don Duong",   "cat": "lang",     "r": 4.5, "rv": 510,  "hours": "All day",   "entry": "Free",        "lat": 11.8512, "lng": 108.6023, "img": "https://cdn.polyhaven.com/asset_img/primary/german_town_street.png?height=760&quality=95",     "desc": "Stretching at 1,500 m elevation, Cau Dat is the source of Vietnam's finest oolong tea." },
+    { "id": 8,  "name": "Bao Dai Palace",          "loc": "Da Lat City", "cat": "di-tich",  "r": 4.3, "rv": 760,  "hours": "7:30–17:00", "entry": "40,000 VND",  "lat": 11.9302, "lng": 108.4421, "img": "https://cdn.polyhaven.com/asset_img/primary/cedar_bridge_sunset_1.png?height=760&quality=95",     "desc": "Palace III of King Bao Dai — last emperor of the Nguyen dynasty — blends French and Asian styles." },
+    { "id": 9,  "name": "Pongour Falls",           "loc": "Duc Trong",   "cat": "thac",     "r": 4.7, "rv": 1080, "hours": "7:00–17:30", "entry": "40,000 VND",  "lat": 11.7023, "lng": 108.3582, "img": "https://cdn.polyhaven.com/asset_img/primary/docklands_02.png?height=760&quality=95",       "desc": "Hailed as the 'first waterfall' of southern Vietnam, Pongour spans 100 m across multiple tiers." },
+    { "id": 10, "name": "Cu Lan Village",          "loc": "Lac Duong",   "cat": "lang",     "r": 4.6, "rv": 430,  "hours": "8:00–18:00", "entry": "50,000 VND",  "lat": 12.0123, "lng": 108.3754, "img": "https://cdn.polyhaven.com/asset_img/primary/plac_wolnosci.png?height=760&quality=95",     "desc": "Cu Lan Village showcases K'Ho culture — stilt houses and local cuisine deep in Da Lat's pine forest." },
+    { "id": 11, "name": "Bidoup–Nui Ba National Park", "loc": "Lac Duong", "cat": "nui",   "r": 4.8, "rv": 560,  "hours": "7:00–17:00", "entry": "By tour",      "lat": 12.1832, "lng": 108.5421, "img": "https://cdn.polyhaven.com/asset_img/primary/golden_bay.png?height=760&quality=95",    "desc": "Bidoup–Nui Ba forms the core of the Langbiang Biosphere Reserve, ideal for jungle trekking." },
+    { "id": 12, "name": "Dan Kia–Suoi Vang Lake", "loc": "Lac Duong",   "cat": "ho",       "r": 4.5, "rv": 290,  "hours": "All day",   "entry": "Free",        "lat": 12.0234, "lng": 108.3985, "img": "https://cdn.polyhaven.com/asset_img/primary/outdoor_chapel.png?height=760&quality=95",    "desc": "At 1,600 m elevation, Dan Kia is Da Lat's water source, a glassy lake reflecting the pine forest." }
+  ],
+
+  "categories": {
+    "thac":    "Tourist site – Waterfall",
+    "ho":      "Tourist site – Lake",
+    "nui":     "Tourist site – Mountain",
+    "di-tich": "Historical site",
+    "lang":    "Ecotourism"
+  },
+
+  "areas": {
+    "dalat":    { "label": "Da Lat City",   "lat": 11.9404, "lng": 108.4383, "zoom": 13 },
+    "lacdong":  { "label": "Lac Duong",     "lat": 12.0714, "lng": 108.4258, "zoom": 12 },
+    "donduong": { "label": "Don Duong",     "lat": 11.8512, "lng": 108.6023, "zoom": 12 },
+    "lamha":    { "label": "Lam Ha",        "lat": 11.7845, "lng": 108.2931, "zoom": 12 },
+    "ductröng": { "label": "Duc Trong",     "lat": 11.7023, "lng": 108.3582, "zoom": 12 },
+    "baolon":   { "label": "Bao Loc",       "lat": 11.5457, "lng": 107.8074, "zoom": 12 },
+    "catien":   { "label": null,            "lat": 11.5320, "lng": 107.4750, "zoom": 12 },
+    "dalinh":   { "label": null,            "lat": 11.9700, "lng": 108.5500, "zoom": 12 }
+  },
+
+  "layers": {
+    "satellite": [
+      { "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", "opts": { "maxZoom": 19 } },
+      { "url": "https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}", "opts": { "maxZoom": 19, "opacity": 0.9 } }
+    ],
+    "street": [{ "url": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", "opts": { "maxZoom": 19 } }],
+    "topo":   [{ "url": "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",   "opts": { "maxZoom": 17 } }],
+    "dark":   [{ "url": "https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png", "opts": { "maxZoom": 19 } }]
+  },
+
+  "province": { "label": "Lam Dong", "lat": 11.8, "lng": 108.3, "zoom": 10 },
+
+  "news": [
+    {
+      "id": "n1",
+      "title": "Lam Dong steps up green tourism in 2026",
+      "excerpt": "Lam Dong rolls out new policies to attract visitors to its pine forests, Tuyen Lam Lake and K'Ho villages.",
+      "img": "https://images.unsplash.com/photo-1528127269322-539801943592?w=400&q=80",
+      "date": "2026-04-20",
+      "url": "https://baolamdong.vn/"
+    },
+    {
+      "id": "n2",
+      "title": "Da Lat opens new electric shuttle linking central tourist sites",
+      "excerpt": "The new shuttle line takes visitors from Da Lat market past Xuan Huong Lake to Bao Dai Palace, easing inner-city traffic.",
+      "img": "https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=400&q=80",
+      "date": "2026-04-15",
+      "url": "https://baolamdong.vn/"
+    },
+    {
+      "id": "n3",
+      "title": "Discover Lang Biang through new VR360 experience",
+      "excerpt": "Travellers can now visit the Lang Biang summit from home with high-resolution 360° photography.",
+      "img": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&q=80",
+      "date": "2026-04-10",
+      "url": "https://baolamdong.vn/"
+    },
+    {
+      "id": "n4",
+      "title": "Cau Dat tea hill — top check-in spot of Q1/2026",
+      "excerpt": "Per the provincial tourism survey, Cau Dat tea hill led visit counts in the first three months of 2026.",
+      "img": "https://images.unsplash.com/photo-1563198804-b144dfc1661c?w=400&q=80",
+      "date": "2026-04-05",
+      "url": "https://baolamdong.vn/"
+    }
+  ],
+
+  "events": [
+    {
+      "id": "e1",
+      "title": "10th Da Lat Flower Festival – 2026",
+      "excerpt": "From 20–26 December, the 2026 Da Lat Flower Festival gathers hundreds of floral artworks from across the Central Highlands.",
+      "img": "https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=400&q=80",
+      "date": "2026-12-20",
+      "url": "https://festivalhoadalat.vn/"
+    },
+    {
+      "id": "e2",
+      "title": "K'Ho Cultural Week in Lac Duong",
+      "excerpt": "An event showcasing gong music, brocade weaving and local cuisine of the K'Ho people at Cu Lan Village.",
+      "img": "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&q=80",
+      "date": "2026-05-12",
+      "url": "https://baolamdong.vn/"
+    },
+    {
+      "id": "e3",
+      "title": "Da Lat International Marathon 2026",
+      "excerpt": "Over 5,000 domestic and international runners take on the route around Xuan Huong Lake and the pine forest.",
+      "img": "https://images.unsplash.com/photo-1452626038306-9aae5e071dd3?w=400&q=80",
+      "date": "2026-06-08",
+      "url": "https://baolamdong.vn/"
+    },
+    {
+      "id": "e4",
+      "title": "Music Night: 'Trinh Cong Son – Dreamy Da Lat'",
+      "excerpt": "A tribute concert at Mong Mo Hill featuring renowned Vietnamese artists.",
+      "img": "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=400&q=80",
+      "date": "2026-04-30",
+      "url": "https://baolamdong.vn/"
+    }
+  ]
+}

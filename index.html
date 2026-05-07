@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bản Đồ Du Lịch VR360 – Lâm Đồng</title>
+  <title data-i18n="brand.pageTitle">Bản Đồ Du Lịch VR360 – Lâm Đồng</title>
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -17,7 +17,7 @@
 
 <!-- LOADING -->
 <div id="loading">
-  <div class="ltitle">VR360 · Lâm Đồng</div>
+  <div class="ltitle" data-i18n="brand.loading">VR360 · Lâm Đồng</div>
   <div class="spin"></div>
   <p data-i18n="loading">Đang tải bản đồ…</p>
 </div>
@@ -29,7 +29,7 @@
   <div id="search-wrap">
     <div id="search-bar">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input id="search-input" type="text" placeholder="Tìm kiếm địa điểm…" autocomplete="off" />
+      <input id="search-input" type="text" data-i18n-placeholder="ph_search" placeholder="Tìm kiếm địa điểm…" autocomplete="off" />
     </div>
     <div id="search-results"></div>
   </div>
@@ -44,40 +44,40 @@
     </div>
   </div>
   <div id="top-right">
-    <button class="ticon tr-help" id="help-btn" title="Hướng dẫn sử dụng">?</button>
-    <button class="ticon tr-autorot only-3d" id="autorot-btn" title="Tự động xoay 360°">
+    <button class="ticon tr-help" id="help-btn" data-i18n-title="top.help" title="Hướng dẫn sử dụng">?</button>
+    <button class="ticon tr-autorot only-3d" id="autorot-btn" data-i18n-title="top.autorot" title="Tự động xoay 360°">
       <!-- ON: refresh-cw -->
       <svg class="icon-on" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
       <!-- OFF: refresh-cw-off (có sẵn dấu gạch chéo) -->
       <svg class="icon-off" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8L18.74 5.74A9.75 9.75 0 0 0 12 3C11 3 10.03 3.16 9.13 3.47"/><path d="M8 16H3v5"/><path d="M3 12C3 9.51 4 7.26 5.64 5.64"/><path d="m3 16 2.26 2.26A9.75 9.75 0 0 0 12 21c2.49 0 4.74-1 6.36-2.64"/><path d="M21 12c0 1-.16 1.97-.47 2.87"/><path d="M21 3v5h-5"/><path d="M22 22 2 2"/></svg>
     </button>
     <div id="lang-dd">
-      <button class="ticon" id="lang-btn" title="Đổi ngôn ngữ">
+      <button class="ticon" id="lang-btn" data-i18n-title="top.lang" title="Đổi ngôn ngữ">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg>
         <span id="lang-label">VI</span>
       </button>
       <div id="lang-popup">
-        <div class="lang-opt" data-lang="vi"><span class="lang-flag">🇻🇳</span><span>Tiếng Việt</span></div>
-        <div class="lang-opt" data-lang="en"><span class="lang-flag">🇬🇧</span><span>English</span></div>
+        <div class="lang-opt" data-lang="vi"><span class="lang-flag">🇻🇳</span><span data-i18n="lang_picker.vi">Tiếng Việt</span></div>
+        <div class="lang-opt" data-lang="en"><span class="lang-flag">🇬🇧</span><span data-i18n="lang_picker.en">English</span></div>
       </div>
     </div>
-    <button class="ticon" id="fs-btn" title="Toàn màn hình">
+    <button class="ticon" id="fs-btn" data-i18n-title="top.fs" title="Toàn màn hình">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"/></svg>
     </button>
-    <button class="ticon" id="zoom-in-btn" title="Phóng to">
+    <button class="ticon" id="zoom-in-btn" data-i18n-title="top.zoom_in" title="Phóng to">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
     </button>
-    <button class="ticon" id="zoom-out-btn" title="Thu nhỏ">
+    <button class="ticon" id="zoom-out-btn" data-i18n-title="top.zoom_out" title="Thu nhỏ">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/></svg>
     </button>
-    <button class="ticon hide-ui-btn" id="hide-ui-btn" title="Ẩn/hiện giao diện">
+    <button class="ticon hide-ui-btn" id="hide-ui-btn" data-i18n-title="top.hide_ui" title="Ẩn/hiện giao diện">
       <svg class="icon-bars" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
       <svg class="icon-eye" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
     </button>
-    <button class="ticon only-2d" id="layers-btn" title="Layers">
+    <button class="ticon only-2d" id="layers-btn" data-i18n-title="top.layers" title="Layers">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
     </button>
-    <button class="ticon mode-toggle-btn" id="three-d-btn" title="Chuyển 2D / 3D"><span class="mt-label">3D</span></button>
+    <button class="ticon mode-toggle-btn" id="three-d-btn" data-i18n-title="top.mode_toggle" title="Chuyển 2D / 3D"><span class="mt-label">3D</span></button>
   </div>
 </header>
 
@@ -86,29 +86,29 @@
   <div id="layer-popup-title" data-i18n="layers.title">Lớp bản đồ</div>
   <div class="layer-option active" data-layer="satellite">
     <div class="layer-thumb"><img src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/5/12/24" alt="" /></div>
-    <div><div class="layer-label">Vệ tinh</div><div class="layer-sub">ESRI World Imagery</div></div>
+    <div><div class="layer-label" data-i18n="layers.satellite">Vệ tinh</div><div class="layer-sub" data-i18n="layers.satellite_sub">ESRI World Imagery</div></div>
   </div>
   <div class="layer-option" data-layer="street">
     <div class="layer-thumb"><img src="https://tile.openstreetmap.org/5/24/12.png" alt="" /></div>
-    <div><div class="layer-label">Đường phố</div><div class="layer-sub">OpenStreetMap</div></div>
+    <div><div class="layer-label" data-i18n="layers.street">Đường phố</div><div class="layer-sub" data-i18n="layers.street_sub">OpenStreetMap</div></div>
   </div>
   <div class="layer-option" data-layer="topo">
     <div class="layer-thumb"><img src="https://tile.opentopomap.org/5/24/12.png" alt="" /></div>
-    <div><div class="layer-label">Địa hình</div><div class="layer-sub">OpenTopoMap</div></div>
+    <div><div class="layer-label" data-i18n="layers.topo">Địa hình</div><div class="layer-sub" data-i18n="layers.topo_sub">OpenTopoMap</div></div>
   </div>
   <div class="layer-option" data-layer="dark">
     <div class="layer-thumb"><img src="https://cartodb-basemaps-a.global.ssl.fastly.net/dark_all/5/24/12.png" alt="" /></div>
-    <div><div class="layer-label">Tối</div><div class="layer-sub">CartoDB Dark</div></div>
+    <div><div class="layer-label" data-i18n="layers.dark">Tối</div><div class="layer-sub" data-i18n="layers.dark_sub">CartoDB Dark</div></div>
   </div>
 </div>
 
 <!-- MOBILE: nút "more" gom các icon top-right + left-bar (chỉ hiện trên mobile) -->
-<button id="mobile-more-btn" title="Mở thực đơn">
+<button id="mobile-more-btn" data-i18n-title="mobile.more" title="Mở thực đơn">
   <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
 </button>
 
 <!-- MOBILE: nút mở right-panel full screen (chỉ hiện trên mobile, dưới #menu-btn) -->
-<button id="mobile-panel-btn" title="Danh sách địa điểm">
+<button id="mobile-panel-btn" data-i18n-title="mobile.list" title="Danh sách địa điểm">
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-icon lucide-map"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/></svg>
 </button>
 
@@ -128,18 +128,18 @@
 <aside id="right-panel">
   <div id="ph">
     <div id="ph-top">
-      <button id="ph-close" title="Đóng">
+      <button id="ph-close" data-i18n-title="panel_close" title="Đóng">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
       <div id="ph-title" data-i18n="panel.title">Lâm Đồng</div>
       <div id="ph-search">
-        <input type="text" id="ph-input" placeholder="Tìm kiếm địa điểm…" />
+        <input type="text" id="ph-input" data-i18n-placeholder="ph_search" placeholder="Tìm kiếm địa điểm…" />
         <svg id="ph-search-btn" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       </div>
     </div>
     <div id="ph-xa-dd" class="custom-dd">
       <button type="button" class="filter-pill xa-trigger">
-        <span id="ph-xa-current">Xã/Phường (Tất cả)</span>
+        <span id="ph-xa-current" data-i18n="filter.area_all">Xã/Phường (Tất cả)</span>
         <svg class="xa-caret" width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4 4-4"/></svg>
       </button>
       <div class="xa-popup">
@@ -148,12 +148,12 @@
       </div>
     </div>
     <div id="ph-cats">
-      <button class="pcat active" data-cat="all">Tất cả</button>
-      <button class="pcat" data-cat="thac">Thác nước</button>
-      <button class="pcat" data-cat="ho">Hồ</button>
-      <button class="pcat" data-cat="nui">Núi</button>
-      <button class="pcat" data-cat="di-tich">Di tích</button>
-      <button class="pcat" data-cat="lang">Làng sinh thái</button>
+      <button class="pcat active" data-cat="all"          data-i18n="cat.all">Tất cả</button>
+      <button class="pcat"        data-cat="thac"         data-i18n="cat.thac">Thác nước</button>
+      <button class="pcat"        data-cat="ho"           data-i18n="cat.ho">Hồ</button>
+      <button class="pcat"        data-cat="nui"          data-i18n="cat.nui">Núi</button>
+      <button class="pcat"        data-cat="di-tich"      data-i18n="cat.di-tich">Di tích</button>
+      <button class="pcat"        data-cat="lang"         data-i18n="cat.lang">Làng sinh thái</button>
     </div>
   </div>
   <div id="p-count">12 địa điểm</div>
@@ -167,28 +167,28 @@
     <div class="tt-arrow"></div>
     <div class="tt-step"></div>
     <div class="tt-label"></div>
-    <div class="tt-hint">Click bất kỳ đâu để tiếp tục →</div>
-    <button id="tour-skip" title="Bỏ qua">×</button>
+    <div class="tt-hint" data-i18n="tour_overlay.hint">Click bất kỳ đâu để tiếp tục →</div>
+    <button id="tour-skip" data-i18n-title="tour_overlay.skip" title="Bỏ qua">×</button>
   </div>
 </div>
 
 <!-- NEWS PANEL (left side, opened by left-bar's Sự kiện button) -->
 <aside id="news-panel">
   <div id="np-header">
-    <button id="np-back" title="Đóng">
+    <button id="np-back" data-i18n-title="panel_close" title="Đóng">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
     </button>
-    <div id="np-title">Tin tức</div>
+    <div id="np-title" data-i18n="news.news">Tin tức</div>
     <div id="np-date"></div>
   </div>
   <div id="np-tabs">
     <button class="np-tab active" data-tab="news">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h12v16H4z"/><path d="M16 8h4v12a2 2 0 01-2 2H6"/><line x1="7" y1="8" x2="13" y2="8"/><line x1="7" y1="12" x2="13" y2="12"/><line x1="7" y1="16" x2="11" y2="16"/></svg>
-      <span>Tin tức</span>
+      <span data-i18n="news.news">Tin tức</span>
     </button>
     <button class="np-tab" data-tab="events">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
-      <span>Sự kiện</span>
+      <span data-i18n="news.events">Sự kiện</span>
     </button>
   </div>
   <div id="np-list"></div>
@@ -196,7 +196,7 @@
 
 <!-- Bot AI gộp (voice + text) — nút TRÒN float ở mép TRÁI #bottom-bar.
      Avatar tròn assets/img/2.png + mic indicator báo hiệu có voice mode. -->
-<button class="bb-float bb-chat-btn" id="bb-chat-btn" title="Chat với trợ lý AI (voice + text)">
+<button class="bb-float bb-chat-btn" id="bb-chat-btn" data-i18n-title="bb.ai" title="Chat với trợ lý AI (voice + text)">
   <img src="assets/img/2.png" alt="AI" />
   <span class="bb-mic-indicator" aria-hidden="true">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
@@ -210,9 +210,10 @@
 <!-- BOTTOM BAR — layout mới: [VR kính] [Home giữa] [Guide] -->
 <nav id="bottom-bar">
   <span id="bb-indicator"></span>
-  <button class="bbt" id="bb-vr-nav" title="Xem bằng kính VR 360">
+  <button class="bbt" id="bb-vr-nav" data-i18n-title="bb.vr" title="Xem bằng kính VR 360">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-4.5l-2.5-3h-4l-2.5 3H3a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z"/><circle cx="7.5" cy="12" r="1.5"/><circle cx="16.5" cy="12" r="1.5"/></svg>
-    <span class="bb-label" data-i18n="nav.vr">VR 360</span>
+    <span class="bb-label" data-i18n="nav.vr">VR 360</span><!-- key đã có -->
+
   </button>
   <button class="bbt active" data-view="map">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -238,26 +239,26 @@
 <section id="guide-view">
   <div id="gv-shell">
     <header class="view-topbar">
-      <button class="vt-brand" type="button" data-view-home="guide" title="Về Cẩm nang">
+      <button class="vt-brand" type="button" data-view-home="guide" data-i18n-title="view_brand.guide_back" title="Về Cẩm nang">
         <span class="vt-logo">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/><line x1="4.93" y1="4.93" x2="7.05" y2="7.05"/><line x1="16.95" y1="16.95" x2="19.07" y2="19.07"/><line x1="4.93" y1="19.07" x2="7.05" y2="16.95"/><line x1="16.95" y1="7.05" x2="19.07" y2="4.93"/></svg>
         </span>
         <span class="vt-brand-text">
-          <span class="vt-brand-name">LÂM ĐỒNG</span>
-          <span class="vt-brand-sub">TINH HOA CAO NGUYÊN</span>
+          <span class="vt-brand-name" data-i18n="brand.name">LÂM ĐỒNG</span>
+          <span class="vt-brand-sub" data-i18n="brand.sub">TINH HOA CAO NGUYÊN</span>
         </span>
       </button>
       <div class="vt-search">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <input id="gv-search" type="text" data-i18n-placeholder="guide.search.placeholder" placeholder="Tìm kiếm cẩm nang…" autocomplete="off" />
       </div>
-      <button class="vt-icon-btn" id="gv-lang-btn" title="Đổi ngôn ngữ" type="button">
+      <button class="vt-icon-btn" id="gv-lang-btn" data-i18n-title="top.lang" title="Đổi ngôn ngữ" type="button">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg>
         <span id="gv-lang-label">VI</span>
       </button>
     </header>
     <div class="view-body">
-      <aside id="gv-sidebar" aria-label="Chủ đề cẩm nang">
+      <aside id="gv-sidebar" data-i18n-aria-label="aria.guide_topics" aria-label="Chủ đề cẩm nang">
         <div class="gv-side-title" data-i18n="guide.sidebar.title">CHỦ ĐỀ CẨM NANG</div>
         <div id="gv-side-list"></div>
         <button id="gv-pdf-btn" class="gv-pdf" type="button">
@@ -291,8 +292,8 @@
           <path d="M8 34l8-12 6 8 5-7 9 11H8z" fill="rgba(34,180,110,0.9)"/>
         </svg>
         <div>
-          <div class="vr-logo-title">LÂM ĐỒNG 360°</div>
-          <div class="vr-logo-sub">KHÁM PHÁ TÂY NGUYÊN</div>
+          <div class="vr-logo-title" data-i18n="brand.vrTitle">LÂM ĐỒNG 360°</div>
+          <div class="vr-logo-sub" data-i18n="brand.vrSub">KHÁM PHÁ TÂY NGUYÊN</div>
         </div>
       </div>
     </header>
@@ -302,9 +303,9 @@
       <div id="vr-info-hd">
         <div class="vr-info-tag">
           <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12" stroke="white" stroke-width="2"/><line x1="12" y1="16" x2="12.01" y2="16" stroke="white" stroke-width="2"/></svg>
-          THÔNG TIN ĐIỂM ĐẾN:
+          <span data-i18n="vr_info.label">THÔNG TIN ĐIỂM ĐẾN:</span>
         </div>
-        <button id="vr-info-x" title="Thu gọn / mở rộng">
+        <button id="vr-info-x" data-i18n-title="vr_info.toggle" title="Thu gọn / mở rộng">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
       </div>
@@ -318,19 +319,19 @@
     </div>
 
     <!-- Mobile FAB: chỉ hiện khi #vr-info collapsed (mobile) -->
-    <button id="vr-info-fab" title="Mở thông tin">i</button>
+    <button id="vr-info-fab" data-i18n-title="vr_info.open" title="Mở thông tin">i</button>
 
   </div><!-- #vr-ui -->
 
   <!-- Nút hiện lại UI – chỉ xuất hiện khi UI bị ẩn, nằm ngoài #vr-ui -->
-  <button id="vr-reveal-btn" title="Hiện giao diện">
+  <button id="vr-reveal-btn" data-i18n-title="vr_info.reveal" title="Hiện giao diện">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
   </button>
 </div><!-- #vr-viewer -->
 
 <!-- MINIMAP – circular compass, click to return to 2D -->
-<div id="minimap" title="Nhấn để quay về bản đồ 2D">
-  <div id="mm-title">Minimap</div>
+<div id="minimap" data-i18n-title="minimap_hint" title="Nhấn để quay về bản đồ 2D">
+  <div id="mm-title" data-i18n="minimap_label">Minimap</div>
   <div id="mm-circle">
     <div id="minimap-map"></div>
     <!-- SVG overlay: FOV sector + compass -->

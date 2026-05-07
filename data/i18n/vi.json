@@ -5,7 +5,7 @@
   "filter":  { "area_all": "Xã/Phường (Tất cả)" },
 
   "buttons": {
-"go": "Xem vị trí",
+    "go": "Xem vị trí",
     "share": "Chia sẻ",
     "close": "Đóng",
     "explore_vr": "Khám phá VR 360°",
@@ -19,7 +19,8 @@
     "contribute": "Đóng góp",
     "deals": "Ưu đãi",
     "invest": "Đầu tư",
-    "vr_tour": "VR Tour"
+    "vr_tour": "VR Tour",
+    "vr": "VR 360"
   },
 
   "guide": {
@@ -29,6 +30,7 @@
     "sidebar": { "title": "CHỦ ĐỀ CẨM NANG" },
     "pdf": "Tải cẩm nang PDF",
     "pdfShort": "Tải PDF",
+    "pdfTodo": "Tải PDF — sẽ tích hợp ở Sprint sau.",
     "search": { "placeholder": "Tìm kiếm thông tin cẩm nang, hướng dẫn, kinh nghiệm…" },
     "featured": "BÀI VIẾT NỔI BẬT",
     "tipsTitle": "MẸO HỮU ÍCH CHO DU KHÁCH",
@@ -37,6 +39,8 @@
     "publishedOn": "Đăng ngày",
     "like": "Yêu thích",
     "share": "Chia sẻ",
+    "save": "Lưu",
+    "verified": "Đã xác thực",
     "empty": "Không tìm thấy bài viết phù hợp.",
     "notFound": "Bài viết không tồn tại.",
     "topics": {
@@ -55,6 +59,7 @@
   "invest": {
     "title": "Đầu tư & Phát triển",
     "title_hl": "Lâm Đồng",
+    "title_short": "Đầu tư",
     "sub": "Cơ hội đầu tư hấp dẫn – Đồng hành phát triển bền vững",
     "sidebar": { "title": "LĨNH VỰC ƯU TIÊN" },
     "search": { "placeholder": "Tìm kiếm dự án, lĩnh vực, chính sách…" },
@@ -62,10 +67,106 @@
     "viewMap": "Xem trên bản đồ",
     "registerInterest": "Đăng ký quan tâm",
     "downloadPdf": "Tải hồ sơ PDF",
+    "save": "Lưu",
     "empty": "Không có dự án phù hợp.",
-    "cta": {
-      "download": "Tải Cẩm nang Đầu tư",
-      "contact":  "Liên hệ Trung tâm XTĐT"
+    "emptyFilter": "Không có dự án phù hợp với bộ lọc.",
+    "notFound": "Dự án không tồn tại.",
+    "money_billion": "{n} tỷ đồng",
+    "pdfTodo": "Tải PDF — sẽ tích hợp ở Sprint sau.",
+    "section": {
+      "featuredProjects": "DỰ ÁN KÊU GỌI ĐẦU TƯ TIÊU BIỂU",
+      "projectInfo": "THÔNG TIN DỰ ÁN",
+      "description": "MÔ TẢ",
+      "incentives": "ƯU ĐÃI ÁP DỤNG",
+      "contactPoint": "ĐẦU MỐI LIÊN HỆ"
+    },
+    "card": {
+      "scale": "Quy mô:",
+      "capital": "Tổng vốn:"
+    },
+    "info": {
+      "location": "Vị trí",
+      "scale": "Quy mô",
+      "capital": "Tổng vốn",
+      "sector": "Lĩnh vực",
+      "status": "Trạng thái"
+    },
+    "status": {
+      "ready":   "Sẵn sàng mặt bằng",
+      "planned": "Đã có quy hoạch 1/500",
+      "calling": "Đang kêu gọi",
+      "all":     "Tất cả trạng thái"
+    },
+    "filter": {
+      "all": "Tất cả",
+      "all_projects": "Tất cả dự án"
+    },
+    "projectsList": {
+      "title_a": "Tất cả",
+      "title_b": "dự án kêu gọi đầu tư",
+      "sub": "{n} dự án — lọc theo lĩnh vực, trạng thái hoặc tìm kiếm theo tên / địa điểm."
+    },
+    "contact": {
+      "crumb": "Đăng ký quan tâm",
+      "title_a": "Đăng ký",
+      "title_b": "quan tâm đầu tư",
+      "sub": "Để lại thông tin – Trung tâm Xúc tiến Đầu tư Lâm Đồng sẽ liên hệ trong vòng 24 giờ làm việc.",
+      "form": {
+        "name": "Họ và tên *",
+        "company": "Doanh nghiệp *",
+        "country": "Quốc gia",
+        "email": "Email *",
+        "phone": "Số điện thoại *",
+        "budget": "Quy mô vốn dự kiến",
+        "sectors": "Lĩnh vực quan tâm",
+        "needs": "Nhu cầu hỗ trợ",
+        "message": "Lời nhắn",
+        "messagePlaceholder": "Mô tả ngắn về dự án/lĩnh vực bạn quan tâm…",
+        "submit": "Gửi đăng ký",
+        "note": "Thông tin được bảo mật theo quy định và chỉ phục vụ mục đích kết nối đầu tư.",
+        "thankYou": "Cảm ơn bạn đã đăng ký quan tâm. Trung tâm XTĐT Lâm Đồng sẽ liên hệ lại trong 24 giờ làm việc."
+      },
+      "country": {
+        "vn": "Việt Nam",
+        "kr": "Hàn Quốc",
+        "jp": "Nhật Bản",
+        "cn": "Trung Quốc",
+        "sg": "Singapore",
+        "other": "Khác"
+      },
+      "budget": {
+        "lt100": "Dưới 100 tỷ",
+        "100_500": "100 – 500 tỷ",
+        "500_1000": "500 – 1.000 tỷ",
+        "1000_5000": "1.000 – 5.000 tỷ",
+        "gt5000": "Trên 5.000 tỷ"
+      },
+      "needs": {
+        "survey": "Khảo sát thực địa",
+        "legal": "Tư vấn pháp lý",
+        "partner": "Kết nối đối tác",
+        "docs": "Tài liệu chi tiết"
+      },
+      "channelZalo": "Liên hệ qua Zalo OA",
+      "channelWa": "WhatsApp (FDI)"
+    },
+    "dashboard": {
+      "crumb": "Dashboard số liệu",
+      "title_a": "Dashboard",
+      "title_b": "đầu tư Lâm Đồng",
+      "sub": "Tổng quan vốn – lĩnh vực – địa bàn – tiến độ. Dữ liệu tổng hợp từ {n} dự án mẫu.",
+      "link": "Dashboard số liệu",
+      "noChart": "Chart.js chưa nạp được. Kiểm tra kết nối CDN.",
+      "ch1": { "title": "PHÂN BỔ VỐN THEO LĨNH VỰC", "sub": "Tổng vốn các dự án mẫu — tỷ đồng" },
+      "ch2": { "title": "SỐ DỰ ÁN THEO LĨNH VỰC",   "sub": "Tỷ trọng từng lĩnh vực ưu tiên" },
+      "ch3": { "title": "TOP HUYỆN/THÀNH PHỐ THEO VỐN", "sub": "Vốn đăng ký xếp giảm dần (tỷ đồng)" },
+      "ch4": { "title": "TIẾN ĐỘ DỰ ÁN",            "sub": "Phân bổ theo trạng thái triển khai" },
+      "capLabel": "Vốn (tỷ đồng)",
+      "statusShort": {
+        "ready":   "Sẵn sàng MB",
+        "planned": "Quy hoạch 1/500",
+        "calling": "Đang kêu gọi"
+      }
     },
     "sectors": {
       "all":       { "title": "Tất cả",                       "sub": "Xem tất cả lĩnh vực" },
@@ -81,6 +182,15 @@
   "panel": {
     "title": "Lâm Đồng",
     "search": "Tìm kiếm địa điểm…"
+  },
+
+  "brand": {
+    "name": "LÂM ĐỒNG",
+    "sub": "TINH HOA CAO NGUYÊN",
+    "vrTitle": "LÂM ĐỒNG 360°",
+    "vrSub": "KHÁM PHÁ TÂY NGUYÊN",
+    "loading": "VR360 · Lâm Đồng",
+    "pageTitle": "Bản Đồ Du Lịch VR360 – Lâm Đồng"
   },
 
   "cat": {
@@ -123,8 +233,56 @@
     "zoom_in": "Phóng to",
     "zoom_out": "Thu nhỏ",
     "layers": "Layers",
-    "lang": "Đổi ngôn ngữ"
+    "lang": "Đổi ngôn ngữ",
+    "help": "Hướng dẫn sử dụng",
+    "autorot": "Tự động xoay 360°",
+    "fs": "Toàn màn hình",
+    "hide_ui": "Ẩn/hiện giao diện",
+    "mode_toggle": "Chuyển 2D / 3D"
   },
+
+  "lang_picker": { "vi": "Tiếng Việt", "en": "English" },
+
+  "mobile": {
+    "more": "Mở thực đơn",
+    "list": "Danh sách địa điểm"
+  },
+
+  "panel_close": "Đóng",
+
+  "search_input": "Tìm kiếm…",
+
+  "tour_overlay": {
+    "hint": "Click bất kỳ đâu để tiếp tục →",
+    "skip": "Bỏ qua"
+  },
+
+  "vr_info": {
+    "label": "THÔNG TIN ĐIỂM ĐẾN:",
+    "toggle": "Thu gọn / mở rộng",
+    "open": "Mở thông tin",
+    "reveal": "Hiện giao diện"
+  },
+
+  "minimap_hint": "Nhấn để quay về bản đồ 2D",
+  "minimap_label": "Minimap",
+
+  "bb": {
+    "vr": "Xem bằng kính VR 360",
+    "ai": "Chat với trợ lý AI (voice + text)"
+  },
+
+  "view_brand": {
+    "guide_back": "Về Cẩm nang",
+    "invest_back": "Về Đầu tư"
+  },
+
+  "aria": {
+    "guide_topics": "Chủ đề cẩm nang",
+    "invest_sectors": "Lĩnh vực ưu tiên"
+  },
+
+  "ph_search": "Tìm kiếm địa điểm…",
 
   "layers": {
     "title": "Lớp bản đồ",
@@ -138,6 +296,93 @@
     "dark_sub": "CartoDB Dark"
   },
 
-  "loading": "Đang tải bản đồ…",
-  "vr": { "title": "VR 360°", "title_with": "VR 360° – {name}" }
+  "vr": {
+    "title": "VR 360°",
+    "title_with": "VR 360° – {name}",
+    "ratingFmt": "★ {r}  ({n} đánh giá)"
+  },
+
+  "news": {
+    "empty": "Chưa có nội dung",
+    "events": "Sự kiện",
+    "news": "Tin tức"
+  },
+
+  "ai": {
+    "title": "Trợ lý Du lịch Lâm Đồng",
+    "active": "Đang hoạt động",
+    "listening": "Đang lắng nghe…",
+    "thinking": "Đang suy nghĩ…",
+    "speaking": "Đang trả lời…",
+    "placeholder": "Nhập câu hỏi…",
+    "send": "Gửi",
+    "voice": "Trò chuyện bằng giọng nói",
+    "close": "Đóng",
+    "noSR": "Trình duyệt của bạn chưa hỗ trợ nhận dạng giọng nói. Hãy thử Chrome hoặc Edge mới nhất.",
+    "micDenied": "Bạn cần cho phép truy cập micro để dùng chế độ giọng nói.",
+    "networkErr": "Không thể kết nối dịch vụ nhận dạng giọng nói. Hãy kiểm tra mạng và thử lại.",
+    "replyStub": "Đây là phản hồi mẫu (chưa kết nối LLM thật). Câu hỏi của bạn: \"{q}\". Bạn có thể hỏi mình về điểm đến, lịch trình, ẩm thực hoặc thời tiết Lâm Đồng.",
+    "demo": {
+      "g1": "Xin chào! Mình là trợ lý du lịch Lâm Đồng. Bạn muốn khám phá điểm đến nào hôm nay?",
+      "u1": "Đà Lạt có gì hay vào tháng này?",
+      "g2": "Tháng này Đà Lạt mát mẻ, lý tưởng để ngắm hoa dã quỳ vàng rực ven đường, dạo Hồ Xuân Hương lúc sớm và thưởng thức cà phê tại các quán view đồi thông.",
+      "u2": "Gợi ý vài thác nước đẹp gần Đà Lạt?",
+      "g3": "Bạn có thể ghé thác Pongour (~50km, hùng vĩ 7 tầng), thác Datanla (gần trung tâm, có máng trượt) và thác Voi (gắn với truyền thuyết K'Ho)."
+    }
+  },
+
+  "tour": {
+    "step": "Bước {i} / {n}",
+    "items2d": {
+      "search":     "Tìm kiếm địa điểm theo tên",
+      "xa":         "Lọc danh sách theo Xã/Phường",
+      "help":       "Mở lại hướng dẫn sử dụng",
+      "lang":       "Đổi ngôn ngữ (VI / EN)",
+      "fs":         "Bật/tắt toàn màn hình",
+      "zoomIn":     "Phóng to bản đồ",
+      "zoomOut":    "Thu nhỏ bản đồ",
+      "hideUI":     "Ẩn toàn bộ giao diện để xem trọn bản đồ",
+      "layers":     "Đổi bản đồ nền (Vệ tinh / Đường phố / Địa hình / Tối)",
+      "threeD":     "Chuyển sang chế độ VR 360° (3D)",
+      "dblclick":   "Mẹo: double-click vào bản đồ để bật / tắt toàn màn hình nhanh",
+      "mobMore":    "Thực đơn (chỉ mobile) – mở/đóng cột nút bên phải",
+      "mobPanel":   "Danh sách địa điểm (chỉ mobile) – mở toàn màn hình",
+      "panelClosed":"Mở bảng danh sách địa điểm bên phải",
+      "panelOpen":  "Danh sách địa điểm – tìm kiếm, lọc theo Xã/Phường và phân loại",
+      "vrNav":      "VR 360 – vào trải nghiệm panorama bằng kính thực tế ảo",
+      "home":       "Trang chủ – quay về bản đồ",
+      "guide":      "Cẩm nang Du lịch – mẹo, kinh nghiệm, gợi ý lịch trình",
+      "ai":         "Trợ lý AI Du lịch – nhập câu hỏi hoặc nhấn mic để trò chuyện bằng giọng nói"
+    },
+    "items3d": {
+      "panorama":   "Khung cảnh VR 360° – kéo chuột (hoặc chạm và vuốt) để xoay nhìn quanh, lăn chuột để zoom",
+      "panoDbl":    "Mẹo: double-click vào panorama để bật / tắt toàn màn hình nhanh",
+      "search":     "Tìm kiếm địa điểm để chuyển sang VR khác",
+      "xa":         "Lọc theo Xã/Phường – tự mở danh sách bên phải",
+      "help":       "Mở lại hướng dẫn chế độ VR",
+      "autorot":    "Bật/tắt tự động xoay 360° (icon có gạch chéo = đang TẮT)",
+      "lang":       "Đổi ngôn ngữ (VI / EN)",
+      "fs":         "Xem VR toàn màn hình",
+      "zoomIn":     "Phóng to tầm nhìn",
+      "zoomOut":    "Thu nhỏ tầm nhìn",
+      "hideUI":     "Ẩn giao diện để xem trọn cảnh VR (bấm icon mắt ở góc để hiện lại)",
+      "twoD":       "Thoát VR – quay về bản đồ 2D",
+      "mobMore":    "Thực đơn (chỉ mobile) – mở cột nút bên phải",
+      "mobPanel":   "Danh sách địa điểm (chỉ mobile) – chuyển nhanh sang VR khác",
+      "vrInfo":     "Thông tin điểm đến: tên, mô tả, giờ mở cửa, đánh giá, giá vé. Bấm chevron để thu gọn / mở rộng",
+      "panelClosed":"Mở danh sách địa điểm – chọn nơi khác để chuyển sang VR đó",
+      "panelOpen":  "Danh sách địa điểm – click 1 mục để bay sang VR mới",
+      "minimap":    "Minimap la bàn – sector xanh chỉ hướng nhìn hiện tại; nhấn để quay về bản đồ 2D",
+      "vrNav":      "VR 360 – mở lại trải nghiệm kính thực tế ảo",
+      "home":       "Trang chủ – tab điều hướng chính",
+      "guide":      "Cẩm nang Du lịch – mẹo, lịch trình, gợi ý",
+      "ai":         "Trợ lý AI Du lịch – nhập câu hỏi hoặc nhấn mic để trò chuyện bằng giọng nói"
+    }
+  },
+
+  "errors": {
+    "loadFail": "Lỗi tải dữ liệu. Hãy chạy local server (xem js/data.js)."
+  },
+
+  "loading": "Đang tải bản đồ…"
 }

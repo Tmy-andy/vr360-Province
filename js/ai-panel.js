@@ -8,13 +8,15 @@
 window.AiPanel = (() => {
   let panel = null;
 
-  /* Demo lịch sử chat ban đầu — du lịch Lâm Đồng */
-  const DEMO_HISTORY = [
-    { role: 'bot',  text: 'Xin chào! Mình là trợ lý du lịch Lâm Đồng. Bạn muốn khám phá điểm đến nào hôm nay?' },
-    { role: 'user', text: 'Đà Lạt có gì hay vào tháng này?' },
-    { role: 'bot',  text: 'Tháng này Đà Lạt mát mẻ, lý tưởng để ngắm hoa dã quỳ vàng rực ven đường, dạo Hồ Xuân Hương lúc sớm và thưởng thức cà phê tại các quán view đồi thông.' },
-    { role: 'user', text: 'Gợi ý vài thác nước đẹp gần Đà Lạt?' },
-    { role: 'bot',  text: 'Bạn có thể ghé thác Pongour (~50km, hùng vĩ 7 tầng), thác Datanla (gần trung tâm, có máng trượt) và thác Voi (gắn với truyền thuyết K\'Ho).' },
+  const t = (k, vars) => (window.I18n ? window.I18n.t(k, vars) : k);
+
+  /* Demo lịch sử chat — keys vào i18n để re-render khi đổi ngôn ngữ */
+  const DEMO_KEYS = [
+    { role: 'bot',  k: 'ai.demo.g1' },
+    { role: 'user', k: 'ai.demo.u1' },
+    { role: 'bot',  k: 'ai.demo.g2' },
+    { role: 'user', k: 'ai.demo.u2' },
+    { role: 'bot',  k: 'ai.demo.g3' },
   ];
 
   /* Voice state */
@@ -41,13 +43,13 @@ window.AiPanel = (() => {
           <img src="assets/img/2.png" alt="AI" />
         </div>
         <div class="ai-pn-h">
-          <div class="ai-pn-title">Trợ lý Du lịch Lâm Đồng</div>
+          <div class="ai-pn-title">${t('ai.title')}</div>
           <div class="ai-pn-sub">
             <span class="ai-pn-status-dot" aria-hidden="true"></span>
-            <span class="ai-pn-status-text">Đang hoạt động</span>
+            <span class="ai-pn-status-text">${t('ai.active')}</span>
           </div>
         </div>
-        <button class="ai-pn-x" type="button" aria-label="Đóng">
+        <button class="ai-pn-x" type="button" aria-label="${t('ai.close')}">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg>
         </button>
       </div>
@@ -55,11 +57,11 @@ window.AiPanel = (() => {
         <div class="ai-pn-chat"></div>
       </div>
       <div class="ai-pn-composer">
-        <input type="text" class="ai-pn-input" placeholder="Nhập câu hỏi…" />
-        <button class="ai-pn-mic" type="button" title="Trò chuyện bằng giọng nói">
+        <input type="text" class="ai-pn-input" placeholder="${t('ai.placeholder')}" />
+        <button class="ai-pn-mic" type="button" title="${t('ai.voice')}">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><line x1="12" y1="18" x2="12" y2="22"/></svg>
         </button>
-        <button class="ai-pn-send" type="button" title="Gửi" disabled>
+        <button class="ai-pn-send" type="button" title="${t('ai.send')}" disabled>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </button>
         <div class="ai-pn-waveform" aria-hidden="true">
@@ -95,7 +97,7 @@ window.AiPanel = (() => {
 
   function renderHistory() {
     const chat = panel.querySelector('.ai-pn-chat');
-    chat.innerHTML = DEMO_HISTORY.map(m => bubbleHtml(m.role, m.text)).join('');
+    chat.innerHTML = DEMO_KEYS.map(m => bubbleHtml(m.role, t(m.k))).join('');
     scrollChatToEnd();
   }
 
@@ -125,7 +127,7 @@ window.AiPanel = (() => {
   }
 
   function generateReply(query) {
-    return 'Đây là phản hồi mẫu (chưa kết nối LLM thật). Câu hỏi của bạn: "' + query + '". Bạn có thể hỏi mình về điểm đến, lịch trình, ẩm thực hoặc thời tiết Lâm Đồng.';
+    return t('ai.replyStub', { q: query });
   }
 
   /* === Voice === */
@@ -167,6 +169,7 @@ window.AiPanel = (() => {
       const data = new Uint8Array(analyser.frequencyBinCount);
       const N = bars.length;
       const tick = () => {
+        if (!analyser) { waveformRAF = null; return; }
         analyser.getByteFrequencyData(data);
         for (let i = 0; i < N; i++) {
           /* Bar đối xứng: bar giữa lấy bin thấp (bass), bar 2 đầu lấy bin cao */
@@ -213,18 +216,15 @@ window.AiPanel = (() => {
     if (state) panel.classList.add(state);
     const statusText = panel.querySelector('.ai-pn-status-text');
     if (statusText) {
-      statusText.textContent = ({
-        listening: 'Đang lắng nghe…',
-        thinking:  'Đang suy nghĩ…',
-        speaking:  'Đang trả lời…',
-      })[state] || 'Đang hoạt động';
+      const k = ({ listening: 'ai.listening', thinking: 'ai.thinking', speaking: 'ai.speaking' })[state] || 'ai.active';
+      statusText.textContent = t(k);
     }
   }
 
   function enterVoiceMode() {
     const rec = getRecognition();
     if (!rec) {
-      alert('Trình duyệt của bạn chưa hỗ trợ nhận dạng giọng nói. Hãy thử Chrome hoặc Edge mới nhất.');
+      alert(t('ai.noSR'));
       return;
     }
     voiceActive = true;
@@ -264,11 +264,15 @@ window.AiPanel = (() => {
       rec.onerror = ev => {
         console.warn('[ai-panel] recognition error:', ev.error);
         listening = false;
-        if (voiceActive && ev.error !== 'aborted' && ev.error !== 'not-allowed') {
-          setTimeout(() => startListening(), 600);
-        } else if (ev.error === 'not-allowed') {
-          alert('Bạn cần cho phép truy cập micro để dùng chế độ giọng nói.');
+        if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed') {
+          alert(t('ai.micDenied'));
           exitVoiceMode();
+        } else if (ev.error === 'network') {
+          /* Web Speech API cần Internet (Chrome gửi audio lên Google). Không retry vì sẽ spam. */
+          alert(t('ai.networkErr'));
+          exitVoiceMode();
+        } else if (voiceActive && ev.error !== 'aborted') {
+          setTimeout(() => startListening(), 600);
         }
       };
       rec.onend = () => {
@@ -353,6 +357,21 @@ window.AiPanel = (() => {
     if (panel && panel.classList.contains('open')) close();
     else open();
   }
+
+  /* Re-render toàn bộ shell khi đổi ngôn ngữ — đơn giản & an toàn vì panel
+     chỉ chứa demo + composer; user input đang gõ sẽ mất nhưng tránh được
+     việc cập nhật tay từng nút. */
+  window.addEventListener('langchange', () => {
+    if (!panel) return;
+    const wasOpen = panel.classList.contains('open');
+    panel.remove();
+    panel = null;
+    buildShell();
+    renderHistory();
+    if (wasOpen) {
+      panel.classList.add('open');
+    }
+  });
 
   return { open, close, toggle };
 })();

@@ -5,7 +5,7 @@
   "filter":  { "area_all": "Ward/Commune (All)" },
 
   "buttons": {
-"go": "View",
+    "go": "View",
     "share": "Share",
     "close": "Close",
     "explore_vr": "Explore VR 360°",
@@ -19,7 +19,8 @@
     "contribute": "Contribute",
     "deals": "Deals",
     "invest": "Invest",
-    "vr_tour": "VR Tour"
+    "vr_tour": "VR Tour",
+    "vr": "VR 360"
   },
 
   "guide": {
@@ -29,6 +30,7 @@
     "sidebar": { "title": "GUIDE TOPICS" },
     "pdf": "Download guide PDF",
     "pdfShort": "Download PDF",
+    "pdfTodo": "PDF download — coming in a future Sprint.",
     "search": { "placeholder": "Search guides, tips, experience…" },
     "featured": "FEATURED ARTICLES",
     "tipsTitle": "USEFUL TIPS FOR TRAVELERS",
@@ -37,6 +39,8 @@
     "publishedOn": "Published on",
     "like": "Like",
     "share": "Share",
+    "save": "Save",
+    "verified": "Verified",
     "empty": "No matching articles.",
     "notFound": "Article not found.",
     "topics": {
@@ -55,6 +59,7 @@
   "invest": {
     "title": "Investment & Development",
     "title_hl": "Lam Dong",
+    "title_short": "Invest",
     "sub": "Attractive investment opportunities — Sustainable partnerships",
     "sidebar": { "title": "PRIORITY SECTORS" },
     "search": { "placeholder": "Search projects, sectors, policies…" },
@@ -62,10 +67,106 @@
     "viewMap": "View on map",
     "registerInterest": "Register interest",
     "downloadPdf": "Download project PDF",
+    "save": "Save",
     "empty": "No matching projects.",
-    "cta": {
-      "download": "Download Investment Guide",
-      "contact":  "Contact Investment Promotion Center"
+    "emptyFilter": "No projects match the current filters.",
+    "notFound": "Project not found.",
+    "money_billion": "{n} billion VND",
+    "pdfTodo": "PDF download — coming in a future Sprint.",
+    "section": {
+      "featuredProjects": "FEATURED INVESTMENT PROJECTS",
+      "projectInfo": "PROJECT INFORMATION",
+      "description": "DESCRIPTION",
+      "incentives": "APPLICABLE INCENTIVES",
+      "contactPoint": "CONTACT POINT"
+    },
+    "card": {
+      "scale": "Scale:",
+      "capital": "Total capital:"
+    },
+    "info": {
+      "location": "Location",
+      "scale": "Scale",
+      "capital": "Total capital",
+      "sector": "Sector",
+      "status": "Status"
+    },
+    "status": {
+      "ready":   "Site-ready",
+      "planned": "1/500 planning approved",
+      "calling": "Calling for investment",
+      "all":     "All statuses"
+    },
+    "filter": {
+      "all": "All",
+      "all_projects": "All projects"
+    },
+    "projectsList": {
+      "title_a": "All",
+      "title_b": "investment projects",
+      "sub": "{n} projects — filter by sector, status or search by name / location."
+    },
+    "contact": {
+      "crumb": "Register interest",
+      "title_a": "Register",
+      "title_b": "investment interest",
+      "sub": "Leave your details — Lam Dong Investment Promotion Center will contact you within 24 working hours.",
+      "form": {
+        "name": "Full name *",
+        "company": "Company *",
+        "country": "Country",
+        "email": "Email *",
+        "phone": "Phone number *",
+        "budget": "Estimated capital",
+        "sectors": "Sectors of interest",
+        "needs": "Support needs",
+        "message": "Message",
+        "messagePlaceholder": "Brief description of the project / sector you are interested in…",
+        "submit": "Submit",
+        "note": "Your information is kept confidential and used solely for investment connection purposes.",
+        "thankYou": "Thank you for registering your interest. Lam Dong IPC will contact you within 24 working hours."
+      },
+      "country": {
+        "vn": "Vietnam",
+        "kr": "South Korea",
+        "jp": "Japan",
+        "cn": "China",
+        "sg": "Singapore",
+        "other": "Other"
+      },
+      "budget": {
+        "lt100": "Under 100 billion",
+        "100_500": "100 – 500 billion",
+        "500_1000": "500 – 1,000 billion",
+        "1000_5000": "1,000 – 5,000 billion",
+        "gt5000": "Over 5,000 billion"
+      },
+      "needs": {
+        "survey": "Site survey",
+        "legal": "Legal advisory",
+        "partner": "Partner matching",
+        "docs": "Detailed documents"
+      },
+      "channelZalo": "Contact via Zalo OA",
+      "channelWa": "WhatsApp (FDI)"
+    },
+    "dashboard": {
+      "crumb": "Data dashboard",
+      "title_a": "Dashboard",
+      "title_b": "Lam Dong investment",
+      "sub": "Overview of capital — sectors — districts — progress. Aggregated from {n} sample projects.",
+      "link": "Data dashboard",
+      "noChart": "Chart.js failed to load. Check CDN connection.",
+      "ch1": { "title": "CAPITAL BY SECTOR",         "sub": "Total capital across sample projects — billion VND" },
+      "ch2": { "title": "PROJECTS BY SECTOR",         "sub": "Share of each priority sector" },
+      "ch3": { "title": "TOP DISTRICTS BY CAPITAL",   "sub": "Registered capital, descending — billion VND" },
+      "ch4": { "title": "PROJECT PROGRESS",           "sub": "Distribution by deployment status" },
+      "capLabel": "Capital (billion VND)",
+      "statusShort": {
+        "ready":   "Site-ready",
+        "planned": "1/500 planned",
+        "calling": "Calling"
+      }
     },
     "sectors": {
       "all":       { "title": "All",                          "sub": "All sectors" },
@@ -81,6 +182,15 @@
   "panel": {
     "title": "Lam Dong",
     "search": "Search places…"
+  },
+
+  "brand": {
+    "name": "LAM DONG",
+    "sub": "HIGHLAND ESSENCE",
+    "vrTitle": "LAM DONG 360°",
+    "vrSub": "DISCOVER THE CENTRAL HIGHLANDS",
+    "loading": "VR360 · Lam Dong",
+    "pageTitle": "VR360 Travel Map – Lam Dong"
   },
 
   "cat": {
@@ -123,8 +233,56 @@
     "zoom_in": "Zoom in",
     "zoom_out": "Zoom out",
     "layers": "Layers",
-    "lang": "Switch language"
+    "lang": "Switch language",
+    "help": "User guide",
+    "autorot": "Auto-rotate 360°",
+    "fs": "Fullscreen",
+    "hide_ui": "Toggle UI",
+    "mode_toggle": "Switch 2D / 3D"
   },
+
+  "lang_picker": { "vi": "Vietnamese", "en": "English" },
+
+  "mobile": {
+    "more": "Open menu",
+    "list": "Place list"
+  },
+
+  "panel_close": "Close",
+
+  "search_input": "Search…",
+
+  "tour_overlay": {
+    "hint": "Click anywhere to continue →",
+    "skip": "Skip"
+  },
+
+  "vr_info": {
+    "label": "PLACE INFO:",
+    "toggle": "Collapse / expand",
+    "open": "Open info",
+    "reveal": "Show UI"
+  },
+
+  "minimap_hint": "Tap to return to the 2D map",
+  "minimap_label": "Minimap",
+
+  "bb": {
+    "vr": "View with VR 360 headset",
+    "ai": "Chat with AI assistant (voice + text)"
+  },
+
+  "view_brand": {
+    "guide_back": "Back to Guide",
+    "invest_back": "Back to Invest"
+  },
+
+  "aria": {
+    "guide_topics": "Guide topics",
+    "invest_sectors": "Priority sectors"
+  },
+
+  "ph_search": "Search places…",
 
   "layers": {
     "title": "Map layers",
@@ -138,6 +296,93 @@
     "dark_sub": "CartoDB Dark"
   },
 
-  "loading": "Loading map…",
-  "vr": { "title": "VR 360°", "title_with": "VR 360° – {name}" }
+  "vr": {
+    "title": "VR 360°",
+    "title_with": "VR 360° – {name}",
+    "ratingFmt": "★ {r}  ({n} reviews)"
+  },
+
+  "news": {
+    "empty": "No content yet",
+    "events": "Events",
+    "news": "News"
+  },
+
+  "ai": {
+    "title": "Lam Dong Travel Assistant",
+    "active": "Online",
+    "listening": "Listening…",
+    "thinking": "Thinking…",
+    "speaking": "Replying…",
+    "placeholder": "Type your question…",
+    "send": "Send",
+    "voice": "Talk by voice",
+    "close": "Close",
+    "noSR": "Your browser doesn't support speech recognition. Please try the latest Chrome or Edge.",
+    "micDenied": "Microphone access is required to use voice mode.",
+    "networkErr": "Could not reach the speech recognition service. Check your connection and try again.",
+    "replyStub": "This is a sample reply (LLM not yet connected). Your question: \"{q}\". You can ask me about destinations, itineraries, food or weather in Lam Dong.",
+    "demo": {
+      "g1": "Hi! I'm your Lam Dong travel assistant. Where would you like to explore today?",
+      "u1": "What's special in Da Lat this month?",
+      "g2": "Da Lat is cool right now — perfect for the wild sunflowers along the roads, an early walk around Xuan Huong Lake, and coffee at cafes overlooking the pine hills.",
+      "u2": "Any nice waterfalls near Da Lat?",
+      "g3": "You can visit Pongour Falls (~50km, majestic 7-tiered), Datanla Falls (close to downtown, with toboggan rides), and Elephant Falls (linked to a K'Ho legend)."
+    }
+  },
+
+  "tour": {
+    "step": "Step {i} / {n}",
+    "items2d": {
+      "search":     "Search places by name",
+      "xa":         "Filter list by Ward/Commune",
+      "help":       "Reopen the user guide",
+      "lang":       "Switch language (VI / EN)",
+      "fs":         "Toggle fullscreen",
+      "zoomIn":     "Zoom in the map",
+      "zoomOut":    "Zoom out the map",
+      "hideUI":     "Hide the entire UI to view the map",
+      "layers":     "Switch base map (Satellite / Streets / Terrain / Dark)",
+      "threeD":     "Switch to VR 360° mode (3D)",
+      "dblclick":   "Tip: double-click the map to quickly toggle fullscreen",
+      "mobMore":    "Menu (mobile only) — show/hide the right-side button column",
+      "mobPanel":   "Place list (mobile only) — open fullscreen",
+      "panelClosed":"Open the place list panel on the right",
+      "panelOpen":  "Place list — search, filter by Ward/Commune and category",
+      "vrNav":      "VR 360 — enter panorama experience with a VR headset",
+      "home":       "Home — back to the map",
+      "guide":      "Travel Guide — tips, advice, itinerary suggestions",
+      "ai":         "AI Travel Assistant — type a question or tap mic to talk by voice"
+    },
+    "items3d": {
+      "panorama":   "VR 360° scene — drag (or touch and swipe) to look around, scroll to zoom",
+      "panoDbl":    "Tip: double-click the panorama to quickly toggle fullscreen",
+      "search":     "Search places to switch to a different VR scene",
+      "xa":         "Filter by Ward/Commune — auto-opens the right list",
+      "help":       "Reopen the VR mode guide",
+      "autorot":    "Toggle 360° auto-rotate (slashed icon = OFF)",
+      "lang":       "Switch language (VI / EN)",
+      "fs":         "Watch VR in fullscreen",
+      "zoomIn":     "Zoom in the view",
+      "zoomOut":    "Zoom out the view",
+      "hideUI":     "Hide the UI to enjoy the VR scene (tap the eye icon to bring it back)",
+      "twoD":       "Exit VR — back to the 2D map",
+      "mobMore":    "Menu (mobile only) — show the right-side button column",
+      "mobPanel":   "Place list (mobile only) — switch quickly to another VR scene",
+      "vrInfo":     "Place info: name, description, hours, rating, entry fee. Tap chevron to collapse / expand",
+      "panelClosed":"Open the place list — pick another to switch VR scenes",
+      "panelOpen":  "Place list — click an item to fly to a new VR scene",
+      "minimap":    "Compass minimap — the blue sector shows your current view; tap to return to the 2D map",
+      "vrNav":      "VR 360 — reopen the headset experience",
+      "home":       "Home — main navigation tab",
+      "guide":      "Travel Guide — tips, itineraries, suggestions",
+      "ai":         "AI Travel Assistant — type a question or tap mic to talk by voice"
+    }
+  },
+
+  "errors": {
+    "loadFail": "Failed to load data. Please run a local server (see js/data.js)."
+  },
+
+  "loading": "Loading map…"
 }

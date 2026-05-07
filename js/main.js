@@ -31,6 +31,7 @@ window.addEventListener('load', async () => {
   } catch (err) {
     console.error('[VR360] Khởi động thất bại:', err);
     const loading = document.getElementById('loading');
-    if (loading) loading.querySelector('p').textContent = 'Lỗi tải dữ liệu. Hãy chạy local server (xem js/data.js).';
+    if (loading) loading.querySelector('p').textContent =
+      (window.I18n && window.I18n.t('errors.loadFail')) || 'Lỗi tải dữ liệu. Hãy chạy local server (xem js/data.js).';
   }
 });

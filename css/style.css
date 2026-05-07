@@ -2584,3 +2584,94 @@ body.view-guide #mobile-panel-btn { display: none !important; }
   0%, 100% { opacity: 0.7; stroke-width: 2.5; }
   50%      { opacity: 1;   stroke-width: 4; }
 }
+
+/* =========================================================
+   ===== LAYOUT SWAP — DESKTOP (≥769px) =====================
+   - Bot AI + #ai-panel: trái → PHẢI
+   - #right-panel + bg + #panel-toggle: phải → TRÁI
+   - #vr-info (3D): trái → PHẢI
+   - #minimap (3D): phải → TRÁI
+   Mobile (<769px): chỉ swap bot AI sang phải; mọi thứ khác giữ nguyên.
+   Animation/transition của mọi panel KHÔNG đổi — chỉ flip anchor + dấu
+   translateX để hướng trượt vẫn từ ngoài viewport vào.
+   ========================================================= */
+
+/* --- BOT AI (mobile + desktop) — đổi mép trái → phải ---
+   .bb-chat-btn cũ: left: var(--bb-edge-left, 16px) (mobile) / 20px (desktop).
+   Mới: dùng --bb-edge-right (đã được JS set) thay vào right; xóa left. */
+.bb-chat-btn {
+  left: auto !important;
+  right: var(--bb-edge-right, 16px);
+}
+@media (min-width: 769px) {
+  .bb-chat-btn {
+    left: auto !important;
+    right: 20px !important;
+  }
+}
+
+/* --- #ai-panel (mobile + desktop) — bám đúng dưới #bb-chat-btn ở phải ---
+   Voice mode capsule: trước đây trải dài từ trái nút sang phải; giờ đảo lại,
+   trải từ trái màn hình sang trái nút (right anchor = mép trái nút). */
+#ai-panel {
+  left: auto !important;
+  right: var(--bb-edge-right, 16px);
+}
+@media (min-width: 769px) {
+  #ai-panel { right: 20px !important; left: auto !important; }
+}
+#ai-panel.listening,
+#ai-panel.thinking,
+#ai-panel.speaking {
+  left: 16px;
+  right: calc(var(--bb-edge-right, 16px) + var(--bb-h) + 12px);
+}
+@media (min-width: 769px) {
+  #ai-panel.listening,
+  #ai-panel.thinking,
+  #ai-panel.speaking {
+    left: 16px !important;
+    right: calc(20px + var(--bb-h) + 12px) !important;
+  }
+}
+@media (max-width: 480px) {
+  #ai-panel { left: 8px !important; right: 8px !important; }
+}
+
+/* --- DESKTOP-ONLY swap cho right-panel / vr-info / minimap --- */
+@media (min-width: 769px) {
+  /* RIGHT-PANEL → bám mép TRÁI. Translate ban đầu đảo dấu để slide từ trái
+     vào (trước: translateX(+100%+gap) ẩn ra phải, mở = 0). */
+  #right-panel-bg, #right-panel {
+    right: auto;
+    left: var(--panel-gap);
+    transform: translateX(calc(-100% - var(--panel-gap) - 10px));
+  }
+  #right-panel-bg.open, #right-panel.open { transform: translateX(0); }
+
+  /* PANEL-TOGGLE → mép TRÁI. Khi đóng (translateX 0), nút dán mép trái;
+     khi mở, dịch SANG PHẢI 1 đoạn = panel width để dán mép phải panel. */
+  #panel-toggle {
+    right: auto;
+    left: var(--panel-gap);
+    /* Mở: dịch sang phải 1 đoạn = panel width - 25px */
+    transform: translate(calc(var(--panel-w) - 25px), -50%);
+  }
+  #panel-toggle.closed { transform: translate(0, -50%); }
+  /* Mũi tên: xoay 180° lúc đóng (giống cũ); offset svg đổi dấu cho khớp */
+  #panel-toggle:not(.closed) svg { transform: translateX(3px); }
+  #panel-toggle.closed svg { transform: rotate(0deg); }
+
+  /* VR-INFO (3D) → top-RIGHT. Animation collapse + dropdown-search push
+     vẫn giữ nguyên (chỉ đổi anchor). */
+  #vr-info {
+    left: auto;
+    right: 20px;
+  }
+
+  /* MINIMAP (3D) → bottom-LEFT */
+  #minimap {
+    right: auto;
+    left: 22px;
+  }
+}

@@ -156,7 +156,7 @@ window.GuideUI = (() => {
                   <p class="gv-card-excerpt">${escapeHtml(a.excerpt || '')}</p>
                   <div class="gv-card-meta">
                     <span class="gv-card-read">${ic('clock')}<span>${a.readMin} ${t('guide.minRead')}</span></span>
-                    <button class="gv-card-bookmark" type="button" aria-label="Lưu">${ic('bookmark')}</button>
+                    <button class="gv-card-bookmark" type="button" aria-label="${t('guide.save')}">${ic('bookmark')}</button>
                   </div>
                 </div>
               </article>
@@ -248,7 +248,7 @@ window.GuideUI = (() => {
       return;
     }
     currentArticle = article;
-    const verified = article.verified ? `<span class="gv-art-verified" title="Đã xác thực">${ic('verified')}</span>` : '';
+    const verified = article.verified ? `<span class="gv-art-verified" title="${t('guide.verified')}">${ic('verified')}</span>` : '';
     const html = `
       <nav class="gv-breadcrumb">
         <a href="#map" class="gv-bc-home">${ic('home')}</a>
@@ -383,7 +383,7 @@ window.GuideUI = (() => {
 
     /* PDF stub */
     const pdf = document.getElementById('gv-pdf-btn');
-    if (pdf) pdf.addEventListener('click', () => alert('Tải PDF — sẽ tích hợp ở Sprint sau.'));
+    if (pdf) pdf.addEventListener('click', () => alert(t('guide.pdfTodo')));
 
     /* Search */
     const search = document.getElementById('gv-search');
@@ -404,8 +404,18 @@ window.GuideUI = (() => {
       const next = window.I18n.lang === 'vi' ? 'en' : 'vi';
       await window.I18n.setLang(next);
     });
-    /* Đổi ngôn ngữ → re-render label sidebar + view hiện tại */
-    window.addEventListener('langchange', () => {
+    /* Đổi ngôn ngữ → reload guide data theo lang rồi re-render view hiện tại.
+       Chạy luôn cả khi đang ở view khác, để lần sau quay lại Guide thì
+       data đã đúng. Việc render UI thì chỉ làm khi view-guide đang active. */
+    window.addEventListener('langchange', async () => {
+      if (typeof window.reloadGuideData === 'function') {
+        try { await window.reloadGuideData(); } catch (e) { console.warn('[guide-ui] reloadGuideData failed:', e); }
+        /* Đồng bộ currentArticle sang object mới (theo slug) */
+        if (currentArticle) {
+          const fresh = window.GUIDE_DATA.articles.find(a => a.slug === currentArticle.slug);
+          if (fresh) currentArticle = fresh;
+        }
+      }
       if (!document.body.classList.contains('view-guide')) return;
       const langLabel = document.getElementById('gv-lang-label');
       if (langLabel) langLabel.textContent = window.I18n.lang.toUpperCase();

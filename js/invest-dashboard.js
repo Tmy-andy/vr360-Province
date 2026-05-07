@@ -16,7 +16,8 @@ window.InvestDashboard = (() => {
   /* Palette nhạt đồng bộ theme sáng */
   const PALETTE = ['#2bb6e6', '#22b46e', '#f4a73b', '#7c5cff', '#26C6DA', '#ee5a6f', '#ffd93d'];
   const STATUS_COLOR = { ready: '#22b46e', planned: '#2bb6e6', calling: '#f4a73b' };
-  const STATUS_LABEL = { ready: 'Sẵn sàng MB', planned: 'Quy hoạch 1/500', calling: 'Đang kêu gọi' };
+  const t = (k, vars) => (window.I18n ? window.I18n.t(k, vars) : k);
+  const statusShort = key => t('invest.dashboard.statusShort.' + key);
 
   function aggregate(projects, sectors) {
     const sectorMap = Object.fromEntries(
@@ -56,7 +57,7 @@ window.InvestDashboard = (() => {
 
   function render(container) {
     if (!window.Chart) {
-      container.innerHTML = '<div class="iv-empty">Chart.js chưa nạp được. Kiểm tra kết nối CDN.</div>';
+      container.innerHTML = `<div class="iv-empty">${t('invest.dashboard.noChart')}</div>`;
       return;
     }
     destroy();
@@ -69,23 +70,23 @@ window.InvestDashboard = (() => {
     container.innerHTML = `
       <div class="iv-dash-grid">
         <div class="iv-dash-card">
-          <div class="iv-dash-h">PHÂN BỔ VỐN THEO LĨNH VỰC</div>
-          <div class="iv-dash-sub">Tổng vốn các dự án mẫu — tỷ đồng</div>
+          <div class="iv-dash-h">${t('invest.dashboard.ch1.title')}</div>
+          <div class="iv-dash-sub">${t('invest.dashboard.ch1.sub')}</div>
           <div class="iv-dash-canvas"><canvas id="ch-cap-sector"></canvas></div>
         </div>
         <div class="iv-dash-card">
-          <div class="iv-dash-h">SỐ DỰ ÁN THEO LĨNH VỰC</div>
-          <div class="iv-dash-sub">Tỷ trọng từng lĩnh vực ưu tiên</div>
+          <div class="iv-dash-h">${t('invest.dashboard.ch2.title')}</div>
+          <div class="iv-dash-sub">${t('invest.dashboard.ch2.sub')}</div>
           <div class="iv-dash-canvas"><canvas id="ch-cnt-sector"></canvas></div>
         </div>
         <div class="iv-dash-card">
-          <div class="iv-dash-h">TOP HUYỆN/THÀNH PHỐ THEO VỐN</div>
-          <div class="iv-dash-sub">Vốn đăng ký xếp giảm dần (tỷ đồng)</div>
+          <div class="iv-dash-h">${t('invest.dashboard.ch3.title')}</div>
+          <div class="iv-dash-sub">${t('invest.dashboard.ch3.sub')}</div>
           <div class="iv-dash-canvas"><canvas id="ch-top-district"></canvas></div>
         </div>
         <div class="iv-dash-card">
-          <div class="iv-dash-h">TIẾN ĐỘ DỰ ÁN</div>
-          <div class="iv-dash-sub">Phân bổ theo trạng thái triển khai</div>
+          <div class="iv-dash-h">${t('invest.dashboard.ch4.title')}</div>
+          <div class="iv-dash-sub">${t('invest.dashboard.ch4.sub')}</div>
           <div class="iv-dash-canvas"><canvas id="ch-status"></canvas></div>
         </div>
       </div>
@@ -125,7 +126,7 @@ window.InvestDashboard = (() => {
       data: {
         labels: agg.topDistricts.map(([d]) => d),
         datasets: [{
-          label: 'Vốn (tỷ đồng)',
+          label: t('invest.dashboard.capLabel'),
           data: agg.topDistricts.map(([, v]) => v),
           backgroundColor: '#2bb6e6',
           borderRadius: 6
@@ -146,7 +147,7 @@ window.InvestDashboard = (() => {
     activeCharts.push(new Chart(container.querySelector('#ch-status'), {
       type: 'doughnut',
       data: {
-        labels: statusKeys.map(k => STATUS_LABEL[k]),
+        labels: statusKeys.map(k => statusShort(k)),
         datasets: [{
           data: statusKeys.map(k => agg.byStatus[k]),
           backgroundColor: statusKeys.map(k => STATUS_COLOR[k]),

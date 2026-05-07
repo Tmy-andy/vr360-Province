@@ -1,0 +1,39 @@
+{
+  "_note": "English version of guide.json. Mirror of guide.vi.json structure.",
+  "topics": [
+    { "id": "all",        "icon": "grid",      "titleKey": "guide.topics.all.title",        "subKey": "guide.topics.all.sub" },
+    { "id": "overview",   "icon": "book",      "titleKey": "guide.topics.overview.title",   "subKey": "guide.topics.overview.sub" },
+    { "id": "when",       "icon": "calendar",  "titleKey": "guide.topics.when.title",       "subKey": "guide.topics.when.sub" },
+    { "id": "transport",  "icon": "car",       "titleKey": "guide.topics.transport.title",  "subKey": "guide.topics.transport.sub" },
+    { "id": "stay",       "icon": "bed",       "titleKey": "guide.topics.stay.title",       "subKey": "guide.topics.stay.sub" },
+    { "id": "food",       "icon": "utensils",  "titleKey": "guide.topics.food.title",       "subKey": "guide.topics.food.sub" },
+    { "id": "places",     "icon": "map-pin",   "titleKey": "guide.topics.places.title",     "subKey": "guide.topics.places.sub" },
+    { "id": "activities", "icon": "camera",    "titleKey": "guide.topics.activities.title", "subKey": "guide.topics.activities.sub" },
+    { "id": "tips",       "icon": "lightbulb", "titleKey": "guide.topics.tips.title",       "subKey": "guide.topics.tips.sub" }
+  ],
+
+  "hero": {
+    "tag": "ABOUT LAM DONG",
+    "title": "A highland of nature and culture",
+    "desc": "Lam Dong — a fertile highland with year-round cool climate, majestic landscapes and a rich tapestry of cultures.",
+    "cta": "Start exploring",
+    "ctaHref": "#guide/article/cam-nang-da-lat-tu-tuc",
+    "image": "https://picsum.photos/seed/lamdong-hero/900/600"
+  },
+
+  "stats": [
+    { "icon": "thermo",   "label": "Average temperature", "value": "18 – 24°C" },
+    { "icon": "calendar", "label": "Best season",         "value": "Nov – Apr" },
+    { "icon": "plane",    "label": "Airport",             "value": "Lien Khuong (30km)" },
+    { "icon": "pin",      "label": "Destinations",        "value": "120+" }
+  ],
+
+  "featured": ["top10-diem-den", "cam-nang-da-lat-tu-tuc", "trai-nghiem-doc-dao", "dac-san-lam-dong", "homestay-view-dep"],
+
+  "tips": [
+    { "icon": "bed",      "title": "Book early",          "desc": "1–2 weeks ahead during peak season and public holidays." },
+    { "icon": "jacket",   "title": "Bring warm clothes",  "desc": "Night temperatures can drop, especially in winter." },
+    { "icon": "medkit",   "title": "Pack medication",     "desc": "Bring personal meds and motion-sickness pills for long drives." },
+    { "icon": "heart",    "title": "Respect local culture","desc": "Protect the environment, respect local customs and residents." }
+  ]
+}

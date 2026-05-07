@@ -1,0 +1,137 @@
+{
+  "_note": "English version of guide-articles.json. Slugs identical with guide-articles.vi.json.",
+  "articles": [
+    {
+      "slug": "cam-nang-da-lat-tu-tuc",
+      "topicId": "tips",
+      "category": "Tips",
+      "title": "Da Lat self-guided travel — A to Z",
+      "excerpt": "A detailed guide for a complete and budget-friendly trip. Covers transport, where to stay, food, suggested itineraries and unmissable check-in spots.",
+      "hero": "https://picsum.photos/seed/dalat-sunset/1200/600",
+      "author": "Lam Dong Travel",
+      "verified": true,
+      "date": "2025-05-24",
+      "readMin": 7,
+      "stats": [
+        { "icon": "altitude", "label": "Average elevation",   "value": "1,500 m" },
+        { "icon": "thermo",   "label": "Average temperature", "value": "18 – 24°C" },
+        { "icon": "calendar", "label": "Best season",         "value": "Nov – Apr" },
+        { "icon": "users",    "label": "Population",          "value": "≈ 665,000 people" }
+      ],
+      "body": [
+        { "type": "para", "text": "Da Lat — the city of a thousand flowers — sits more than 1,500 m above sea level. Blessed with a cool year-round climate, dreamy landscapes and a distinctive culture, it is the perfect getaway for those seeking peace and a deep connection with nature." },
+        { "type": "heading", "num": "01", "text": "About Da Lat" },
+        { "type": "para", "text": "Da Lat is the capital of Lam Dong province, about 300 km from Ho Chi Minh City. The city is famous for its cool climate all year round, majestic landscapes and many architectural works that bear the marks of time." },
+        { "type": "stats" },
+        { "type": "heading", "num": "02", "text": "Best time to visit" },
+        { "type": "para", "text": "November to April is the dry season when flowers are in full bloom — especially the cherry blossom season (January–February) and the Da Lat Flower Festival at year-end. Avoid July–September due to long rains." },
+        { "type": "heading", "num": "03", "text": "Getting to Da Lat" },
+        { "type": "para", "text": "You can fly into Lien Khuong Airport (30 km from town), take a sleeper coach from HCMC or Nha Trang, or self-drive along National Route 20. In the city itself, renting a motorbike gives you the most flexibility to reach distant spots." },
+        { "type": "heading", "num": "04", "text": "Where to stay in Da Lat?" },
+        { "type": "para", "text": "The Xuan Huong Lake area suits first-timers. The Tuyen Lam – Trai Mat zone has many quiet resorts. Small lakeside or pine-forest homestays are favourites among younger travellers." },
+        { "type": "heading", "num": "05", "text": "What to eat in Da Lat?" },
+        { "type": "para", "text": "Grilled rice paper, basil chicken hot pot, wet rice noodles with chicken giblets, hot soy milk at the night market, artichoke pork-trotter stew, strawberries and local candied vegetables are all must-tries." },
+        { "type": "heading", "num": "06", "text": "Where to go in Da Lat?" },
+        { "type": "para", "text": "Tuyen Lam Lake, Datanla Falls, Langbiang, strawberry farms, Cau Dat tea hill, the old Da Lat railway, Lam Vien Square, the Rooster Cathedral and old French villas — every spot has its own story." },
+        { "type": "heading", "num": "07", "text": "Suggested itinerary" },
+        { "type": "para", "text": "Classic 3D2N: Day 1 — check in to the centre, stroll Xuan Huong Lake; Day 2 — Langbiang + tea hill + Cu Lan Village; Day 3 — Datanla Falls + Da Lat railway + night market." },
+        { "type": "heading", "num": "08", "text": "Tips and notes" },
+        { "type": "para", "text": "Book your room early during holidays. Bring a light jacket for the evening. Pack motion-sickness pills if travelling on mountain roads. Respect the environment: don't litter, don't pick flowers." }
+      ],
+      "tipBox": {
+        "title": "USEFUL TIP",
+        "text": "Book tickets and rooms at least 1–2 weeks ahead, especially during peak season and holidays, for better prices and more options."
+      }
+    },
+    {
+      "slug": "top10-diem-den",
+      "topicId": "places",
+      "category": "Destinations",
+      "title": "Top 10 unmissable destinations in Lam Dong",
+      "excerpt": "The most stunning places you must visit when coming to Lam Dong.",
+      "hero": "https://picsum.photos/seed/lamdong-cherry/1200/600",
+      "author": "Lam Dong Travel",
+      "verified": true,
+      "date": "2025-05-18",
+      "readMin": 5,
+      "stats": [],
+      "body": [
+        { "type": "para", "text": "This article rounds up the top 10 destinations in Lam Dong — from waterfalls, lakes and mountains to heritage sites and eco-villages." },
+        { "type": "heading", "num": "01", "text": "Tuyen Lam Lake" },
+        { "type": "para", "text": "Crystal-clear water surrounded by pine forest — perfect for SUP paddling and lakeside cycling." },
+        { "type": "heading", "num": "02", "text": "Langbiang Mountain" },
+        { "type": "para", "text": "The mountain holds the K'Ho love legend and offers a panoramic view of the highlands." }
+      ],
+      "tipBox": {
+        "title": "USEFUL TIP",
+        "text": "Climb Langbiang early in the morning to chase the cloud sea and avoid the noon crowds."
+      }
+    },
+    {
+      "slug": "trai-nghiem-doc-dao",
+      "topicId": "activities",
+      "category": "Activities",
+      "title": "Unique experiences in Lam Dong",
+      "excerpt": "Discover exciting activities amid the highland nature.",
+      "hero": "https://picsum.photos/seed/lamdong-waterfall/1200/600",
+      "author": "Lam Dong Travel",
+      "verified": true,
+      "date": "2025-05-12",
+      "readMin": 6,
+      "stats": [],
+      "body": [
+        { "type": "para", "text": "Lam Dong offers experiences far beyond traditional tours: trekking, canyoning, camping, coffee tours and more." },
+        { "type": "heading", "num": "01", "text": "Datanla canyoning" },
+        { "type": "para", "text": "Rappelling down Datanla Falls — one of Southeast Asia's top canyoning experiences." }
+      ],
+      "tipBox": {
+        "title": "USEFUL TIP",
+        "text": "Always pick a licensed, insured tour operator for adventure activities."
+      }
+    },
+    {
+      "slug": "dac-san-lam-dong",
+      "topicId": "food",
+      "category": "Food",
+      "title": "Lam Dong specialties — Highland flavours",
+      "excerpt": "The signature dishes that will stay with you long after the trip.",
+      "hero": "https://picsum.photos/seed/lamdong-food/1200/600",
+      "author": "Lam Dong Travel",
+      "verified": true,
+      "date": "2025-04-30",
+      "readMin": 4,
+      "stats": [],
+      "body": [
+        { "type": "para", "text": "Lam Dong's cuisine blends Vietnamese, K'Ho and French influences — from basil chicken hot pot to artichoke stews." },
+        { "type": "heading", "num": "01", "text": "Basil chicken hot pot" },
+        { "type": "para", "text": "Fragrant basil leaves and free-range chicken — a must-try when visiting Da Lat." }
+      ],
+      "tipBox": {
+        "title": "USEFUL TIP",
+        "text": "Visit the Da Lat night market after 7 pm to try grilled rice paper and hot soy milk."
+      }
+    },
+    {
+      "slug": "homestay-view-dep",
+      "topicId": "stay",
+      "category": "Where to stay",
+      "title": "Top scenic homestays in Lam Dong",
+      "excerpt": "Recommended places to stay close to nature.",
+      "hero": "https://picsum.photos/seed/lamdong-homestay/1200/600",
+      "author": "Lam Dong Travel",
+      "verified": true,
+      "date": "2025-04-22",
+      "readMin": 5,
+      "stats": [],
+      "body": [
+        { "type": "para", "text": "The Tuyen Lam and Trai Mat areas have a series of homestays with pine-forest and tea-hill views worth checking in." },
+        { "type": "heading", "num": "01", "text": "Pine-forest homestay" },
+        { "type": "para", "text": "Wooden cabins set in pine forest, with a fireplace and an open courtyard for stargazing." }
+      ],
+      "tipBox": {
+        "title": "USEFUL TIP",
+        "text": "Book directly with the owner or via international platforms to avoid fake listings."
+      }
+    }
+  ]
+}

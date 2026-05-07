@@ -51,11 +51,12 @@ window.InvestUI = (() => {
   };
   const ic = key => ICONS[key] || '';
 
-  function t(key) { return window.I18n ? window.I18n.t(key) : key; }
+  function t(key, vars) { return window.I18n ? window.I18n.t(key, vars) : key; }
   function fmtMoney(billions) {
     if (!billions && billions !== 0) return '';
-    const n = Number(billions).toLocaleString('vi-VN');
-    return n + ' tỷ đồng';
+    const loc = window.I18n && window.I18n.lang === 'en' ? 'en-US' : 'vi-VN';
+    const n = Number(billions).toLocaleString(loc);
+    return t('invest.money_billion', { n });
   }
   function fmtArea(p) {
     if (p.area_ha) return p.area_ha + ' ha';
@@ -66,13 +67,9 @@ window.InvestUI = (() => {
     return String(s || '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
   }
   function statusBadge(status) {
-    const map = {
-      ready:   { cls: 'iv-badge-ready',   label: 'Sẵn sàng mặt bằng' },
-      planned: { cls: 'iv-badge-planned', label: 'Đã có quy hoạch 1/500' },
-      calling: { cls: 'iv-badge-calling', label: 'Đang kêu gọi' }
-    };
-    const s = map[status] || { cls: 'iv-badge-calling', label: status };
-    return `<span class="iv-badge ${s.cls}">${s.label}</span>`;
+    const cls = ({ ready: 'iv-badge-ready', planned: 'iv-badge-planned', calling: 'iv-badge-calling' })[status] || 'iv-badge-calling';
+    const label = ['ready','planned','calling'].includes(status) ? t('invest.status.' + status) : status;
+    return `<span class="iv-badge ${cls}">${label}</span>`;
   }
   function findProject(slug) {
     return window.INVEST_DATA.projects.find(p => p.slug === slug);
@@ -175,24 +172,24 @@ window.InvestUI = (() => {
     const projectsHtml = `
       <section class="iv-projects" id="iv-projects-section">
         <div class="iv-section-head">
-          <h3 class="view-section-title">DỰ ÁN KÊU GỌI ĐẦU TƯ TIÊU BIỂU</h3>
-          <a class="iv-link" href="#invest/projects">Xem tất cả dự án ${ic('chevron')}</a>
+          <h3 class="view-section-title">${t('invest.section.featuredProjects')}</h3>
+          <a class="iv-link" href="#invest/projects">${t('invest.viewAllProjects')} ${ic('chevron')}</a>
         </div>
         ${list.length === 0
-          ? `<div class="iv-empty">Không có dự án phù hợp với bộ lọc.</div>`
+          ? `<div class="iv-empty">${t('invest.emptyFilter')}</div>`
           : `<div class="iv-projects-grid">
               ${list.slice(0, 5).map(p => `
                 <article class="iv-pcard" data-slug="${p.slug}">
                   <a class="iv-pcard-img" href="#invest/project/${p.slug}" style="background-image:url('${p.image}')">
                     <span class="iv-pcard-tag">${escapeHtml(sectorMap[p.sector] || p.sector)}</span>
-                    <button class="iv-pcard-bookmark" type="button" aria-label="Lưu" onclick="event.preventDefault();event.stopPropagation();">${ic('bookmark')}</button>
+                    <button class="iv-pcard-bookmark" type="button" aria-label="${t('invest.save')}" onclick="event.preventDefault();event.stopPropagation();">${ic('bookmark')}</button>
                   </a>
                   <div class="iv-pcard-body">
                     <a class="iv-pcard-title" href="#invest/project/${p.slug}">${escapeHtml(p.name)}</a>
                     <div class="iv-pcard-loc">${ic('pin')}<span>${escapeHtml(p.district)}</span></div>
                     <div class="iv-pcard-meta">
-                      <div><span class="iv-pcard-k">Quy mô:</span> <b>${escapeHtml(fmtArea(p))}</b></div>
-                      <div><span class="iv-pcard-k">Tổng vốn:</span> <b>${escapeHtml(fmtMoney(p.capital_billion_vnd))}</b></div>
+                      <div><span class="iv-pcard-k">${t('invest.card.scale')}</span> <b>${escapeHtml(fmtArea(p))}</b></div>
+                      <div><span class="iv-pcard-k">${t('invest.card.capital')}</span> <b>${escapeHtml(fmtMoney(p.capital_billion_vnd))}</b></div>
                     </div>
                     ${statusBadge(p.status)}
                   </div>
@@ -270,7 +267,7 @@ window.InvestUI = (() => {
         </div>
         <div class="iv-cta-actions">
           <a class="iv-cta-btn iv-cta-btn-ghost" href="#invest/dashboard">
-            ${ic('target')}<span>Dashboard số liệu</span>
+            ${ic('target')}<span>${t('invest.dashboard.link')}</span>
           </a>
           <a class="iv-cta-btn" href="${data.ctaBanner.ctaHref}">
             <span>${escapeHtml(data.ctaBanner.cta)}</span>
@@ -283,10 +280,10 @@ window.InvestUI = (() => {
     c.innerHTML = `
       <header class="iv-page-header">
         <h1>
-          <span>${escapeHtml(data.hero.title.split(' Lâm Đồng')[0] || data.hero.title)}</span>
-          <span class="hl">Lâm Đồng</span>
+          <span>${t('invest.title').replace(/\s*Lâm Đồng\s*$/, '').replace(/\s*Lam Dong\s*$/, '')}</span>
+          <span class="hl">${t('invest.title_hl')}</span>
         </h1>
-        <p class="iv-sub">${escapeHtml(data.hero.sub)}</p>
+        <p class="iv-sub">${t('invest.sub')}</p>
       </header>
       <div class="iv-hero-row">
         ${heroHtml}
@@ -312,7 +309,7 @@ window.InvestUI = (() => {
     const c = ensureContent();
     if (!c) return;
     if (!p) {
-      c.innerHTML = `<div class="iv-empty">Dự án không tồn tại.</div>`;
+      c.innerHTML = `<div class="iv-empty">${t('invest.notFound')}</div>`;
       return;
     }
     currentProject = p;
@@ -323,7 +320,7 @@ window.InvestUI = (() => {
       <nav class="iv-breadcrumb">
         <a href="#map" class="iv-bc-home">${ic('home')}</a>
         <span class="iv-bc-sep">${ic('chevron')}</span>
-        <a href="#invest">Đầu tư</a>
+        <a href="#invest">${t('invest.title_short')}</a>
         <span class="iv-bc-sep">${ic('chevron')}</span>
         <a href="#invest" class="iv-bc-cat">${escapeHtml(sectorLabel)}</a>
         <span class="iv-bc-sep">${ic('chevron')}</span>
@@ -341,21 +338,21 @@ window.InvestUI = (() => {
 
       <div class="iv-proj-grid">
         <div class="iv-proj-body">
-          <h3 class="view-section-title">THÔNG TIN DỰ ÁN</h3>
+          <h3 class="view-section-title">${t('invest.section.projectInfo')}</h3>
           <table class="iv-info">
             <tbody>
-              <tr><th>Vị trí</th><td>${escapeHtml(p.district)}</td></tr>
-              <tr><th>Quy mô</th><td>${escapeHtml(fmtArea(p))}</td></tr>
-              <tr><th>Tổng vốn</th><td><b>${escapeHtml(fmtMoney(p.capital_billion_vnd))}</b></td></tr>
-              <tr><th>Lĩnh vực</th><td>${escapeHtml(sectorLabel)}</td></tr>
-              <tr><th>Trạng thái</th><td>${statusBadge(p.status)}</td></tr>
+              <tr><th>${t('invest.info.location')}</th><td>${escapeHtml(p.district)}</td></tr>
+              <tr><th>${t('invest.info.scale')}</th><td>${escapeHtml(fmtArea(p))}</td></tr>
+              <tr><th>${t('invest.info.capital')}</th><td><b>${escapeHtml(fmtMoney(p.capital_billion_vnd))}</b></td></tr>
+              <tr><th>${t('invest.info.sector')}</th><td>${escapeHtml(sectorLabel)}</td></tr>
+              <tr><th>${t('invest.info.status')}</th><td>${statusBadge(p.status)}</td></tr>
             </tbody>
           </table>
 
-          <h3 class="view-section-title">MÔ TẢ</h3>
+          <h3 class="view-section-title">${t('invest.section.description')}</h3>
           <p class="iv-proj-p">${escapeHtml(p.description)}</p>
 
-          <h3 class="view-section-title">ƯU ĐÃI ÁP DỤNG</h3>
+          <h3 class="view-section-title">${t('invest.section.incentives')}</h3>
           <ul class="iv-proj-incentives">
             ${(p.incentives || []).map(i => `<li>${ic('check')}<span>${escapeHtml(i)}</span></li>`).join('')}
           </ul>
@@ -363,15 +360,15 @@ window.InvestUI = (() => {
 
         <aside class="iv-proj-side">
           <div class="iv-proj-contact">
-            <div class="iv-proj-contact-title">ĐẦU MỐI LIÊN HỆ</div>
+            <div class="iv-proj-contact-title">${t('invest.section.contactPoint')}</div>
             <div class="iv-proj-contact-row"><b>${escapeHtml(p.contact?.person || '—')}</b></div>
             <div class="iv-proj-contact-row">${ic('phone')}<a href="tel:${escapeHtml(p.contact?.phone || '')}">${escapeHtml(p.contact?.phone || '')}</a></div>
             <div class="iv-proj-contact-row">${ic('briefcase')}<a href="mailto:${escapeHtml(p.contact?.email || '')}">${escapeHtml(p.contact?.email || '')}</a></div>
           </div>
           <div class="iv-proj-actions">
-            <button class="iv-proj-btn primary" type="button">${ic('briefcase')}<span>Đăng ký quan tâm</span></button>
-            <button class="iv-proj-btn" type="button">${ic('download')}<span>Tải hồ sơ PDF</span></button>
-            <a class="iv-proj-btn" href="#map/project/${p.slug}">${ic('map')}<span>Xem trên bản đồ</span></a>
+            <button class="iv-proj-btn primary" type="button">${ic('briefcase')}<span>${t('invest.registerInterest')}</span></button>
+            <button class="iv-proj-btn" type="button">${ic('download')}<span>${t('invest.downloadPdf')}</span></button>
+            <a class="iv-proj-btn" href="#map/project/${p.slug}">${ic('map')}<span>${t('invest.viewMap')}</span></a>
           </div>
         </aside>
       </div>
@@ -405,31 +402,31 @@ window.InvestUI = (() => {
 
     const sectorChips = ['all'].concat(data.sectors.filter(s => s.id !== 'all').map(s => s.id))
       .map(id => {
-        const label = id === 'all' ? 'Tất cả' : sectorMap[id];
+        const label = id === 'all' ? t('invest.filter.all') : sectorMap[id];
         return `<button type="button" class="iv-chip${id === activeSector ? ' active' : ''}" data-chip-sector="${id}">${escapeHtml(label)}</button>`;
       }).join('');
     const statusChips = [
-      ['all', 'Tất cả trạng thái'],
-      ['ready', 'Sẵn sàng mặt bằng'],
-      ['planned', 'Đã có quy hoạch 1/500'],
-      ['calling', 'Đang kêu gọi']
+      ['all',     t('invest.status.all')],
+      ['ready',   t('invest.status.ready')],
+      ['planned', t('invest.status.planned')],
+      ['calling', t('invest.status.calling')]
     ].map(([id, label]) => `<button type="button" class="iv-chip${id === activeStatus ? ' active' : ''}" data-chip-status="${id}">${escapeHtml(label)}</button>`).join('');
 
     c.innerHTML = `
       <nav class="iv-breadcrumb">
         <a href="#map" class="iv-bc-home">${ic('home')}</a>
         <span class="iv-bc-sep">${ic('chevron')}</span>
-        <a href="#invest">Đầu tư</a>
+        <a href="#invest">${t('invest.title_short')}</a>
         <span class="iv-bc-sep">${ic('chevron')}</span>
-        <span class="iv-bc-current">Tất cả dự án</span>
+        <span class="iv-bc-current">${t('invest.filter.all_projects')}</span>
       </nav>
 
       <header class="iv-page-header">
         <h1>
-          <span>Tất cả</span>
-          <span class="hl">dự án kêu gọi đầu tư</span>
+          <span>${t('invest.projectsList.title_a')}</span>
+          <span class="hl">${t('invest.projectsList.title_b')}</span>
         </h1>
-        <p class="iv-sub">${list.length} dự án — lọc theo lĩnh vực, trạng thái hoặc tìm kiếm theo tên / địa điểm.</p>
+        <p class="iv-sub">${t('invest.projectsList.sub', { n: list.length })}</p>
       </header>
 
       <div class="iv-filterbar">
@@ -438,20 +435,20 @@ window.InvestUI = (() => {
       </div>
 
       ${list.length === 0
-        ? `<div class="iv-empty">Không có dự án phù hợp với bộ lọc.</div>`
+        ? `<div class="iv-empty">${t('invest.emptyFilter')}</div>`
         : `<div class="iv-projects-grid iv-projects-grid-full">
             ${list.map(p => `
               <article class="iv-pcard" data-slug="${p.slug}">
                 <a class="iv-pcard-img" href="#invest/project/${p.slug}" style="background-image:url('${p.image}')">
                   <span class="iv-pcard-tag">${escapeHtml(sectorMap[p.sector] || p.sector)}</span>
-                  <button class="iv-pcard-bookmark" type="button" aria-label="Lưu" onclick="event.preventDefault();event.stopPropagation();">${ic('bookmark')}</button>
+                  <button class="iv-pcard-bookmark" type="button" aria-label="${t('invest.save')}" onclick="event.preventDefault();event.stopPropagation();">${ic('bookmark')}</button>
                 </a>
                 <div class="iv-pcard-body">
                   <a class="iv-pcard-title" href="#invest/project/${p.slug}">${escapeHtml(p.name)}</a>
                   <div class="iv-pcard-loc">${ic('pin')}<span>${escapeHtml(p.district)}</span></div>
                   <div class="iv-pcard-meta">
-                    <div><span class="iv-pcard-k">Quy mô:</span> <b>${escapeHtml(fmtArea(p))}</b></div>
-                    <div><span class="iv-pcard-k">Tổng vốn:</span> <b>${escapeHtml(fmtMoney(p.capital_billion_vnd))}</b></div>
+                    <div><span class="iv-pcard-k">${t('invest.card.scale')}</span> <b>${escapeHtml(fmtArea(p))}</b></div>
+                    <div><span class="iv-pcard-k">${t('invest.card.capital')}</span> <b>${escapeHtml(fmtMoney(p.capital_billion_vnd))}</b></div>
                   </div>
                   ${statusBadge(p.status)}
                 </div>
@@ -490,93 +487,104 @@ window.InvestUI = (() => {
     if (!c) return;
     const sectors = data.sectors.filter(s => s.id !== 'all');
 
+    const countries = [
+      ['vn',    t('invest.contact.country.vn')],
+      ['kr',    t('invest.contact.country.kr')],
+      ['jp',    t('invest.contact.country.jp')],
+      ['cn',    t('invest.contact.country.cn')],
+      ['sg',    t('invest.contact.country.sg')],
+      ['other', t('invest.contact.country.other')]
+    ];
+    const budgets = [
+      t('invest.contact.budget.lt100'),
+      t('invest.contact.budget.100_500'),
+      t('invest.contact.budget.500_1000'),
+      t('invest.contact.budget.1000_5000'),
+      t('invest.contact.budget.gt5000')
+    ];
+
     c.innerHTML = `
       <nav class="iv-breadcrumb">
         <a href="#map" class="iv-bc-home">${ic('home')}</a>
         <span class="iv-bc-sep">${ic('chevron')}</span>
-        <a href="#invest">Đầu tư</a>
+        <a href="#invest">${t('invest.title_short')}</a>
         <span class="iv-bc-sep">${ic('chevron')}</span>
-        <span class="iv-bc-current">Đăng ký quan tâm</span>
+        <span class="iv-bc-current">${t('invest.contact.crumb')}</span>
       </nav>
 
       <header class="iv-page-header">
         <h1>
-          <span>Đăng ký</span>
-          <span class="hl">quan tâm đầu tư</span>
+          <span>${t('invest.contact.title_a')}</span>
+          <span class="hl">${t('invest.contact.title_b')}</span>
         </h1>
-        <p class="iv-sub">Để lại thông tin – Trung tâm Xúc tiến Đầu tư Lâm Đồng sẽ liên hệ trong vòng 24 giờ làm việc.</p>
+        <p class="iv-sub">${t('invest.contact.sub')}</p>
       </header>
 
       <div class="iv-contact-box">
         <form class="iv-form" id="iv-form" novalidate>
           <div class="iv-form-row">
             <label class="iv-field">
-              <span>Họ và tên *</span>
+              <span>${t('invest.contact.form.name')}</span>
               <input type="text" name="name" required>
             </label>
             <label class="iv-field">
-              <span>Doanh nghiệp *</span>
+              <span>${t('invest.contact.form.company')}</span>
               <input type="text" name="company" required>
             </label>
           </div>
           <div class="iv-form-row">
             <label class="iv-field">
-              <span>Quốc gia</span>
+              <span>${t('invest.contact.form.country')}</span>
               <select name="country">
-                <option>Việt Nam</option><option>Hàn Quốc</option><option>Nhật Bản</option>
-                <option>Trung Quốc</option><option>Singapore</option><option>Khác</option>
+                ${countries.map(([id, label]) => `<option value="${id}">${escapeHtml(label)}</option>`).join('')}
               </select>
             </label>
             <label class="iv-field">
-              <span>Email *</span>
+              <span>${t('invest.contact.form.email')}</span>
               <input type="email" name="email" required>
             </label>
           </div>
           <div class="iv-form-row">
             <label class="iv-field">
-              <span>Số điện thoại *</span>
+              <span>${t('invest.contact.form.phone')}</span>
               <input type="tel" name="phone" required>
             </label>
             <label class="iv-field">
-              <span>Quy mô vốn dự kiến</span>
+              <span>${t('invest.contact.form.budget')}</span>
               <select name="budget">
-                <option>Dưới 100 tỷ</option>
-                <option>100 – 500 tỷ</option>
-                <option>500 – 1.000 tỷ</option>
-                <option>1.000 – 5.000 tỷ</option>
-                <option>Trên 5.000 tỷ</option>
+                ${budgets.map(b => `<option>${escapeHtml(b)}</option>`).join('')}
               </select>
             </label>
           </div>
 
           <div class="iv-field">
-            <span>Lĩnh vực quan tâm</span>
+            <span>${t('invest.contact.form.sectors')}</span>
             <div class="iv-chip-pick">
               ${sectors.map(s => `<label class="iv-pick"><input type="checkbox" name="sectors" value="${s.id}"><span>${escapeHtml(t(s.titleKey))}</span></label>`).join('')}
             </div>
           </div>
 
           <div class="iv-field">
-            <span>Nhu cầu hỗ trợ</span>
+            <span>${t('invest.contact.form.needs')}</span>
             <div class="iv-chip-pick">
               ${[
-                ['survey', 'Khảo sát thực địa'],
-                ['legal',  'Tư vấn pháp lý'],
-                ['partner','Kết nối đối tác'],
-                ['docs',   'Tài liệu chi tiết']
+                ['survey', t('invest.contact.needs.survey')],
+                ['legal',  t('invest.contact.needs.legal')],
+                ['partner',t('invest.contact.needs.partner')],
+                ['docs',   t('invest.contact.needs.docs')]
               ].map(([id, label]) => `<label class="iv-pick"><input type="checkbox" name="needs" value="${id}"><span>${escapeHtml(label)}</span></label>`).join('')}
             </div>
           </div>
 
           <label class="iv-field">
-            <span>Lời nhắn</span>
-            <textarea name="message" rows="4" placeholder="Mô tả ngắn về dự án/lĩnh vực bạn quan tâm…"></textarea>
+            <span>${t('invest.contact.form.message')}</span>
+            <textarea name="message" rows="4" placeholder="${t('invest.contact.form.messagePlaceholder')}"></textarea>
           </label>
 
           <button type="submit" class="iv-form-submit">
-            ${ic('briefcase')}<span>Gửi đăng ký</span>
+            ${ic('briefcase')}<span>${t('invest.contact.form.submit')}</span>
           </button>
-          <p class="iv-form-note">Thông tin được bảo mật theo quy định và chỉ phục vụ mục đích kết nối đầu tư.</p>
+          <p class="iv-form-note">${t('invest.contact.form.note')}</p>
         </form>
 
         <aside class="iv-contact-side">
@@ -588,12 +596,12 @@ window.InvestUI = (() => {
           </div>
           <a class="iv-contact-channel zalo" href="${escapeHtml(data.contact.zalo)}" target="_blank">
             <span class="iv-contact-channel-icon" style="background:#0068ff">Z</span>
-            <span>Liên hệ qua Zalo OA</span>
+            <span>${t('invest.contact.channelZalo')}</span>
             ${ic('chevron')}
           </a>
           <a class="iv-contact-channel wa" href="https://wa.me/${escapeHtml(data.contact.whatsapp.replace(/[^\d]/g,''))}" target="_blank">
             <span class="iv-contact-channel-icon" style="background:#25d366">W</span>
-            <span>WhatsApp (FDI)</span>
+            <span>${t('invest.contact.channelWa')}</span>
             ${ic('chevron')}
           </a>
         </aside>
@@ -618,7 +626,7 @@ window.InvestUI = (() => {
         }
       });
       console.log('[invest-ui] form submit payload:', payload);
-      alert('Cảm ơn bạn đã đăng ký quan tâm. Trung tâm XTĐT Lâm Đồng sẽ liên hệ lại trong 24 giờ làm việc.');
+      alert(t('invest.contact.form.thankYou'));
       form.reset();
     });
   }
@@ -642,7 +650,7 @@ window.InvestUI = (() => {
     }
 
     const pdfBtn = document.getElementById('iv-pdf-btn');
-    if (pdfBtn) pdfBtn.addEventListener('click', () => alert('Tải PDF — sẽ tích hợp ở Sprint sau.'));
+    if (pdfBtn) pdfBtn.addEventListener('click', () => alert(t('invest.pdfTodo')));
     const contactBtn = document.getElementById('iv-contact-btn');
     if (contactBtn) contactBtn.addEventListener('click', () => {
       if (window.ViewRouter) window.ViewRouter.navigate('#invest/contact', contactBtn);
@@ -681,6 +689,7 @@ window.InvestUI = (() => {
       if (currentMode === 'project' && currentProject) renderProject(currentProject.slug);
       else if (currentMode === 'projects') renderProjectsList(q);
       else if (currentMode === 'contact')  renderContact();
+      else if (currentMode === 'dashboard') showDashboard();
       else renderLanding(q);
     });
   }
@@ -714,13 +723,13 @@ window.InvestUI = (() => {
       <nav class="iv-breadcrumb">
         <a href="#map" class="iv-bc-home">${ic('home')}</a>
         <span class="iv-bc-sep">${ic('chevron')}</span>
-        <a href="#invest">Đầu tư</a>
+        <a href="#invest">${t('invest.title_short')}</a>
         <span class="iv-bc-sep">${ic('chevron')}</span>
-        <span class="iv-bc-current">Dashboard số liệu</span>
+        <span class="iv-bc-current">${t('invest.dashboard.crumb')}</span>
       </nav>
       <header class="iv-page-header">
-        <h1><span>Dashboard</span> <span class="hl">đầu tư Lâm Đồng</span></h1>
-        <p class="iv-sub">Tổng quan vốn – lĩnh vực – địa bàn – tiến độ. Dữ liệu tổng hợp từ ${window.INVEST_DATA.projects.length} dự án mẫu.</p>
+        <h1><span>${t('invest.dashboard.title_a')}</span> <span class="hl">${t('invest.dashboard.title_b')}</span></h1>
+        <p class="iv-sub">${t('invest.dashboard.sub', { n: window.INVEST_DATA.projects.length })}</p>
       </header>
       <div id="iv-dash-host"></div>
     `;
